@@ -36,7 +36,7 @@ class SubredditScraper:
             "title",
             "id",
             "sorted_by",
-            "new_comments",
+            "num_comments",
             "score",
             "ups",
             "downs",
@@ -67,7 +67,9 @@ class SubredditScraper:
             # Check if post.id is in df and set to True if df is empty.
             # This way new posts are still added to dictionary when df = ''
             unique_id = post.id not in tuple(df.id) if csv_loaded else True
-
+            print(unique_id)
+            print(df.id)
+            print(post.id)
             # Save any unique posts to sub_dict.
             if unique_id:
                 sub_dict["selftext"].append(post.selftext)
@@ -97,4 +99,4 @@ class SubredditScraper:
 
 
 if __name__ == "__main__":
-    SubredditScraper("polictics", lim=997, mode="w", sort="new").get_posts()
+    SubredditScraper("polictics", lim=99997, mode="w", sort="top").get_posts()
