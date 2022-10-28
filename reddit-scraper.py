@@ -22,7 +22,7 @@ class SubredditScraper:
     def set_sort(self):
         if self.sort in {"new", "top", "hot"}:
             fn = getattr(reddit.subreddit(self.sub), self.sort)
-            return self.sort, fn(limit=self.lim)
+            return self.sort, fn(limit=self.lim, time_filter='day')
         else:
             self.sort = "hot"
             print("Sort method was not recognized, defaulting to hot.")
@@ -67,9 +67,7 @@ class SubredditScraper:
             # Check if post.id is in df and set to True if df is empty.
             # This way new posts are still added to dictionary when df = ''
             unique_id = post.id not in tuple(df.id) if csv_loaded else True
-            print(unique_id)
-            print(df.id)
-            print(post.id)
+            
             # Save any unique posts to sub_dict.
             if unique_id:
                 sub_dict["selftext"].append(post.selftext)
@@ -99,4 +97,4 @@ class SubredditScraper:
 
 
 if __name__ == "__main__":
-    SubredditScraper("polictics", lim=99997, mode="w", sort="top").get_posts()
+    SubredditScraper("politics", lim=997, mode="w", sort="top").get_posts()
