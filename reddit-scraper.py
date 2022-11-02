@@ -1,8 +1,10 @@
-from os.path import isfile
+from argparse import ArgumentParser
+from os import path as os_path
 from time import sleep
 
 import pandas as pd
 import praw
+from tqdm import tqdm
 
 # Get credentials from DEFAULT instance in praw.ini
 reddit = praw.Reddit()
@@ -50,7 +52,7 @@ class SubredditScraper:
 
         # Set csv_loaded to True if csv exists since you can't
         # evaluate the truth value of a DataFrame.
-        csv_loaded = isfile(csv)
+        csv_loaded = os_path.isfile(csv)
         if csv_loaded:
             df = pd.read_csv(csv)
         else:
@@ -62,14 +64,13 @@ class SubredditScraper:
 
         print(f"Collecting information from r/{self.sub}.")
 
-        for post in subreddit:
-
+        for post in tqdm(subreddit):
             # Check if post.id is in df and set to True if df is empty.
             # This way new posts are still added to dictionary when df = ''
             unique_id = post.id not in tuple(df.id) if csv_loaded else True
-            print(unique_id)
-            print(df.id)
-            print(post.id)
+            # print(unique_id)
+            # print(df.id)
+            # print(post.id)
             # Save any unique posts to sub_dict.
             if unique_id:
                 sub_dict["selftext"].append(post.selftext)
@@ -99,4 +100,29 @@ class SubredditScraper:
 
 
 if __name__ == "__main__":
-    SubredditScraper("polictics", lim=99997, mode="w", sort="top").get_posts()
+    parser = ArgumentParser()
+
+    parser.add_argument(
+        "-s",
+        "--subreddit",
+        type=str,
+        help="Subreddit to collect",
+    )
+    parser.add_argument(
+        "-l",
+        "--limit",
+        type=int,
+        help="Maximum number of posts to scrape",
+    )
+    parser.add_argument(
+        "-o",
+        "--order",
+        type=str,
+        choices="top hot new".split(" "),
+        help="Sort posts according to this method",
+    )
+
+    flags = vars(parser.parse_args())
+    SubredditScraper(
+        flags["subreddit"], lim=flags["limit"], mode="w", sort=flags["order"]
+    ).get_posts()
