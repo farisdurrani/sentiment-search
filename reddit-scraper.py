@@ -131,10 +131,14 @@ if __name__ == "__main__":
         "--filter",
         type=str,
         choices="hour day week month year all".split(),
-        help="Filtering by time"
+        help="Filtering by time",
     )
 
     flags = vars(parser.parse_args())
     SubredditScraper(
-        flags["subreddit"], lim=flags["limit"], mode="w", sort=flags["order"]
+        flags["subreddit"],
+        lim=flags["limit"],
+        sort=flags["order"],
+        fil=flags["filter"],
+        mode="w",
     ).get_posts()
