@@ -67,7 +67,7 @@ class SubredditScraper:
         for post in tqdm(subreddit):
             # Check if post.id is in df and set to True if df is empty.
             # This way new posts are still added to dictionary when df = ''
-            unique_id = post.id not in tuple(df.id) if csv_loaded else True
+            unique_id = post.id not in df.id if csv_loaded else True
             # print(unique_id)
             # print(df.id)
             # print(post.id)
