@@ -40,6 +40,7 @@ class SubredditScraper:
             "score",
             "ups",
             "downs",
+            "created_utc",
         ]
         sub_dict = {key: [] for key in attributes}
 
@@ -63,7 +64,6 @@ class SubredditScraper:
         print(f"Collecting information from r/{self.sub}.")
 
         for post in subreddit:
-
             # Check if post.id is in df and set to True if df is empty.
             # This way new posts are still added to dictionary when df = ''
             unique_id = post.id not in tuple(df.id) if csv_loaded else True
@@ -78,6 +78,7 @@ class SubredditScraper:
                 sub_dict["score"].append(post.score)
                 sub_dict["ups"].append(post.ups)
                 sub_dict["downs"].append(post.downs)
+                sub_dict["created_utc"].append(post.created_utc)
             sleep(0.1)
 
         new_df = pd.DataFrame(sub_dict)
