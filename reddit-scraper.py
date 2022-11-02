@@ -11,10 +11,11 @@ reddit = praw.Reddit()
 
 
 class SubredditScraper:
-    def __init__(self, sub, sort="new", lim=900, mode="w"):
+    def __init__(self, sub, sort="new", lim=900, fil="day", mode="w"):
         self.sub = sub
         self.sort = sort
         self.lim = lim
+        self.fil = fil
         self.mode = mode
         print(
             f"SubredditScraper instance created with values "
@@ -24,7 +25,7 @@ class SubredditScraper:
     def set_sort(self):
         if self.sort in {"new", "top", "hot"}:
             fn = getattr(reddit.subreddit(self.sub), self.sort)
-            return self.sort, fn(limit=self.lim, time_filter='day')
+            return self.sort, fn(limit=self.lim, time_filter=self.fil)
         else:
             self.sort = "hot"
             print("Sort method was not recognized, defaulting to hot.")
@@ -122,8 +123,15 @@ if __name__ == "__main__":
         "-o",
         "--order",
         type=str,
-        choices="top hot new".split(" "),
+        choices="top hot new".split(),
         help="Sort posts according to this method",
+    )
+    parser.add_argument(
+        "-f",
+        "--filter",
+        type=str,
+        choices="hour day week month year all".split(),
+        help="Filtering by time"
     )
 
     flags = vars(parser.parse_args())
