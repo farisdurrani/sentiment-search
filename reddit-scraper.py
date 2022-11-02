@@ -4,6 +4,7 @@ from time import sleep
 
 import pandas as pd
 import praw
+from rich import print
 from tqdm import tqdm
 
 # Get credentials from DEFAULT instance in praw.ini
@@ -23,13 +24,16 @@ class SubredditScraper:
         )
 
     def set_sort(self):
-        if self.sort in {"new", "top", "hot"}:
+        if self.sort in {"top"}:
             fn = getattr(reddit.subreddit(self.sub), self.sort)
             return self.sort, fn(limit=self.lim, time_filter=self.fil)
+        elif self.sort in {"new", "all", "hot"}:
+            fn = getattr(reddit.subreddit(self.sub), self.sort)
+            return self.sort, fn(limit=self.lim)
         else:
-            self.sort = "hot"
             print("Sort method was not recognized, defaulting to hot.")
-            return self.sort, reddit.subreddit(self.sub).hot(limit=self.lim)
+            self.sort = "hot"
+            return self.set_sort()
 
     def get_posts(self):
         """Get unique posts from a specified subreddit."""
@@ -66,16 +70,27 @@ class SubredditScraper:
 
         print(f"Collecting information from r/{self.sub}.")
 
-        for post in tqdm(subreddit):
+        if csv_loaded:
+            visited_ids = set(df.id)
+        else:
+            visited_ids = set()
+
+        for (i, post) in enumerate(subreddit):
             # Check if post.id is in df and set to True if df is empty.
             # This way new posts are still added to dictionary when df = ''
-            unique_id = post.id not in df.id if csv_loaded else True
+            unique_id = post.id not in visited_ids if csv_loaded else True
             # print(unique_id)
             # print(df.id)
             # print(post.id)
 
             # Save any unique posts to sub_dict.
+            # print(df.id)
+            # print(post.selftext)
+            # print(vars(post))
+            # print(type(post.selftext))
+            print(i, post.id, unique_id, csv_loaded)
             if unique_id:
+                visited_ids.add(post.id)
                 sub_dict["selftext"].append(post.selftext)
                 sub_dict["title"].append(post.title)
                 sub_dict["id"].append(post.id)
@@ -104,7 +119,6 @@ class SubredditScraper:
 
 
 if __name__ == "__main__":
-
     parser = ArgumentParser()
 
     parser.add_argument(
@@ -123,14 +137,14 @@ if __name__ == "__main__":
         "-o",
         "--order",
         type=str,
-        choices="top hot new".split(),
+        choices="all top hot new".split(" "),
         help="Sort posts according to this method",
     )
     parser.add_argument(
         "-f",
         "--filter",
         type=str,
-        choices="hour day week month year all".split(),
+        choices="hour day week month year all".split(" "),
         help="Filtering by time",
     )
 
