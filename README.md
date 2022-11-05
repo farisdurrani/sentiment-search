@@ -2,6 +2,7 @@
 
 # Related Repos
 1. [The Guardian News Article Collector](https://github.com/farisdurrani/TheGuardianArticlesCollector) by @farisdurrani
+1. [CNN Web Scraper](https://github.com/farisdurrani/CNNWebScraper) by @farisdurrani
 
 # License
 
