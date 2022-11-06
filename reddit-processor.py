@@ -26,7 +26,10 @@ def load_and_filter(line: str):
 
     result = {}
     for (key, mapping) in KEY_MAPPING.items():
-        result[key] = mapping(parsed[key])
+        try:
+            result[key] = mapping(parsed[key])
+        except KeyError:
+            result[key] = None
     return result
 
 
