@@ -4,6 +4,7 @@ from datetime import datetime
 from typing import Callable, Dict
 
 from pandas import DataFrame
+from tqdm import tqdm
 
 KEY_MAPPING: Dict[str, Callable] = {
     "archived": bool,
@@ -40,7 +41,7 @@ if __name__ == "__main__":
 
     with open(flags["inputs"], "r") as f:
         data = []
-        for line in f:
+        for line in tqdm(f):
             data.append(load_and_filter(line))
 
     df = DataFrame.from_records(data)
