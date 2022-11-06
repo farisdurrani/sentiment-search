@@ -1,7 +1,36 @@
 import json
 from argparse import ArgumentParser
+from datetime import datetime
+from typing import Callable, Dict
 
 from pandas import DataFrame
+
+KEY_MAPPING: Dict[str, Callable] = {
+    "archived": bool,
+    "hidden": bool,
+    "hide_score": bool,
+    "id": str,
+    "is_video": bool,
+    "created_utc": datetime.utcfromtimestamp,
+    "author": str,
+    "num_comments": int,
+    "score": int,
+    "selftext": str,
+    "title": str,
+    "subreddit": str,
+    "subreddit_id": str,
+    "url": str,
+}
+
+
+def load_and_filter(line: str):
+    parsed = json.loads(line)
+
+    result = {}
+    for (key, mapping) in KEY_MAPPING.items():
+        result[key] = mapping(parsed[key])
+    return result
+
 
 if __name__ == "__main__":
     parser = ArgumentParser()
@@ -10,8 +39,9 @@ if __name__ == "__main__":
     flags = vars(parser.parse_args())
 
     with open(flags["inputs"], "r") as f:
-        parsed = f.readlines()
-        data = list(map(json.loads, parsed))
+        data = []
+        for line in f:
+            data.append(load_and_filter(line))
 
     df = DataFrame.from_records(data)
 
