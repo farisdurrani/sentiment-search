@@ -7,11 +7,8 @@ from pandas import DataFrame
 from tqdm import tqdm
 
 KEY_MAPPING: Dict[str, Callable] = {
-    "archived": bool,
     "hidden": bool,
-    "hide_score": bool,
     "id": str,
-    "is_video": bool,
     "created_utc": datetime.utcfromtimestamp,
     "author": str,
     "num_comments": int,
