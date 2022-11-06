@@ -9,7 +9,7 @@ from tqdm import tqdm
 KEY_MAPPING: Dict[str, Callable] = {
     "hidden": bool,
     "id": str,
-    "created_utc": datetime.utcfromtimestamp,
+    "created_utc": lambda x: datetime.utcfromtimestamp(int(x)),
     "author": str,
     "num_comments": int,
     "score": int,
@@ -30,6 +30,9 @@ def load_and_filter(line: str):
             result[key] = mapping(parsed[key])
         except KeyError:
             result[key] = None
+        except TypeError:
+            print(key, parsed[key], mapping, type(parsed[key]))
+            raise SystemError
     return result
 
 
