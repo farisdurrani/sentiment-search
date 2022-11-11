@@ -13,11 +13,14 @@ input_file = f"RS_{flags['year']:4d}-{flags['month']:02d}.csv"
 output_file = f"out-{input_file}"
 
 df = pd.read_csv(input_file)
-df.score = df.score.astype("i")
+df = df[pd.to_numeric(df.score, errors='coerce').notnull()]
+df.score = df.score.astype("int")
+df.num_comments = df.num_comments.astype("int")
 df.selftext = df.selftext.astype("str")
 df = df[df.selftext != ""]
 df = df[df.selftext != "nan"]
 df = df[df.selftext != "[deleted]"]
 df = df[df.selftext != "[removed]"]
 df = df[df.score >= threshold]
+print("Count: {}".format(len(df.index)))
 df.to_csv(output_file)
