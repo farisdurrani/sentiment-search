@@ -14,9 +14,7 @@ output_file = f"out-{input_file}"
 
 df = pd.read_csv(input_file)
 df = df[pd.to_numeric(df.score, errors='coerce').notnull()]
-df.score = df.score.astype("int")
-df.num_comments = df.num_comments.astype("int")
-df.selftext = df.selftext.astype("str")
+df = df.astype({"score": "int", "num_comments": "int", "selftext": "str"})
 df = df[df.selftext != ""]
 df = df[df.selftext != "nan"]
 df = df[df.selftext != "[deleted]"]

@@ -9,7 +9,7 @@ do
         tar xvf ${CSV_FILE}.txz
         python reddit-filter.py -y $Y -m $M -t 50
         zip -r out-${CSV_FILE}.zip out-${CSV_FILE}
-        ./dbxcli put out-${CSV_FILE}.zip /DVA_Datasets/Reddit/filtered.zip/out-${CSV_FILE}.zip
+        ./dbxcli put out-${CSV_FILE}.zip /DVA_Datasets/Reddit/filtered.zip/${CSV_FILE}.zip
         rm ${CSV_FILE}.txz ${CSV_FILE} out-${CSV_FILE} out-${CSV_FILE}.zip
     done
 done
