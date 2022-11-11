@@ -12,9 +12,10 @@ threshold = flags["threshold"]
 input_file = f"RS_{flags['year']:4d}-{flags['month']:02d}.csv"
 output_file = f"out-{input_file}"
 
-df = pd.read_csv(input_file, usecols=["id", "created_utc", "author", "num_comments", "score", "selftext", "title", "subreddit", "subreddit_id", "url"], dtype={"id": str, "created_utc": str, "author": str, "score": int, "selftext": str, "title": str, "subreddit": str, "subreddit_id": str, "url": str})
+df = pd.read_csv(input_file, usecols=["id", "created_utc", "author", "num_comments", "score", "selftext", "title", "subreddit", "subreddit_id", "url"], dtype=str)
 
 df = df[pd.to_numeric(df.score, errors="coerce").notnull()]
+df.score = df.score.astype(int)
 
 df = df[df.score >= threshold]
 df = df[df.selftext != ""]
