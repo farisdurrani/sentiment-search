@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Callable, Dict
 
 import orjson as json
+import pandas as pd
 from pandas import DataFrame
 from tqdm import tqdm
 
@@ -37,16 +38,30 @@ def load_and_filter(line: str):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument("-i", "--inputs", type=str)
-    parser.add_argument("-o", "--outputs", type=str)
+    parser.add_argument("-y", "--year", type=int, required=True)
+    parser.add_argument("-m", "--month", type=int, required=True)
+    parser.add_argument("-t", "--threshold", type=int, required=True)
     flags = vars(parser.parse_args())
 
-    with open(flags["inputs"], "r") as f:
+    threshold = flags["threshold"]
+    input_file = f"RS_{flags['year']:4d}-{flags['month']:02d}.csv"
+    output_file = f"out-{input_file}"
+
+    with open(input_file, "r") as f:
         data = []
         for line in tqdm(f):
             data.append(load_and_filter(line))
 
     df = DataFrame.from_records(data)
 
-    with open(flags["outputs"], "w+") as f:
-        df.to_csv(f)
+    df = df[pd.to_numeric(df.score, errors="coerce").notnull()]
+    df.score = df.score.astype(int)
+
+    df = df[df.score >= threshold]
+    df = df[df.selftext != ""]
+    df = df[df.selftext != "nan"]
+    df = df[df.selftext != "[deleted]"]
+    df = df[df.selftext != "[removed]"]
+    print("Count: {}".format(len(df.index)))
+
+    df.to_csv(output_file)
