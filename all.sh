@@ -10,7 +10,7 @@ do
 
         mv ${FILE} ${FILE}.csv
 
-        python3 reddit.py -y $Y -m $M -t 50
+        python3 reddit.py -y $Y -m $M -t 100
 
         dbxcli put out-${FILE}.csv /DVA_Datasets/Reddit/result/${FILE}.csv
 

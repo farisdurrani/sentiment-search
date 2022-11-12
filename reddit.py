@@ -21,7 +21,7 @@ KEY_MAPPING: Dict[str, Callable] = {
 }
 
 
-def load_and_filter(line: str):
+def load_and_filter(line: str, threshold: int):
     parsed = json.loads(line)
 
     result = {}
@@ -29,10 +29,14 @@ def load_and_filter(line: str):
         try:
             result[key] = mapping(parsed[key])
         except KeyError:
-            continue
+            return None
         except TypeError:
             print(key, parsed[key], mapping, type(parsed[key]))
             raise SystemError
+
+    if result["score"] < threshold:
+        return None
+
     return result
 
 
@@ -50,7 +54,10 @@ if __name__ == "__main__":
     with open(input_file, "r") as f:
         data = []
         for line in tqdm(f):
-            data.append(load_and_filter(line))
+            processed = load_and_filter(line, threshold=threshold)
+
+            if processed is not None:
+                data.append(processed)
 
     df = DataFrame.from_records(data)
     del data
