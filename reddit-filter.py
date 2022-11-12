@@ -3,9 +3,9 @@ from argparse import ArgumentParser
 
 
 parser = ArgumentParser()
-parser.add_argument("-y", "--year", type=int)
-parser.add_argument("-m", "--month", type=int)
-parser.add_argument("-t", "--threshold", type=int)
+parser.add_argument("-y", "--year", type=int, required=True)
+parser.add_argument("-m", "--month", type=int, required=True)
+parser.add_argument("-t", "--threshold", type=int, required=True)
 flags = vars(parser.parse_args())
 
 threshold = flags["threshold"]
