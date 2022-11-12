@@ -53,6 +53,7 @@ if __name__ == "__main__":
             data.append(load_and_filter(line))
 
     df = DataFrame.from_records(data)
+    del data
 
     df = df[pd.to_numeric(df.score, errors="coerce").notnull()]
     df.score = df.score.astype(int)
