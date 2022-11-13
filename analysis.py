@@ -23,7 +23,10 @@ def produce_sentiment(text):
 
 
 def analyze_one_file(filename):
-    df = pd.read_csv(filename)
+    df = pd.read_csv(filename, dtype=str)
+
+    df = df[df.selftext.astype(str) != "nan"]
+    df = df[df.title.astype(str) != "nan"]
 
     selftextSentiment = pd.DataFrame.from_records(
         [
