@@ -40,3 +40,12 @@ Author:       See CODEOWNDERS
 .btn-primary:focus {
   background-color: var(--secondary);
 }
+
+/* -------------------------------------------------------------------------- */
+/*	App
+/* -------------------------------------------------------------------------- */
+
+#app {
+  height: 100%;
+  position: relative;
+}

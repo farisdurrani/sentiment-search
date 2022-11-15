@@ -1,0 +1,12 @@
+{
+  "name": "project",
+  "version": "1.0.0",
+  "description": "DVA Project",
+  "scripts": {
+    "installf": "cd frontend && npm install",
+    "installb": "cd backend && python -m venv venv && python install -r requirements.txt",
+    "startf": "cd frontend && npm start",
+    "startb": "cd backend && python app.py"
+  },
+  "license": "MIT"
+}
