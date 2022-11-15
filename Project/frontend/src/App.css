@@ -1,0 +1,42 @@
+@charset "UTF-8";
+/* 
+Theme Name:   DVA Project
+Version:      1.0
+License:      MIT
+License URI:  https://opensource.org/licenses/MIT
+Author:       See CODEOWNDERS
+*/
+
+/* -------------------------------------------------------------------------- */
+/*	Root
+/* -------------------------------------------------------------------------- */
+
+:root {
+  --primary: #37323e;
+  --secondary: #9882ac;
+  --tertiary: #efefef;
+  --half-translucent: rgba(255, 255, 255, 0.5);
+  --high-translucent: rgba(255, 255, 255, 0.8);
+}
+
+/* -------------------------------------------------------------------------- */
+/*	General HTML
+/* -------------------------------------------------------------------------- */
+
+* {
+  font-family: "Lato", "Arial", "Helvetica", sans-serif;
+}
+
+/* -------------------------------------------------------------------------- */
+/*	General Project Styles
+/* -------------------------------------------------------------------------- */
+
+.btn-primary {
+  background-color: var(--primary);
+  color: white;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--secondary);
+}
