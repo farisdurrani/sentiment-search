@@ -4,13 +4,11 @@ import dropbox
 import io
 from configparser import ConfigParser
 
-#df = pd.read_csv() #fill in share link from dropbox
+con = sqlite3.connect("dva_database")
+cur = con.cursor()
 
-#con = sqlite3.connect("dva_database")
-#cur = con.cursor()
-
-#cur = con.execute("CREATE VIRTUAL TABLE posts USING fts4(platform TEXT, bodyText TEXT, sentiment FLOAT, date DATETIME, country TEXT)")
-#cur = con.execute("CREATE TABLE significant_events (date DATETIME, event TEXT)")
+cur = con.execute("CREATE VIRTUAL TABLE posts USING fts4(platform TEXT, bodyText TEXT, sentiment FLOAT, date DATETIME, country TEXT)")
+cur = con.execute("CREATE TABLE significant_events (date DATETIME, event TEXT)")
 
 config = ConfigParser()
 config.read('dropbox_token.ini')
@@ -56,7 +54,7 @@ def insertSigEventsFiles():
             query = "INSERT INTO significant_events VALUES (" + date + ", " + event + ")"
             con.execute(query)
 
-#mathod to insert the posts of one of the paths to tagged files
+#method to insert the posts of one of the paths to tagged files
 def insertPosts(folder_path):
     path = '/DVA_Datasets' + folder_path
     files = getFileNames(path)
