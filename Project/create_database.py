@@ -3,6 +3,7 @@ import pandas as pd
 import dropbox
 import io
 from configparser import ConfigParser
+from datetime import datetime
 
 con = sqlite3.connect("dva_database")
 cur = con.cursor()
@@ -31,7 +32,26 @@ def readDfFromPath(path):
     metadata, file = dbx.files_download(path=path)
     with io.BytesIO(file.content) as stream:
         df = pd.read_csv(stream, index_col=0, encoding='latin-1')
+    df = adaptDf(path, df)
     return df
+
+def adaptDf(path, df):
+    if "reddit" in str(path).lower():
+        return adaptReddit(df)
+
+    # Insert other adaptors here
+
+    return df
+
+
+def adaptReddit(df):
+    df['platform'] = "reddit"
+    df['bodyText'] = df['title']
+    df['sentiment'] = df['title-compound']
+    df['date'] = df['created_utc'].map(lambda x: str(datetime.fromisoformat(x).date()))
+    df['country'] = None
+    return df
+
 
 #method to get the names of the files in a path
 def getFileNames(path):
