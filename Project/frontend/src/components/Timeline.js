@@ -80,7 +80,7 @@ const Timeline = (props) => {
     const yDomain = [-1, 1];
     const xScale = d3.scaleTime().domain(xDomain).range([0, GRAPH_WIDTH]);
     const yScale = d3.scaleLinear().domain(yDomain).range([GRAPH_HEIGHT, 0]);
-    return [xDomain, yDomain, xScale, yScale];
+    return [xScale, yScale];
   };
 
   const importData = () => {
@@ -133,35 +133,36 @@ const Timeline = (props) => {
       .text("Board games by Rating 2015-2019");
   };
 
+  const addCircles = (plotGroup, dataset, xScale, yScale) => {
+    const colorArray = [d3.schemeCategory10, d3.schemeAccent];
+    const colorScheme = d3.scaleOrdinal(colorArray[0]);
+
+    const linesGroup = plotGroup.append("g").attr("id", "lines-a");
+
+    // Draw circles
+    linesGroup
+      .selectAll(".circle-sentiment")
+      .data(dataset)
+      .enter()
+      .append("circle")
+      .attr("fill", colorScheme(0))
+      .attr("cx", (d) => xScale(d.date))
+      .attr("cy", (d) => yScale(d.sentiment))
+      .attr("r", 2);
+  };
+
   const createTimeline = () => {
     const dataset = importData();
 
     const plotGroup = createSVGGroup();
 
-    const [xDomain, yDomain, xScale, yScale] = createDomainScale(dataset);
+    const [xScale, yScale] = createDomainScale(dataset);
 
     addAxes(plotGroup, xScale, yScale);
 
     addGraphTitle(plotGroup);
 
-    // Draw line
-    // plotGroup
-    //   .append("path")
-    //   .data(dataset)
-    //   .attr("fill", "none")
-    //   .attr("stroke", "black")
-    //   .attr("stroke-width", 3)
-    //   .attr(
-    //     "d",
-    //     d3
-    //       .line()
-    //       .x(function (d) {
-    //         return y(+d.sentiment) * 2;
-    //       })
-    //       .y(function (d) {
-    //         return y(+d.sentiment);
-    //       })
-    //   );
+    addCircles(plotGroup, dataset, xScale, yScale);
   };
 
   useEffect(() => {
