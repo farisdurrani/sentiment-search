@@ -5,174 +5,168 @@ import * as Papa from "papaparse";
 import PropTypes from "prop-types";
 
 const Timeline = (props) => {
-  const dataset = require("../data/cnn_sample.json")["rows"];
-
   const d3Chart = useRef();
+  // define the dimensions and margins for the graph
+  const NUMBER_OF_GRAPHS = 2;
+  const ABSOLUTE_WIDTH = 960;
+  const ABSOLUTE_HEIGHT = 540 * NUMBER_OF_GRAPHS;
+  const ABSOLUTE_MARGIN = {
+    top: 10,
+    right: 10,
+    bottom: 20,
+    left: 10,
+    in_between_block: 20,
+  };
+  const SVG_HEIGHT =
+    (ABSOLUTE_HEIGHT -
+      ABSOLUTE_MARGIN.top -
+      ABSOLUTE_MARGIN.bottom -
+      ABSOLUTE_MARGIN.in_between_block * (NUMBER_OF_GRAPHS - 1)) /
+    NUMBER_OF_GRAPHS;
+  const SVG_WIDTH =
+    ABSOLUTE_WIDTH - ABSOLUTE_MARGIN.left - ABSOLUTE_MARGIN.right;
+  const SVG_PADDING = { t: 30, r: 120, b: 40, l: 60 };
+  const SVG2_PADDING = { t: 30, r: 120, b: 40, l: 100 };
+  const GRAPH_HEIGHT = SVG_HEIGHT - SVG_PADDING.t - SVG_PADDING.b;
+  const GRAPH2_HEIGHT = SVG_HEIGHT - SVG2_PADDING.t - SVG2_PADDING.b;
+  const GRAPH_WIDTH = SVG_WIDTH - SVG_PADDING.l - SVG_PADDING.r;
+  const GRAPH2_WIDTH = SVG_WIDTH - SVG2_PADDING.l - SVG2_PADDING.r;
 
-  const parseDate = d3.timeParse("%Y-%m-%d");
-
-  //   useEffect(() => {
-  //     fetch("https://data.cityofnewyork.us/resource/tg4x-b46p.json")
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         // Transform data
-  //         const permits = data.filter((event) => {
-  //           return event.eventtype === "Shooting Permit";
-  //         });
-
-  //         // Get all the dates in an array
-  //         const dates = [
-  //           ...new Set(permits.map((each) => each.enteredon.slice(0, 10))),
-  //         ];
-
-  //         let CountsByDate = [];
-
-  //         // Get counts(number of times a permit entered) on each date
-  //         dates.map((time) => {
-  //           let date = time;
-  //           let count = 0;
-
-  //           permits.map((each) => {
-  //             let timestamp = each.enteredon.slice(0, 10);
-  //             if (timestamp === date) {
-  //               count += 1;
-  //             }
-  //           });
-
-  //           const counts = { date: parseDate(date), count: count };
-
-  //           CountsByDate.push(counts);
-  //         });
-
-  //         console.log(CountsByDate);
-
-  //         console.log(d3.select("#d3demo"));
-
-  //         const margin = { top: 20, right: 30, bottom: 30, left: 30 };
-  //         const width = parseInt(500) - margin.left - margin.right;
-  //         const height = parseInt(500) - margin.top - margin.bottom;
-
-  //         // Set up chart
-  //         const svg = d3
-  //           .select(d3Chart.current)
-  //           .attr("width", width + margin.left + margin.right)
-  //           .attr("height", height + margin.top + margin.bottom)
-  //           .append("g")
-  //           .attr(
-  //             "transform",
-  //             "translate(" + margin.left + "," + margin.top + ")"
-  //           );
-
-  //         // x axis scale
-  //         const x = d3
-  //           .scaleTime()
-  //           .domain(
-  //             d3.extent(CountsByDate, function (d) {
-  //               return d.date;
-  //             })
-  //           )
-  //           .range([0, width]);
-
-  //         svg
-  //           .append("g")
-  //           .attr("transform", "translate(0," + height + ")")
-  //           .call(d3.axisBottom(x));
-
-  //         // Get the max value of counts
-  //         const max = d3.max(CountsByDate, function (d) {
-  //           return d.count;
-  //         });
-
-  //         // y axis scale
-  //         const y = d3.scaleLinear().domain([0, max]).range([height, 0]);
-
-  //         svg.append("g").call(d3.axisLeft(y));
-
-  //         // Draw line
-  //         svg
-  //           .append("path")
-  //           .datum(CountsByDate)
-  //           .attr("fill", "none")
-  //           .attr("stroke", "black")
-  //           .attr("stroke-width", 3)
-  //           .attr(
-  //             "d",
-  //             d3
-  //               .line()
-  //               .x(function (d) {
-  //                 return x(d.date);
-  //               })
-  //               .y(function (d) {
-  //                 return y(d.count);
-  //               })
-  //           );
-
-  //         // Add title
-  //         svg
-  //           .append("text")
-  //           .attr("x", width / 2)
-  //           .attr("y", margin.top / 5 - 10)
-  //           .attr("text-anchor", "middle")
-  //           .attr("font-size", "16px")
-  //           .attr("fill", "black")
-  //           .text("New York City Film Permits entered in 2020 - Shooting Permit");
-  //       });
-  //   }, []);
-
-  const createAll = () => {
-    const margin = { top: 20, right: 30, bottom: 30, left: 30 };
-    const width = parseInt(500) - margin.left - margin.right;
-    const height = parseInt(500) - margin.top - margin.bottom;
-
-    // Get the max value of counts
-    const max = d3.max(dataset, function (d) {
-      return +d.sentiment;
-    });
-
-    // y axis scale
-    const y = d3.scaleLinear().domain([0, max]).range([height, 0]);
-
-    // x axis scale
-    const x = d3
-      .scaleTime()
-      .domain(
-        d3.extent(dataset, function (d) {
-          return d.date;
-        })
-      )
-      .range([0, width]);
-
-    // Set up chart
-    const svg = d3
+  const createSVGGroup = () => {
+    // create base SVG
+    const svg_base = d3
       .select(d3Chart.current)
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
+      .attr("width", SVG_WIDTH)
+      .attr("height", SVG_HEIGHT)
+      .attr(
+        "transform",
+        `translate(${ABSOLUTE_MARGIN.left}, ${
+          ABSOLUTE_MARGIN.top + ABSOLUTE_MARGIN.in_between_block
+        })`
+      )
+      .attr("id", "line_chart");
+
+    // create main group <g> in main SVG
+    const svg = svg_base
       .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      .attr("id", "container")
+      .attr("transform", `translate(${SVG_PADDING.l}, ${SVG_PADDING.t})`);
+
+    // draw boundary circles
+    svg_base.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 20);
+    svg_base.append("circle").attr("cx", SVG_WIDTH).attr("cy", 0).attr("r", 20);
+    svg_base
+      .append("circle")
+      .attr("cx", 0)
+      .attr("cy", SVG_HEIGHT)
+      .attr("r", 20);
+    svg_base
+      .append("circle")
+      .attr("cx", SVG_WIDTH)
+      .attr("cy", SVG_HEIGHT)
+      .attr("r", 20);
+
+    const plotGroup = svg.append("g").attr("id", "plot1");
+
+    return plotGroup;
+  };
+
+  const createDomainScale = (dataset) => {
+    // set the domains of X and Y scales based on data
+    const xDomain = [
+      d3.min(dataset, (d) => d.date),
+      d3.max(dataset, (d) => d.date),
+    ];
+    const yDomain = [-1, 1];
+    const xScale = d3.scaleTime().domain(xDomain).range([0, GRAPH_WIDTH]);
+    const yScale = d3.scaleLinear().domain(yDomain).range([GRAPH_HEIGHT, 0]);
+    return [xDomain, yDomain, xScale, yScale];
+  };
+
+  const importData = () => {
+    const raw_dataset = require("../data/cnn_sample.json")["rows"];
+    const dataset = raw_dataset.map((e) => ({
+      date: new Date(e.date),
+      sentiment: +e.sentiment,
+    }));
+    return dataset;
+  };
+
+  const addAxes = (plotGroup, xScale, yScale) => {
+    // Add the X Axis
+    const xAxisGroup = plotGroup.append("g").attr("id", "x-axis-lines");
+    const xAxis = d3.axisBottom(xScale);
+    xAxisGroup
+      .attr("transform", `translate(0, ${GRAPH_HEIGHT / 2})`)
+      .call(xAxis);
+
+    // Add the text label for X Axis
+    xAxisGroup
+      .append("text")
+      .attr("x", GRAPH_WIDTH / 2)
+      .attr("y", GRAPH_HEIGHT + SVG_PADDING.t)
+      .attr("text-anchor", "middle")
+      .text("Date");
+
+    // Add the Y Axis
+    const yAxisGroup = plotGroup.append("g").attr("id", "y-axis-lines");
+    const yAxis = d3.axisLeft(yScale);
+    yAxisGroup.call(yAxis);
+
+    // Add the text label for Y axis
+    yAxisGroup
+      .append("text")
+      .attr("x", 0)
+      .attr("y", GRAPH_HEIGHT / 2 - 40)
+      .attr("transform", `rotate(270 ${0} ${GRAPH_HEIGHT / 2})`)
+      .text("Sentiment");
+  };
+
+  const addGraphTitle = (plotGroup) => {
+    // Add graph title
+    plotGroup
+      .append("text")
+      .attr("x", GRAPH_WIDTH / 2)
+      .attr("text-anchor", "middle")
+      .attr("y", -10)
+      .attr("id", "line_chart_title")
+      .text("Board games by Rating 2015-2019");
+  };
+
+  const createTimeline = () => {
+    const dataset = importData();
+
+    const plotGroup = createSVGGroup();
+
+    const [xDomain, yDomain, xScale, yScale] = createDomainScale(dataset);
+
+    addAxes(plotGroup, xScale, yScale);
+
+    addGraphTitle(plotGroup);
 
     // Draw line
-    svg
-      .append("path")
-      .datum(dataset)
-      .attr("fill", "none")
-      .attr("stroke", "black")
-      .attr("stroke-width", 3)
-      .attr(
-        "d",
-        d3
-          .line()
-          .x(function (d) {
-            return y(+d.sentiment) * 2;
-          })
-          .y(function (d) {
-            return y(+d.sentiment);
-          })
-      );
+    // plotGroup
+    //   .append("path")
+    //   .data(dataset)
+    //   .attr("fill", "none")
+    //   .attr("stroke", "black")
+    //   .attr("stroke-width", 3)
+    //   .attr(
+    //     "d",
+    //     d3
+    //       .line()
+    //       .x(function (d) {
+    //         return y(+d.sentiment) * 2;
+    //       })
+    //       .y(function (d) {
+    //         return y(+d.sentiment);
+    //       })
+    //   );
   };
 
   useEffect(() => {
-    createAll();
-  });
+    createTimeline();
+  }, []);
 
   return (
     <div>
