@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Button, Container } from "react-bootstrap";
 import * as d3 from "d3";
 import * as Papa from "papaparse";
@@ -31,6 +31,8 @@ const Timeline = (props) => {
   const GRAPH2_HEIGHT = SVG_HEIGHT - SVG2_PADDING.t - SVG2_PADDING.b;
   const GRAPH_WIDTH = SVG_WIDTH - SVG_PADDING.l - SVG_PADDING.r;
   const GRAPH2_WIDTH = SVG_WIDTH - SVG2_PADDING.l - SVG2_PADDING.r;
+
+  const dataset = useMemo(() => importData(), []);
 
   const createSVGGroup = () => {
     // create base SVG
@@ -71,7 +73,7 @@ const Timeline = (props) => {
     return plotGroup;
   };
 
-  const createDomainScale = (dataset) => {
+  const createScale = (dataset) => {
     // set the domains of X and Y scales based on data
     const xDomain = [
       d3.min(dataset, (d) => d.date),
@@ -83,12 +85,13 @@ const Timeline = (props) => {
     return [xScale, yScale];
   };
 
-  const importData = () => {
-    const raw_dataset = require("../data/cnn_sample.json")["rows"];
+  function importData() {
+    const raw_dataset = require("../data/sample.json")["rows"];
     const dataset = raw_dataset.map((e) => ({
       date: new Date(e.date),
       sentiment: +e.sentiment,
     }));
+    dataset.sort((a, b) => a.date - b.date);
     return dataset;
   };
 
@@ -139,6 +142,7 @@ const Timeline = (props) => {
 
     const linesGroup = plotGroup.append("g").attr("id", "lines-a");
 
+
     // Draw circles
     linesGroup
       .selectAll(".circle-sentiment")
@@ -147,16 +151,17 @@ const Timeline = (props) => {
       .append("circle")
       .attr("fill", colorScheme(0))
       .attr("cx", (d) => xScale(d.date))
-      .attr("cy", (d) => yScale(d.sentiment))
-      .attr("r", 2);
+      .attr("cy", (d) => {
+        const a = yScale(d.sentiment)
+        return a;
+      })
+      .attr("r", 1);
   };
 
   const createTimeline = () => {
-    const dataset = importData();
-
     const plotGroup = createSVGGroup();
 
-    const [xScale, yScale] = createDomainScale(dataset);
+    const [xScale, yScale] = createScale(dataset);
 
     addAxes(plotGroup, xScale, yScale);
 
