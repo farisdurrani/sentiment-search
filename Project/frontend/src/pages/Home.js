@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button, Container } from "react-bootstrap";
-import { Timeline } from "../components/index";
+import { Timeline, ExampleSVG } from "../components/index";
 
 const Home = () => {
   return (
@@ -8,6 +8,7 @@ const Home = () => {
       <h1>Hello Frontend World</h1>
       <Button>Hello</Button>
       <Timeline />
+      <ExampleSVG />
     </Container>
   );
 };
