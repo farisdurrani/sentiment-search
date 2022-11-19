@@ -5,9 +5,10 @@ import * as Papa from "papaparse";
 import PropTypes from "prop-types";
 
 const Timeline = (props) => {
-  const d3Chart = useRef();
+  const svg1Ref = useRef();
+  const svg2Ref = useRef();
   // define the dimensions and margins for the graph
-  const NUMBER_OF_GRAPHS = 2;
+  const NUMBER_OF_GRAPHS = 1;
   const ABSOLUTE_WIDTH = 960;
   const ABSOLUTE_HEIGHT = 540 * NUMBER_OF_GRAPHS;
   const ABSOLUTE_MARGIN = {
@@ -26,32 +27,27 @@ const Timeline = (props) => {
   const SVG_WIDTH =
     ABSOLUTE_WIDTH - ABSOLUTE_MARGIN.left - ABSOLUTE_MARGIN.right;
   const SVG_PADDING = { t: 30, r: 120, b: 40, l: 60 };
-  const SVG2_PADDING = { t: 30, r: 120, b: 40, l: 100 };
   const GRAPH_HEIGHT = SVG_HEIGHT - SVG_PADDING.t - SVG_PADDING.b;
-  const GRAPH2_HEIGHT = SVG_HEIGHT - SVG2_PADDING.t - SVG2_PADDING.b;
   const GRAPH_WIDTH = SVG_WIDTH - SVG_PADDING.l - SVG_PADDING.r;
-  const GRAPH2_WIDTH = SVG_WIDTH - SVG2_PADDING.l - SVG2_PADDING.r;
 
   const dataset = useMemo(() => importData(), []);
 
-  const createSVGGroup = () => {
+  const initializeSVG = (svgRef) => {
     // create base SVG
     const svg_base = d3
-      .select(d3Chart.current)
+      .select(svgRef.current)
       .attr("width", SVG_WIDTH)
       .attr("height", SVG_HEIGHT)
       .attr(
         "transform",
-        `translate(${ABSOLUTE_MARGIN.left}, ${
-          ABSOLUTE_MARGIN.top + ABSOLUTE_MARGIN.in_between_block
-        })`
+        `translate(${ABSOLUTE_MARGIN.left}, ${ABSOLUTE_MARGIN.top})`
       )
-      .attr("id", "line_chart");
+      .attr("id", "svg-1");
 
     // create main group <g> in main SVG
     const svg = svg_base
       .append("g")
-      .attr("id", "container")
+      .attr("id", "plot-1")
       .attr("transform", `translate(${SVG_PADDING.l}, ${SVG_PADDING.t})`);
 
     // draw boundary circles
@@ -68,9 +64,7 @@ const Timeline = (props) => {
       .attr("cy", SVG_HEIGHT)
       .attr("r", 20);
 
-    const plotGroup = svg.append("g").attr("id", "plot1");
-
-    return plotGroup;
+    return svg;
   };
 
   const createScale = (dataset) => {
@@ -93,11 +87,11 @@ const Timeline = (props) => {
     }));
     dataset.sort((a, b) => a.date - b.date);
     return dataset;
-  };
+  }
 
   const addAxes = (plotGroup, xScale, yScale) => {
     // Add the X Axis
-    const xAxisGroup = plotGroup.append("g").attr("id", "x-axis-lines");
+    const xAxisGroup = plotGroup.append("g").attr("class", "x-axis");
     const xAxis = d3.axisBottom(xScale);
     xAxisGroup
       .attr("transform", `translate(0, ${GRAPH_HEIGHT / 2})`)
@@ -112,7 +106,7 @@ const Timeline = (props) => {
       .text("Date");
 
     // Add the Y Axis
-    const yAxisGroup = plotGroup.append("g").attr("id", "y-axis-lines");
+    const yAxisGroup = plotGroup.append("g").attr("class", "y-axis");
     const yAxis = d3.axisLeft(yScale);
     yAxisGroup.call(yAxis);
 
@@ -132,19 +126,18 @@ const Timeline = (props) => {
       .attr("x", GRAPH_WIDTH / 2)
       .attr("text-anchor", "middle")
       .attr("y", -10)
-      .attr("id", "line_chart_title")
-      .text("Board games by Rating 2015-2019");
+      .attr("class", "title")
+      .text("Plot 1");
   };
 
-  const addCircles = (plotGroup, dataset, xScale, yScale) => {
+  const addMainVis = (plotGroup, dataset, xScale, yScale) => {
     const colorArray = [d3.schemeCategory10, d3.schemeAccent];
     const colorScheme = d3.scaleOrdinal(colorArray[0]);
 
-    const linesGroup = plotGroup.append("g").attr("id", "lines-a");
-
+    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
 
     // Draw circles
-    linesGroup
+    plotElements
       .selectAll(".circle-sentiment")
       .data(dataset)
       .enter()
@@ -152,31 +145,59 @@ const Timeline = (props) => {
       .attr("fill", colorScheme(0))
       .attr("cx", (d) => xScale(d.date))
       .attr("cy", (d) => {
-        const a = yScale(d.sentiment)
+        const a = yScale(d.sentiment);
         return a;
       })
       .attr("r", 1);
   };
 
-  const createTimeline = () => {
-    const plotGroup = createSVGGroup();
+  const addMainVis2 = (plotGroup, dataset, xScale, yScale) => {
+    const colorArray = [d3.schemeCategory10, d3.schemeAccent];
+    const colorScheme = d3.scaleOrdinal(colorArray[0]);
 
+    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
+
+    // Draw circles
+    plotElements
+      .selectAll(".rects")
+      .data(dataset)
+      .enter()
+      .append("rect")
+      .attr("fill", colorScheme(0))
+      .attr("height", (d) => yScale(d.sentiment))
+      .attr("width", GRAPH_WIDTH / dataset.length)
+      .attr("x", (d) => xScale(d.date))
+      .attr("y", SVG_HEIGHT / 2);
+  };
+
+  const createPlot1 = (svg, xScale, yScale) => {
+    addAxes(svg, xScale, yScale);
+    addGraphTitle(svg);
+    addMainVis(svg, dataset, xScale, yScale);
+  };
+
+  const createPlot2 = (svg, xScale, yScale) => {
+    addAxes(svg, xScale, yScale);
+    addGraphTitle(svg);
+    addMainVis2(svg, dataset, xScale, yScale);
+  };
+
+  const createAll = () => {
+    const svg1 = initializeSVG(svg1Ref);
+    const svg2 = initializeSVG(svg2Ref);
     const [xScale, yScale] = createScale(dataset);
-
-    addAxes(plotGroup, xScale, yScale);
-
-    addGraphTitle(plotGroup);
-
-    addCircles(plotGroup, dataset, xScale, yScale);
+    createPlot1(svg1, xScale, yScale);
+    createPlot2(svg2, xScale, yScale);
   };
 
   useEffect(() => {
-    createTimeline();
+    createAll();
   }, []);
 
   return (
     <div>
-      <svg ref={d3Chart}></svg>
+      <svg ref={svg1Ref}></svg>
+      <svg ref={svg2Ref}></svg>
     </div>
   );
 };
