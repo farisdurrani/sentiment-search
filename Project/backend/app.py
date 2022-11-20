@@ -36,7 +36,7 @@ def hello():
 def getSentiments(start_date, end_date, key_words):
     query = "SELECT count(*) as num_posts, avg(sentiment) as avg_sentiment FROM posts where (date between start_date AND end_date)"
     if key_words != '':
-        query+="AND bodyText MATCH '"+key_words+"'"
+        query+=" AND bodyText MATCH '"+key_words+"'"
     query+=" GROUP BY platform, date"
     return getJsonFromQuery(query)
 
