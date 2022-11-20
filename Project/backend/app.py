@@ -3,7 +3,6 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 import sqlite3
-import json
 
 load_dotenv()
 
@@ -22,7 +21,7 @@ cur = con.cursor()
 def getJsonFromQuery(query):
     res = con.execute(query)
     rows = res.fetchall()
-    return json.dumps( [dict(ix) for ix in rows] )
+    return jsonify(rows)
 
 @app.route("/")
 def hello():
