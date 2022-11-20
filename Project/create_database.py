@@ -109,7 +109,7 @@ def insertPosts(folder_path):
         df.to_sql('posts', con=con, if_exists='append', index=False)
 
 sig_events_files = ['/DVA_Datasets/significant_events.xlsx', '/DVA_Datasets/significant_events_22.xlsx']
-posts_folder_paths = ['/CNN/sentiments', '/Facebook/facebook_posts/sentiments', '/New York Times', '/Reddit/tagged', '/The Guardian/sentiments', '/twitter/sentiments']
+posts_folder_paths = ['/CNN/sentiments', '/Facebook/facebook_posts/sentiments/sentiments/sentiments', '/New York Times', '/Reddit/tagged', '/The Guardian/sentiments', '/twitter/sentiments']
 
 
 print("INSERTING POSTS")
