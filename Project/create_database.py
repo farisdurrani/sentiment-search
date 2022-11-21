@@ -29,10 +29,10 @@ def getShareLinkFromPath(path):
     return shared_link
 
 #method to read a file in from the path
-def readDfFromPath(path):
+def readDfFromPath(path,encoding='latin-1'):
     metadata, file = dbx.files_download(path=path)
     with io.BytesIO(file.content) as stream:
-        df = pd.read_csv(stream, encoding='latin-1')
+        df = pd.read_csv(stream, encoding=encoding)
     df = adaptDf(path, df)
     return df
 
@@ -97,9 +97,11 @@ def getFileNames(path):
 #method to fill the significant_events table with the data from two files
 def insertSigEventsFiles():
     for file_path in sig_events_files:
-        df = readDfFromPath(file_path)
+        df = readDfFromPath(file_path, encoding='utf-8')
+        df['event'] = df['description']
+        print(df.head())
         df = df[['date', 'event']]
-        df.to_sql('significant_events', con=con, if_exists='append', index="False")
+        df.to_sql('significant_events', con=con, if_exists='append', index=False)
         '''
         for row in df.rows:
             date = row.date
@@ -123,14 +125,13 @@ def insertPosts(folder_path):
 sig_events_files = ['/DVA_Datasets/significant_events.csv', '/DVA_Datasets/sig_ev_22.csv']
 posts_folder_paths = ['/twitter/sentiments', '/CNN/sentiments', '/Facebook/facebook_posts/sentiments/sentiments/sentiments', '/New York Times', '/Reddit/tagged', '/The Guardian/sentiments']
 
+print('INSERTING SIGNIFICANT EVENTS')
+insertSigEventsFiles()
 
 print("INSERTING POSTS")
 for path in posts_folder_paths:
     print(path)
     insertPosts(path)
-
-print('INSERTING SIGNIFICANT EVENTS')
-insertSigEventsFiles()
 
 con.execute("CREATE INDEX posts_index ON posts (bodyText)")
 con.execute("CREATE INDEX events_index ON significant_events (event)")
