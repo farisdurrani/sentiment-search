@@ -48,16 +48,14 @@ def adaptDf(path, df):
         df['country'] = None
         return df
     elif "new york times" in str(path).lower():
-        df['platform'] = "New York Times"
-        df["country"] = None
+        df = adaptNYT(df)
         return df
     elif "the guardian" in str(path).lower():
         df['platform'] = "The Guardian"
         df['country'] = None
         return df
     elif "twitter" in str(path).lower():
-        df['platform'] = "Twitter"
-        df['country'] = None
+        df = adaptTwitter(df)
         return df
 
     return df
@@ -67,10 +65,24 @@ def adaptReddit(df):
     df['platform'] = "reddit"
     df['bodyText'] = df['title']
     df['sentiment'] = df['title-compound']
-    df['date'] = df['created_utc'].map(lambda x: str(datetime.fromisoformat(x).date()))
+    df['date'] = df['created_utc']
     df['country'] = None
     return df
 
+def adaptNYT(df):
+    df['platform']  = df['source']
+    df["country"] = None
+    df['bodyText'] = df['lead_paragraph']
+    df['date'] = df['pub_date']
+    df['sentiment'] = df['sentiment_pos']
+    return df
+
+def adaptTwitter(df):
+    df['platform'] = "Twitter"
+    df['country'] = None
+    df['sentiment'] = df['compound']
+    df['bodyText'] = df['text']
+    return df
 
 #method to get the names of the files in a path
 def getFileNames(path):
@@ -109,7 +121,7 @@ def insertPosts(folder_path):
         df.to_sql('posts', con=con, if_exists='append', index=False)
 
 sig_events_files = ['/DVA_Datasets/significant_events.xlsx', '/DVA_Datasets/significant_events_22.xlsx']
-posts_folder_paths = ['/CNN/sentiments', '/Facebook/facebook_posts/sentiments/sentiments/sentiments', '/New York Times', '/Reddit/tagged', '/The Guardian/sentiments', '/twitter/sentiments']
+posts_folder_paths = ['/twitter/sentiments', '/CNN/sentiments', '/Facebook/facebook_posts/sentiments/sentiments/sentiments', '/New York Times', '/Reddit/tagged', '/The Guardian/sentiments']
 
 
 print("INSERTING POSTS")
