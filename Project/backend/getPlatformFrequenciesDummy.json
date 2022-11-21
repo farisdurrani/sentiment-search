@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "frequencies": [
+    { "platform": "CNN", "count": 10, "meanSentiment": 0.34 },
+    { "platform": "The Guardian", "count": 11, "meanSentiment": -0.34 }
+  ]
+}
