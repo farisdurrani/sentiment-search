@@ -4,6 +4,7 @@ import json
 import math
 import random
 from datetime import datetime
+from typing import Dict, List
 
 import numpy as np
 from faker import Faker
@@ -17,7 +18,7 @@ _DEFAULT_POST_COUNT = 15
 
 
 def _fake_date_in_range(
-    start: str | datetime | None, end: str | datetime | None
+    start: str | datetime | None = None, end: str | datetime | None = None
 ) -> datetime:
     if start is None:
         start = "2000-01-01"
@@ -42,15 +43,19 @@ def _fake_sentiment():
     return random.random() * 2 - 1
 
 
-def fake_platform():
+def _fake_id():
+    return random.randint(0, _MAX_POST_ID)
+
+
+def _fake_platform():
     return _PLATFORMS[random.randrange(0, len(_PLATFORMS))]
 
 
 def _fake_post():
     return {
-        "platform": fake_platform(),
+        "platform": _fake_platform(),
         "sentiment": _fake_sentiment(),
-        "postId": random.randint(0, _MAX_POST_ID),
+        "postId": _fake_id(),
     }
 
 
@@ -63,6 +68,30 @@ def _fake_summary_row(day: datetime):
         "count": post_count,
         "posts": fake_posts,
         "meanSentiment": np.mean([fp["sentiment"] for fp in fake_posts]),
+    }
+
+
+def _sort_if_key_present(query: Dict[str, Any], rows: List[Any]) -> List[Any]:
+    sort_key = query.get("orderBy", None)
+    if sort_key is not None:
+        reverse = query.get("orderDescending", False)
+        rows = sorted(rows, reverse=reverse, key=lambda data: data[sort_key])
+
+    return rows
+
+
+def _fake_post():
+    post_id = _fake_id()
+    sentiment = _fake_sentiment()
+    fake_text = (
+        f"Sample text that is fake with post id: {post_id} and sentiment: {sentiment}"
+    )
+    return {
+        "postId": post_id,
+        "sentiment": sentiment,
+        "bodyText": fake_text,
+        "platform": _fake_platform(),
+        "date": _fake_date_in_range(),
     }
 
 
@@ -81,10 +110,11 @@ def get_summary():
         _fake_date_in_range(query["startDate"], query["endDate"])
         for _ in range(_DEFAULT_POST_COUNT)
     ]
-    return {
-        "success": True,
-        "rows": [_fake_summary_row(date) for date in random_dates],
-    }
+
+    rows = [_fake_summary_row(date) for date in random_dates]
+    rows = _sort_if_key_present(query, rows)
+
+    return {"success": True, "rows": rows}
 
 
 def get_body_text():
@@ -94,12 +124,11 @@ def get_body_text():
         "orderDescending": as_bool(request_get("orderDescending")),
     }
 
-    print(query)
+    post_count = _fake_post_count()
+    posts = [_fake_post() for _ in range(post_count)]
+    posts = _sort_if_key_present(query, posts)
 
-    with open("./getBodyTextDummy.json") as f:
-        dummy = json.load(f)
-
-    return dummy
+    return {"success": True, "count": post_count, "posts": posts}
 
 
 def get_bag_of_words():
@@ -115,12 +144,16 @@ def get_bag_of_words():
         "orderDescending": as_bool(request_get("orderDescending")),
     }
 
-    print(query)
+    keywords = query["keywords"]
+    if keywords is None:
+        keywords = ["dummy", "provided", "keywords"]
+    bow = [
+        {"word": kw, "count": _fake_post_count(), "meanSentiment": _fake_sentiment()}
+        for kw in keywords
+    ]
+    bow = _sort_if_key_present(query, bow)
 
-    with open("./getBagOfWordsDummy.json") as f:
-        dummy = json.load(f)
-
-    return dummy
+    return {"success": True, "bagOfWords": bow}
 
 
 def get_platform_freq():
@@ -136,9 +169,15 @@ def get_platform_freq():
         "orderDescending": as_bool(request_get("orderDescending")),
     }
 
-    print(query)
+    platforms = [pl for pl in _PLATFORMS if bool(random.randint(0, 1))]
+    frequencies = [
+        {
+            "platform": pl,
+            "count": _fake_post_count(),
+            "meanSentiment": _fake_sentiment(),
+        }
+        for pl in platforms
+    ]
+    frequencies = _sort_if_key_present(query, frequencies)
 
-    with open("./getPlatformFrequenciesDummy.json") as f:
-        dummy = json.load(f)
-
-    return dummy
+    return {"success": True, "frequencies": frequencies}
