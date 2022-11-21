@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, Callable
 
 from dotenv import load_dotenv
-from dummy import getBagOfWords, getBodyText, getPlatformFrequencies, getSummary
+from dummy import get_bag_of_words, get_body_text, get_platform_freq, get_summary
 from flask import Flask, request
 from flask_cors import CORS
 
@@ -63,10 +63,10 @@ def getEvents():
     return getJsonFromQuery(query)
 
 
-app.route("/api/getPlatformFrequencies")(getPlatformFrequencies)
-app.route("/api/getBagOfWords")(getBagOfWords)
-app.route("/api/getSummary")(getSummary)
-app.route("/api/getBodyText")(getBodyText)
+app.route("/api/getPlatformFrequencies")(get_platform_freq)
+app.route("/api/getBagOfWords")(get_bag_of_words)
+app.route("/api/getSummary")(get_summary)
+app.route("/api/getBodyText")(get_body_text)
 
 
 if __name__ == "__main__":
