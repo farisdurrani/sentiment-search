@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from datetime import datetime
 import json
 import os
 import sqlite3
+from datetime import datetime
 from typing import Any, Callable
 
 from dotenv import load_dotenv
+from dummy import getBagOfWords, getBodyText, getPlatformFrequencies, getSummary
 from flask import Flask, request
 from flask_cors import CORS
 
@@ -36,140 +37,6 @@ def hello():
     return "Hello, Backend World!"
 
 
-def process_if_not_none(function: Callable[[str | None], Any], argument: str | None):
-    if argument is None:
-        return None
-
-    return function(argument)
-
-
-def handle_null(function: Callable[[str], Any]):
-    def _func(argument: str | None):
-        return process_if_not_none(function, argument)
-
-    return _func
-
-
-def request_get(arg: str):
-    return request.args.get(arg, None)
-
-
-@handle_null
-def as_str(arg: str):
-    return arg
-
-
-@handle_null
-def as_date(arg: str):
-    return datetime.fromisoformat(arg)
-
-
-@handle_null
-def as_bool(arg: str):
-    return bool(int(arg))
-
-
-@handle_null
-def as_int(arg: str):
-    return int(arg)
-
-
-@handle_null
-def as_float(arg: str):
-    return float(arg)
-
-
-@handle_null
-def as_list_of_str(arg: str):
-    return arg.split(" ")
-
-
-@handle_null
-def as_list_of_int(arg: str):
-    string = as_list_of_str(arg)
-    return list(map(int, string))
-
-
-@app.route("/api/getSummary")
-def getSummary():
-    query = {
-        "startDate": as_date(request_get("startDate")),
-        "endDate": as_date(request_get("endDate")),
-        "platform": as_str(request_get("platform")),
-        "keywords": as_list_of_str(request_get("keywords")),
-        "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
-    }
-
-    print(query)
-
-    with open("./getSummaryDummy.json") as f:
-        dummy = json.load(f)
-
-    return dummy
-
-
-@app.route("/api/getBodyText")
-def getBodyText():
-    query = {
-        "postId": as_list_of_int(request_get("postId")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
-    }
-
-    print(query)
-
-    with open("./getBodyTextDummy.json") as f:
-        dummy = json.load(f)
-
-    return dummy
-
-
-@app.route("/api/getBagOfWords")
-def getBagOfWords():
-    query = {
-        "postId": as_list_of_int(request_get("postId")),
-        "startDate": as_date(request_get("startDate")),
-        "endDate": as_date(request_get("endDate")),
-        "platform": as_str(request_get("platform")),
-        "keywords": as_list_of_str(request_get("keywords")),
-        "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
-        "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
-    }
-
-    print(query)
-
-    with open("./getBagOfWordsDummy.json") as f:
-        dummy = json.load(f)
-
-    return dummy
-
-
-@app.route("/api/getPlatformFrequencies")
-def getPlatformFrequencies():
-    query = {
-        "postId": as_list_of_int(request_get("postId")),
-        "startDate": as_date(request_get("startDate")),
-        "endDate": as_date(request_get("endDate")),
-        "platform": as_str(request_get("platform")),
-        "keywords": as_list_of_str(request_get("keywords")),
-        "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
-        "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
-    }
-
-    print(query)
-
-    with open("./getPlatformFrequenciesDummy.json") as f:
-        dummy = json.load(f)
-
-    return dummy
-
-
 # route to get avergae sentiments and number of posts grouped by platform and date
 # start_date and end_date should be in yyyy-mm-dd format
 # if no start date or end date specified by the user, use 2014-12-31 for start_date and 'now()' for end_date
@@ -194,6 +61,12 @@ def getSentiments(start_date, end_date, key_words):
 def getEvents():
     query = "SELECT * FROM significant_events"
     return getJsonFromQuery(query)
+
+
+app.route("/api/getPlatformFrequencies")(getPlatformFrequencies)
+app.route("/api/getBagOfWords")(getBagOfWords)
+app.route("/api/getSummary")(getSummary)
+app.route("/api/getBodyText")(getBodyText)
 
 
 if __name__ == "__main__":
