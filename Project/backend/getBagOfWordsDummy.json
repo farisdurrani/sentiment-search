@@ -1,0 +1,7 @@
+{
+  "success": true,
+  "bagOfWords": [
+    { "word": "trump", "count": 10, "meanSentiment": 0.435 },
+    { "word": "den", "count": 20, "meanSentiment": -0.44 }
+  ]
+}
