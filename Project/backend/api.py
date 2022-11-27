@@ -255,9 +255,9 @@ def _sql_order(order: str | None, desc: bool | None):
 
 def _sql_start(start: datetime | None):
     if start is not None:
-        f"date >= {start.date().isoformat()}"
+        return f"date >= {start.date().isoformat()}"
     else:
-        return None
+        return ""
 
 
 def _sql_end(end: datetime | None):
