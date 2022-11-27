@@ -64,6 +64,7 @@ def getEvents():
     return getJsonFromQuery(query)
 
 
+# API routing
 USE_DUMMY = True
 
 if USE_DUMMY:
@@ -75,6 +76,12 @@ app.route("/api/getPlatformFrequencies")(exported.get_platform_freq)
 app.route("/api/getBagOfWords")(exported.get_bag_of_words)
 app.route("/api/getSummary")(exported.get_summary)
 app.route("/api/getBodyText")(exported.get_body_text)
+
+# SQL routing
+app.route("/sql/getPlatformFrequencies")(api.sql_platform_freq)
+app.route("/sql/getBagOfWords")(api.sql_bag_of_words)
+app.route("/sql/getSummary")(api.sql_summary)
+app.route("/sql/getBodyText")(api.sql_body_text)
 
 
 if __name__ == "__main__":
