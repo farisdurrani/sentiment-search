@@ -7,12 +7,10 @@ import sqlite3
 from datetime import datetime
 from typing import Dict, List
 
+import database
 import numpy as np
 from flask import Flask
 from handler import *
-
-con = sqlite3.connect("dva.sqlite3")
-cur = con.cursor()
 
 
 def get_summary():

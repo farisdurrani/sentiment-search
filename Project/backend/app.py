@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 import api
 import dummy
+from database import getJsonFromQuery
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -22,16 +23,6 @@ else:
     PORT = 8000
 CORS(app)
 
-# set up database connection
-con = sqlite3.connect("dva_database")
-cur = con.cursor()
-
-
-def getJsonFromQuery(query: str):
-    res = con.execute(query)
-    rows = res.fetchall()
-    return jsonify(rows)
-
 
 @app.route("/")
 def hello():
@@ -44,15 +35,20 @@ def hello():
 # key_words should be a string of words separated by spaces
 @app.route("/start_date/<start_date>/end_date/<end_date>/key_words/<key_words>")
 def getSentiments(start_date, end_date, key_words):
-    query = (
-        "SELECT count(*) as num_posts, avg(sentiment) as avg_sentiment FROM posts where (date between "
-        + start_date
-        + " AND "
-        + end_date
-        + ")"
-    )
-    if key_words != "":
-        query += " AND bodyText MATCH '" + key_words + "'"
+    if key_words == "":
+        query = (
+            "SELECT count(*) AS num_posts, avg(sentiment) AS avg_sentiment FROM data "
+            "WHERE (date BETWEEN '" + start_date + "' AND '" + end_date + "')"
+        )
+    else:
+        query = (
+            "SELECT * FROM "
+            "(SELECT id, count(*) AS num_posts, avg(sentiment) AS avg_sentiment FROM data "
+            "WHERE (date BETWEEN '" + start_date + "' AND '" + end_date + "')) "
+            "AS a JOIN "
+            f"(SELECT * FROM posts WHERE bodyText MATCH '{key_words}')"
+            "WHERE a.id = posts.id"
+        )
     query += " GROUP BY platform, date"
     return getJsonFromQuery(query)
 
