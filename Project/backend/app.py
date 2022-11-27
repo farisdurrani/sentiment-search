@@ -8,7 +8,7 @@ from typing import Any, Callable
 
 import api
 import dummy
-from database import getJsonFromQuery
+from database import json_from_query
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -34,7 +34,13 @@ def hello():
 # if no start date or end date specified by the user, use 2014-12-31 for start_date and 'now()' for end_date
 # key_words should be a string of words separated by spaces
 @app.route("/start_date/<start_date>/end_date/<end_date>/key_words/<key_words>")
-def getSentiments(start_date, end_date, key_words):
+def get_sentiments(start_date, end_date, key_words):
+    query = sql_sentiments(start_date, end_date, key_words)
+    return json_from_query(query)
+
+
+@app.route("/sql/start_date/<start_date>/end_date/<end_date>/key_words/<key_words>")
+def sql_sentiments(start_date, end_date, key_words):
     if key_words == "":
         query = (
             "SELECT count(*) AS num_posts, avg(sentiment) AS avg_sentiment FROM data "
@@ -50,14 +56,14 @@ def getSentiments(start_date, end_date, key_words):
             "WHERE a.id = posts.id"
         )
     query += " GROUP BY platform, date"
-    return getJsonFromQuery(query)
+    return query
 
 
 # route to get all of the significant_events table
 @app.route("/events")
 def getEvents():
     query = "SELECT * FROM significant_events"
-    return getJsonFromQuery(query)
+    return json_from_query(query)
 
 
 # API routing
