@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Any, Callable
 
 from dotenv import load_dotenv
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 # TODO: Make changes to this line
@@ -28,7 +28,7 @@ con = sqlite3.connect("dva_database")
 cur = con.cursor()
 
 
-def getJsonFromQuery(query):
+def getJsonFromQuery(query: str):
     res = con.execute(query)
     rows = res.fetchall()
     return jsonify(rows)
