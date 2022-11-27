@@ -33,6 +33,14 @@ def get_platform_freq():
     return database.json_from_query(query)
 
 
+def sql_order(order: str | None, desc: bool | None):
+    tag = "DESC" if desc else "ASC"
+    if order:
+        return f"ORDER BY {order} {tag}"
+    else:
+        return ""
+
+
 def sql_summary() -> str:
     query = {
         "startDate": as_date(request_get("startDate")),
@@ -44,22 +52,36 @@ def sql_summary() -> str:
         "orderDescending": as_bool(request_get("orderDescending")),
     }
 
-    raise NotImplementedError
+    order_tag = sql_order(query["orderBy"], query["orderDescending"])
+    sql_query = f"""
+        SELECT * FROM
+        {order_tag}
+    """
 
 
 def sql_body_text() -> str:
     query = {
-        "postId": as_list_of_int(request_get("postId")),
+        "postId": as_list_of_int("postId"),
         "orderBy": as_str(request_get("orderBy")),
         "orderDescending": as_bool(request_get("orderDescending")),
     }
 
-    raise NotImplementedError
+    try:
+        post_ids = tuple(query["postId"])
+    except TypeError:
+        post_ids = tuple(range(1, 11))
+
+    order_tag = sql_order(query["orderBy"], query["orderDescending"])
+
+    return f"""
+        SELECT * FROM posts WHERE id IN {str(post_ids)}
+        {order_tag}
+    """
 
 
 def sql_bag_of_words() -> str:
     query = {
-        "postId": as_list_of_int(request_get("postId")),
+        "postId": as_list_of_int("postId"),
         "startDate": as_date(request_get("startDate")),
         "endDate": as_date(request_get("endDate")),
         "platform": as_str(request_get("platform")),
@@ -69,13 +91,15 @@ def sql_bag_of_words() -> str:
         "orderBy": as_str(request_get("orderBy")),
         "orderDescending": as_bool(request_get("orderDescending")),
     }
+
+    order_tag = sql_order(query["orderBy"], query["orderDescending"])
 
     raise NotImplementedError
 
 
 def sql_platform_freq() -> str:
     query = {
-        "postId": as_list_of_int(request_get("postId")),
+        "postId": as_list_of_int("postId"),
         "startDate": as_date(request_get("startDate")),
         "endDate": as_date(request_get("endDate")),
         "platform": as_str(request_get("platform")),
@@ -85,5 +109,7 @@ def sql_platform_freq() -> str:
         "orderBy": as_str(request_get("orderBy")),
         "orderDescending": as_bool(request_get("orderDescending")),
     }
+
+    order_tag = sql_order(query["orderBy"], query["orderDescending"])
 
     raise NotImplementedError

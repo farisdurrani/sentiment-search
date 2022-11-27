@@ -49,7 +49,7 @@ def as_float(arg: str):
 
 @handle_null
 def as_list_of_str(arg: str):
-    return arg.split(" ")
+    return request.args.getlist(arg)
 
 
 @handle_null

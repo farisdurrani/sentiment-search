@@ -15,17 +15,22 @@ CREATE INDEX id_index on data (id);
 """
 from __future__ import annotations
 
+import os
 import sqlite3
 
 from flask import jsonify
 
-# set up database connection
-con = sqlite3.connect("dva.sqlite3")
+DATABASE_LOCATION = "dva.sqlite3"
+assert os.path.exists(DATABASE_LOCATION), f"{DATABASE_LOCATION} does not exist"
 
+# set up database connection
+con = sqlite3.connect(DATABASE_LOCATION, check_same_thread=False)
 cur = con.cursor()
 
 
 def json_from_query(query: str):
+    print(f"query received: {query}")
     res = con.execute(query)
     rows = res.fetchall()
+    print("done querying")
     return jsonify(rows)

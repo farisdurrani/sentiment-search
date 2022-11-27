@@ -7,8 +7,8 @@ from datetime import datetime
 from typing import Any, Callable
 
 import api
+import database
 import dummy
-from database import json_from_query
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -36,7 +36,7 @@ def hello():
 @app.route("/start_date/<start_date>/end_date/<end_date>/key_words/<key_words>")
 def get_sentiments(start_date, end_date, key_words):
     query = sql_sentiments(start_date, end_date, key_words)
-    return json_from_query(query)
+    return database.json_from_query(query)
 
 
 @app.route("/sql/start_date/<start_date>/end_date/<end_date>/key_words/<key_words>")
@@ -63,11 +63,11 @@ def sql_sentiments(start_date, end_date, key_words):
 @app.route("/events")
 def getEvents():
     query = "SELECT * FROM significant_events"
-    return json_from_query(query)
+    return database.json_from_query(query)
 
 
 # API routing
-USE_DUMMY = True
+USE_DUMMY = False
 
 if USE_DUMMY:
     exported = dummy
@@ -78,6 +78,8 @@ app.route("/api/getPlatformFrequencies")(exported.get_platform_freq)
 app.route("/api/getBagOfWords")(exported.get_bag_of_words)
 app.route("/api/getSummary")(exported.get_summary)
 app.route("/api/getBodyText")(exported.get_body_text)
+
+app.route("/schema")(lambda: database.__doc__)
 
 # SQL routing
 app.route("/sql/getPlatformFrequencies")(api.sql_platform_freq)
