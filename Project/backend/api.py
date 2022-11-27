@@ -54,14 +54,7 @@ def get_summary():
         text = {}
 
     # The ids we want
-    if len(data) == 0 and len(text) != 0:
-        target_keys = frozenset(text.keys())
-    elif len(data) != 0 and len(text) == 0:
-        target_keys = frozenset(data.keys())
-    elif len(data) != 0 and len(text) != 0:
-        target_keys = frozenset(data.keys()).intersection(frozenset(text.keys()))
-    else:
-        target_keys = set()
+    target_keys = frozenset(data.keys()).intersection(frozenset(text.keys()))
 
     # Mapping: ID - [date, platform, sentiment, bodytext]
     target_data = {k: [*data[k], text[k]] for k in target_keys}
