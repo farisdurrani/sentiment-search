@@ -8,6 +8,7 @@ from typing import Dict, List
 
 import numpy as np
 from faker import Faker
+from flask import Flask
 from handler import *
 
 fake = Faker()

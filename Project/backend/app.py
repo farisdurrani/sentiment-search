@@ -6,12 +6,11 @@ import sqlite3
 from datetime import datetime
 from typing import Any, Callable
 
+import api
+import dummy
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-
-# TODO: Make changes to this line
-import dummy as api
 
 load_dotenv()
 
@@ -65,10 +64,17 @@ def getEvents():
     return getJsonFromQuery(query)
 
 
-app.route("/api/getPlatformFrequencies")(api.get_platform_freq)
-app.route("/api/getBagOfWords")(api.get_bag_of_words)
-app.route("/api/getSummary")(api.get_summary)
-app.route("/api/getBodyText")(api.get_body_text)
+USE_DUMMY = True
+
+if USE_DUMMY:
+    exported = dummy
+else:
+    exported = api
+
+app.route("/api/getPlatformFrequencies")(exported.get_platform_freq)
+app.route("/api/getBagOfWords")(exported.get_bag_of_words)
+app.route("/api/getSummary")(exported.get_summary)
+app.route("/api/getBodyText")(exported.get_body_text)
 
 
 if __name__ == "__main__":
