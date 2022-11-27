@@ -53,16 +53,13 @@ def get_summary():
     else:
         text = {}
 
-    data_keys = set(data.keys())
-    text_keys = set(text.keys())
-
     # The ids we want
-    if data_keys is None and text_keys is not None:
-        target_keys = set(text_keys)
-    elif data_keys is not None and text_keys is None:
-        target_keys = set(data_keys)
-    elif data_keys is not None and text_keys is not None:
-        target_keys = set(text_keys).intersection(set(data_keys))
+    if len(data) == 0 and len(text) != 0:
+        target_keys = frozenset(text.keys())
+    elif len(data) != 0 and len(text) == 0:
+        target_keys = frozenset(data.keys())
+    elif len(data) != 0 and len(text) != 0:
+        target_keys = frozenset(data.keys()).intersection(frozenset(text.keys()))
     else:
         target_keys = set()
 
