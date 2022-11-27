@@ -81,12 +81,6 @@ app.route("/api/getBodyText")(exported.get_body_text)
 
 app.route("/schema")(lambda: database.__doc__)
 
-# SQL routing
-app.route("/sql/getPlatformFrequencies")(api.sql_platform_freq)
-app.route("/sql/getBagOfWords")(api.sql_bag_of_words)
-app.route("/sql/getSummary")(api.sql_summary)
-app.route("/sql/getBodyText")(api.sql_body_text)
-
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=PORT)

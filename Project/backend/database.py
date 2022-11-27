@@ -33,4 +33,4 @@ def json_from_query(query: str):
     res = con.execute(query)
     rows = res.fetchall()
     print("done querying")
-    return jsonify(rows)
+    return rows
