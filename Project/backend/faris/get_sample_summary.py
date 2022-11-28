@@ -8,7 +8,8 @@ def run():
     appended = cnn[["platform", "sentiment", "date"]] \
         .append(thegu[["platform", "sentiment", "date"]])
     mean = appended.groupby("date")["sentiment"].agg(['mean', 'size'])
-    mean = mean.rename({'mean': 'meanSentiment', 'size': "count"}, axis="columns").reset_index()
+    mean = mean.rename({'mean': 'meanSentiment', 'size': "count"},
+                       axis="columns").reset_index()
     mean.to_json(path_or_buf="data.json", orient="records")
 
 
