@@ -11,11 +11,15 @@
  * @returns the corresponding RGB color, e.g., -1 returns `rgb(255, 0, 0)`, `null` for invalid input
  */
 export const sentimentColor = (sentiment) => {
-  if (!(sentiment >= -1 && sentiment <= 1)) return null;
+  const MIN_SENTIMENT = -1;
+  const MAX_SENTIMENT = 1;
+  const DOMAIN_RANGE = MAX_SENTIMENT - MIN_SENTIMENT;
 
-  const normalizedSentiment = sentiment + 1; // to get rid of negatives
-  const r = ((2 - normalizedSentiment) / 2) * 255;
+  if (!(sentiment >= MIN_SENTIMENT && sentiment <= MAX_SENTIMENT)) return null;
+
+  const normalizedSentiment = sentiment - MIN_SENTIMENT; // to get rid of negatives
+  const r = ((DOMAIN_RANGE - normalizedSentiment) / DOMAIN_RANGE) * 255;
   const g = 0;
-  const b = (normalizedSentiment / 2) * 255;
+  const b = (normalizedSentiment / DOMAIN_RANGE) * 255;
   return `rgb(${r}, ${g}, ${b})`;
 };
