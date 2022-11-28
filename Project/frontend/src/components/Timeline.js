@@ -80,12 +80,11 @@ const Timeline = (props) => {
   };
 
   function importData() {
-    const raw_dataset = require("../data/sample.json")["rows"];
+    const raw_dataset = require("../data/data.json")["rows"];
     const dataset = raw_dataset.map((e) => ({
       date: new Date(e.date),
-      sentiment: +e.sentiment,
+      sentiment: +e.meanSentiment,
     }));
-    dataset.sort((a, b) => a.date - b.date);
     return dataset;
   }
 
@@ -167,7 +166,7 @@ const Timeline = (props) => {
       .attr("height", (d) => yScale(d.sentiment))
       .attr("width", GRAPH_WIDTH / dataset.length)
       .attr("x", (d) => xScale(d.date))
-      .attr("y", SVG_HEIGHT / 2);
+      .attr("y", GRAPH_HEIGHT / 2);
   };
 
   const createPlot1 = (svg, xScale, yScale) => {
