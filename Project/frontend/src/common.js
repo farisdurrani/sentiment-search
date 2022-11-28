@@ -1,3 +1,6 @@
+export const MIN_SENTIMENT = -1;
+export const MAX_SENTIMENT = 1;
+
 /**
  * Given a sentiment value of [-1, 1], return the color corresponding to that sentiment percentage. A -1 sentiment equals pure red (#ff0000), +1 returns pure blue (#0000ff), anything in between returns something in between.
  *
@@ -11,8 +14,6 @@
  * @returns the corresponding RGB color, e.g., -1 returns `rgb(255, 0, 0)`, `null` for invalid input
  */
 export const sentimentColor = (sentiment) => {
-  const MIN_SENTIMENT = -1;
-  const MAX_SENTIMENT = 1;
   const DOMAIN_RANGE = MAX_SENTIMENT - MIN_SENTIMENT;
 
   if (!(sentiment >= MIN_SENTIMENT && sentiment <= MAX_SENTIMENT)) return null;

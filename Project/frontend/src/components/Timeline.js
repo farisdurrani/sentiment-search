@@ -1,13 +1,11 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Button, Container } from "react-bootstrap";
 import * as d3 from "d3";
-import * as Papa from "papaparse";
 import PropTypes from "prop-types";
 import { sentimentColor } from "../common";
 
-const Timeline = (props) => {
+const Timeline = () => {
   const svg1Ref = useRef();
-  const svg2Ref = useRef();
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
   const ABSOLUTE_WIDTH = 960;
@@ -70,14 +68,19 @@ const Timeline = (props) => {
 
   const createScale = (dataset) => {
     // set the domains of X and Y scales based on data
-    const xDomain = [
+    const dateDomain = [
       d3.min(dataset, (d) => d.date),
       d3.max(dataset, (d) => d.date),
     ];
-    const yDomain = [0, d3.max(dataset, (d) => d.count)];
-    const xScale = d3.scaleTime().domain(xDomain).range([0, GRAPH_WIDTH]);
-    const yScale = d3.scaleLinear().domain(yDomain).range([GRAPH_HEIGHT, 0]);
-    return [xScale, yScale];
+    const countDomain = [0, d3.max(dataset, (d) => d.count)];
+
+    const dateScale = d3.scaleTime().domain(dateDomain).range([0, GRAPH_WIDTH]);
+    const countScale = d3
+      .scaleLinear()
+      .domain(countDomain)
+      .range([GRAPH_HEIGHT, 0]);
+
+    return [dateScale, countScale];
   };
 
   function importData() {
@@ -90,7 +93,7 @@ const Timeline = (props) => {
     return dataset;
   }
 
-  const addAxes = (plotGroup, xScale, yScale) => {
+  const addAxes = (plotGroup, xScale, countScale) => {
     // Add the X Axis
     const xAxisGroup = plotGroup.append("g").attr("class", "x-axis");
     const xAxis = d3.axisBottom(xScale);
@@ -106,7 +109,7 @@ const Timeline = (props) => {
 
     // Add the Y Axis
     const yAxisGroup = plotGroup.append("g").attr("class", "y-axis");
-    const yAxis = d3.axisLeft(yScale);
+    const yAxis = d3.axisLeft(countScale);
     yAxisGroup.call(yAxis);
 
     // Add the text label for Y axis
@@ -129,64 +132,35 @@ const Timeline = (props) => {
       .text("Plot 1");
   };
 
-  // const addMainVis = (plotGroup, dataset, xScale, yScale) => {
-  //   const colorArray = [d3.schemeCategory10, d3.schemeAccent];
-  //   const colorScheme = d3.scaleOrdinal(colorArray[0]);
-
-  //   const plotElements = plotGroup.append("g").attr("class", "plot-elements");
-
-  //   // Draw circles
-  //   plotElements
-  //     .selectAll(".circle-sentiment")
-  //     .data(dataset)
-  //     .enter()
-  //     .append("circle")
-  //     .attr("fill", colorScheme(0))
-  //     .attr("cx", (d) => xScale(d.date))
-  //     .attr("cy", (d) => {
-  //       const a = yScale(d.sentiment);
-  //       return a;
-  //     })
-  //     .attr("r", 1);
-  // };
-
-  const addMainVis2 = (plotGroup, dataset, xScale, yScale) => {
+  const addMainVis2 = (plotGroup, dataset, dateScale, countScale) => {
     const colorArray = [d3.schemeCategory10, d3.schemeAccent];
     const colorScheme = d3.scaleOrdinal(colorArray[0]);
 
     const plotElements = plotGroup.append("g").attr("class", "plot-elements");
 
-    // Draw circles
+    // Draw bars
     plotElements
       .selectAll(".rects")
       .data(dataset)
       .enter()
       .append("rect")
       .attr("fill", (d) => sentimentColor(d.sentiment))
-      .attr("height", (d) => GRAPH_HEIGHT - yScale(d.count))
+      .attr("height", (d) => GRAPH_HEIGHT - countScale(d.count))
       .attr("width", GRAPH_WIDTH / dataset.length)
-      .attr("x", (d) => xScale(d.date))
-      .attr("y", (d) => yScale(d.count));
+      .attr("x", (d) => dateScale(d.date))
+      .attr("y", (d) => countScale(d.count));
   };
 
-  // const createPlot1 = (svg, xScale, yScale) => {
-  //   addAxes(svg, xScale, yScale);
-  //   addGraphTitle(svg);
-  //   addMainVis(svg, dataset, xScale, yScale);
-  // };
-
-  const createPlot2 = (svg, xScale, yScale) => {
-    addMainVis2(svg, dataset, xScale, yScale);
+  const createPlot = (svg, dateScale, countScale) => {
+    addMainVis2(svg, dataset, dateScale, countScale);
     addGraphTitle(svg);
-    addAxes(svg, xScale, yScale);
+    addAxes(svg, dateScale, countScale);
   };
 
   const createAll = () => {
-    // const svg1 = initializeSVG(svg1Ref);
-    const svg2 = initializeSVG(svg2Ref);
-    const [xScale, yScale] = createScale(dataset);
-    // createPlot1(svg1, xScale, yScale);
-    createPlot2(svg2, xScale, yScale);
+    const svg1 = initializeSVG(svg1Ref);
+    const [dateScale, countScale] = createScale(dataset);
+    createPlot(svg1, dateScale, countScale);
   };
 
   useEffect(() => {
@@ -194,9 +168,8 @@ const Timeline = (props) => {
   }, []);
 
   return (
-    <div>
-      {/* <svg ref={svg1Ref}></svg> */}
-      <svg ref={svg2Ref}></svg>
+    <div id="timeline">
+      <svg ref={svg1Ref}></svg>
     </div>
   );
 };

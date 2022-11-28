@@ -49,3 +49,16 @@ Author:       See CODEOWNDERS
   height: 100%;
   position: relative;
 }
+
+/* -------------------------------------------------------------------------- */
+/*	Home
+/* -------------------------------------------------------------------------- */
+
+#home .btn-primary.comfortable {
+  padding-inline: 40px;
+  padding-block: 10px;
+}
+
+#home .main-search {
+  max-width: 50%;
+}
