@@ -10,7 +10,7 @@ DVA Project for CS 6456 Spring 2022
 1. NPM v9: `npm install npm@latest -g`
 1. [Python 3.10](https://www.python.org/downloads/release/python-3108/)
 
-## Run the following:
+## Run the following (note the different install commands for Mac/Linux and Windows:
 
 | Action                                                    | Command                |
 | ----------------------------------------------------------| ------------------     |
