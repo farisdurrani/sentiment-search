@@ -2,3 +2,5 @@ pandas
 numpy
 flask
 flask-cors
+transformers
+alive-progress
