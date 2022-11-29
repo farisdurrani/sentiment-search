@@ -222,14 +222,16 @@ def get_bag_of_words():
     else:
         word_count: Dict[str, CountTotal] = defaultdict(CountTotal)
 
+        tokenized = tokenizer(df["bodyText"].astype("str").to_list()).input_ids
+        assert len(tokenized) == len(df)
+
         for (sentiment, entry) in alive_it(
-            zip(df["sentiment"], df["bodyText"]), total=len(df)
+            zip(df["sentiment"], tokenized), total=len(df)
         ):
-            entry = str(entry)
+            line = tokenizer.convert_ids_to_tokens(entry)
+            line = line[1:-1]
 
-            tokenized = tokenizer.tokenize(entry)
-
-            cleaned = [s.lstrip("##") for s in tokenized]
+            cleaned = [s.lstrip("##") for s in line]
             cleaned = set(s for s in cleaned if re.match("[A-Za-z]+", s))
 
             for word in cleaned:
