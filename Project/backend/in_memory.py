@@ -31,7 +31,7 @@ else:
 
     _DF = pd.concat(dataframes)
 
-    _DF.dropna()
+    _DF = _DF.dropna()
     _DF["postId"] = range(len(_DF))
     _DF.to_csv(cache_path, encoding="utf-8")
     print("preprocessing done")
