@@ -18,7 +18,7 @@ export const sentimentColor = (sentiment) => {
   if (!(sentiment >= MIN_SENTIMENT && sentiment <= MAX_SENTIMENT)) return null;
 
   const NEG_SENT_COLOR = [255, 0, 0]; // pure red
-  const NEU_SENT_COLOR = [255, 255, 191]; // pure green
+  const NEU_SENT_COLOR = [255, 255, 191]; // green
   const POS_SENT_COLOR = [0, 0, 255]; // pure blue
 
   const DOMAIN_RANGE = MAX_SENTIMENT - MIN_SENTIMENT;
