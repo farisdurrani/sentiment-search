@@ -1,4 +1,5 @@
 from collections import defaultdict
+from pathlib import Path
 
 import numpy as np
 import pandas as pd
@@ -14,16 +15,40 @@ _PLATFORMS = {
     "The New York Times": "nyt",
 }
 
-_DF = pd.concat([pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()])
-del _DF["country"]
+cache_path = Path("all-platforms.csv")
 
+if cache_path.exists():
+    _DF = pd.read_csv(cache_path)
+else:
+    _DF = pd.concat(
+        [pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()]
+    )
+    del _DF["country"]
 
-_DF["date"] = _DF["date"].map(lambda s: parser.parse(s).date().isoformat())
-_DF["bodyText"] = _DF["bodyText"].str.lower()
-_DF.dropna()
-_DF["postId"] = range(len(_DF))
-print("preprocessing done")
+    _DF["date"] = _DF["date"].map(lambda s: parser.parse(s).date().isoformat())
+    _DF["bodyText"] = _DF["bodyText"].str.lower()
+    _DF.dropna()
+    _DF["postId"] = range(len(_DF))
+    pd.to_csv(cache_path, encoding="utf-8")
+    print("preprocessing done")
+
 print(_DF)
+
+
+def get_events():
+    df = pd.read_csv("significant-events.csv")
+    return df.as_dict("records")
+
+
+# route to get avergae sentiments and number of posts grouped by platform and date
+# start_date and end_date should be in yyyy-mm-dd format
+# if no start date or end date specified by the user, use 2014-12-31 for start_date and 'now()' for end_date
+# key_words should be a string of words separated by spaces
+def get_sentiments(start_date, end_date, key_words):
+    df = _DF.copy()
+
+    if key_words == "":
+        pass
 
 
 def get_summary():
