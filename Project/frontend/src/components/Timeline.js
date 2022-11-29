@@ -5,7 +5,7 @@ import { MAX_SENTIMENT, MIN_SENTIMENT, sentimentColor } from "../common";
 
 const Timeline = (props) => {
   const { searchRef } = props;
-  const searchTerm = searchRef.current?.value.toLowerCase();
+  const searchTerm = ""; // searchRef.current?.value.toLowerCase();
 
   const svg1Ref = useRef();
   // define the dimensions and margins for the graph
@@ -151,24 +151,38 @@ const Timeline = (props) => {
       .text("Plot 1");
   };
 
-  const addMainVis2 = (plotGroup, dateScale, countScale) => {
-    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
+  const drawEventCards = (plotElements, dateScale) => {
+    const eventCardGroup = plotElements
+      .append("g")
+      .attr("class", "event-card-group");
 
-    // Draw bars
-    plotElements
-      .selectAll(".rects")
-      .data(dataset)
-      .enter()
-      .append("rect")
-      .attr("fill", (d) => sentimentColor(d.sentiment))
-      .attr("height", (d) => GRAPH_HEIGHT - countScale(d.count))
-      .attr("width", GRAPH_WIDTH / dataset.length)
-      .attr("x", (d) => dateScale(d.date))
-      .attr("y", (d) => countScale(d.count));
+    const Tooltip = d3.select("#sig-ev-tooltip-text").style("opacity", 1);
+
+    Tooltip.html("blobbbbbbbbbbbbbbbbbbbb")
+      .style("left", 70 + "px")
+      .style("top", "px");
+
+    const mouseover = function (_) {
+      Tooltip.style("opacity", 1);
+      d3.select(this).style("stroke", "black").style("opacity", 1);
+    };
+    const mousemove = function (d) {
+      const description = d.target.__data__.description;
+
+      Tooltip.html(description)
+        .style("left", 70 + "px")
+        .style("top", "px");
+    };
+    const mouseleave = function (_) {
+      Tooltip.style("opacity", 1);
+      d3.select(this).style("stroke", "none").style("opacity", 0.8);
+    };
 
     // Draw circles
-    plotElements
-      .selectAll(".sig-events-circles")
+    eventCardGroup
+      .append("g")
+      .attr("class", "sig-events-circles")
+      .selectAll(".sig-events-circle")
       .data(sig_events_dataset)
       .enter()
       .append("circle")
@@ -182,7 +196,31 @@ const Timeline = (props) => {
       })
       .attr("cx", (d) => dateScale(d.date))
       .attr("cy", (_) => GRAPH_HEIGHT * Math.random())
-      .attr("r", 10);
+      .attr("r", 10)
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave)
+      .append("text");
+  };
+
+  const addMainVis2 = (plotGroup, dateScale, countScale) => {
+    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
+
+    // Draw bars
+    plotElements
+      .append("g")
+      .attr("class", "plot-elements-bars")
+      .selectAll(".plot-elements-bar")
+      .data(dataset)
+      .enter()
+      .append("rect")
+      .attr("fill", (d) => sentimentColor(d.sentiment))
+      .attr("height", (d) => GRAPH_HEIGHT - countScale(d.count))
+      .attr("width", GRAPH_WIDTH / dataset.length)
+      .attr("x", (d) => dateScale(d.date))
+      .attr("y", (d) => countScale(d.count));
+
+    drawEventCards(plotElements, dateScale);
   };
 
   const createPlot = (svg, dateScale, countScale) => {
@@ -207,6 +245,9 @@ const Timeline = (props) => {
       className={`${props.className} d-flex justify-content-center`}
     >
       <svg ref={svg1Ref}></svg>
+      <div id="sig-ev-tooltip" className="tooltip">
+        <p id="sig-ev-tooltip-text"></p>
+      </div>
     </div>
   );
 };

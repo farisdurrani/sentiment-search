@@ -41,6 +41,10 @@ Author:       See CODEOWNDERS
   background-color: var(--secondary);
 }
 
+.tooltip {
+  position: absolute;
+}
+
 /* -------------------------------------------------------------------------- */
 /*	App
 /* -------------------------------------------------------------------------- */
@@ -51,14 +55,27 @@ Author:       See CODEOWNDERS
 }
 
 /* -------------------------------------------------------------------------- */
-/*	Home
+/*	SearchBar
 /* -------------------------------------------------------------------------- */
 
-#home .btn-primary.comfortable {
+#search-bar .btn-primary.comfortable {
   padding-inline: 40px;
   padding-block: 10px;
 }
 
-#home .main-search {
+#search-bar .main-search {
   max-width: 50%;
+}
+
+/* -------------------------------------------------------------------------- */
+/*	Timeline
+/* -------------------------------------------------------------------------- */
+
+#timeline #sig-ev-tooltip {
+  background-color: var(--high-translucent);
+  border: solid;
+  border-width: 2px;
+  border-radius: 5px;
+  padding: 5px;
+  opacity: 1;
 }
