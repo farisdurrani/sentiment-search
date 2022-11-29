@@ -1,9 +1,9 @@
+import * as d3 from "d3";
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Button, Container } from "react-bootstrap";
-import * as d3 from "d3";
-import { sentimentColor } from "../common";
+import { MAX_SENTIMENT, MIN_SENTIMENT, sentimentColor } from "../common";
 
-const Timeline = () => {
+const Timeline = (props) => {
   const svg1Ref = useRef();
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
@@ -67,10 +67,7 @@ const Timeline = () => {
 
   const createScale = () => {
     // set the domains of X and Y scales based on data
-    const dateDomain = [
-      d3.min(dataset, (d) => d.date),
-      d3.max(dataset, (d) => d.date),
-    ];
+    const dateDomain = [dataset[0].date, dataset[dataset.length - 1].date];
     const countDomain = [0, d3.max(dataset, (d) => d.count)];
 
     const dateScale = d3.scaleTime().domain(dateDomain).range([0, GRAPH_WIDTH]);
@@ -84,13 +81,29 @@ const Timeline = () => {
 
   function importData() {
     const raw_dataset = require("../data/data.json")["rows"];
-    const sig_events_dataset = require("../data/sig_ev_cleaned.json")["rows"];
+    const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
+      "rows"
+    ];
+
     const dataset = raw_dataset.map((e) => ({
       date: new Date(e.date),
       sentiment: +e.meanSentiment,
       count: +e.count,
     }));
-    return [dataset, sig_events_dataset];
+    const sig_ev_dataset = raw_sig_events_dataset.map((e) => ({
+      date: new Date(e.date),
+      description: e.description,
+    }));
+    const dateDomain = [dataset[0].date, dataset[dataset.length - 1].date];
+    const sig_ev_idx_range = [
+      sig_ev_dataset.findIndex((e) => e.date >= dateDomain[0]),
+      sig_ev_dataset.findLastIndex((e) => e.date <= dateDomain[1]),
+    ];
+
+    return [
+      dataset,
+      sig_ev_dataset.slice(sig_ev_idx_range[0], sig_ev_idx_range[1] + 1),
+    ];
   }
 
   const addAxes = (plotGroup, xScale, countScale) => {
@@ -133,8 +146,6 @@ const Timeline = () => {
   };
 
   const addMainVis2 = (plotGroup, dateScale, countScale) => {
-    const colorArray = [d3.schemeCategory10, d3.schemeAccent];
-
     const plotElements = plotGroup.append("g").attr("class", "plot-elements");
 
     // Draw bars
@@ -149,17 +160,23 @@ const Timeline = () => {
       .attr("x", (d) => dateScale(d.date))
       .attr("y", (d) => countScale(d.count));
 
-    // // Draw circles
-    // plotElements
-    //   .selectAll(".rects")
-    //   .data(dataset)
-    //   .enter()
-    //   .append("rect")
-    //   .attr("fill", (d) => sentimentColor(d.sentiment))
-    //   .attr("height", (d) => GRAPH_HEIGHT - countScale(d.count))
-    //   .attr("width", GRAPH_WIDTH / dataset.length)
-    //   .attr("x", (d) => dateScale(d.date))
-    //   .attr("y", (d) => countScale(d.count));
+    // Draw circles
+    plotElements
+      .selectAll(".sig-events-circles")
+      .data(sig_events_dataset)
+      .enter()
+      .append("circle")
+      .attr("fill", (d) => {
+        const datasetDateInfo = dataset.find((e) => e.date - d.date === 0);
+
+        if (datasetDateInfo == null)
+          return sentimentColor((MAX_SENTIMENT + MIN_SENTIMENT) / 2);
+
+        return sentimentColor(datasetDateInfo.sentiment);
+      })
+      .attr("cx", (d) => dateScale(d.date))
+      .attr("cy", (_) => GRAPH_HEIGHT * Math.random())
+      .attr("r", 10);
   };
 
   const createPlot = (svg, dateScale, countScale) => {
@@ -179,7 +196,10 @@ const Timeline = () => {
   }, []);
 
   return (
-    <div id="timeline">
+    <div
+      id="timeline"
+      className={`${props.className} d-flex justify-content-center`}
+    >
       <svg ref={svg1Ref}></svg>
     </div>
   );

@@ -3,10 +3,10 @@ import { Button, Container, Form } from "react-bootstrap";
 import { Timeline, ExampleSVG, Spacer } from "../components/index";
 
 const Home = () => {
+  const searchRef = useRef();
   return (
     <Container id="home">
-      <Spacer height={40} />
-      <div className="text-center">
+      <div className="text-center mt-5">
         <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>
@@ -17,14 +17,14 @@ const Home = () => {
               className="main-search m-auto"
               type="text"
               placeholder="🔍"
-              value="Trump"
+              defaultValue="Trump"
+              ref={searchRef}
             />
           </Form.Group>
         </Form>
         <Button className="comfortable">Analyze</Button>
       </div>
-      <Timeline />
-      <ExampleSVG />
+      <Timeline className="mt-5"/>
     </Container>
   );
 };
