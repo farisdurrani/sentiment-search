@@ -4,6 +4,7 @@ import dropbox
 import io
 from configparser import ConfigParser
 from datetime import datetime
+from os.path import exists
 
 config = ConfigParser()
 config.read('dropbox_token.ini')
@@ -101,7 +102,10 @@ def insertSigEventsFiles():
         df['event'] = df['description']
         print(df.head())
         df = df[['date', 'event']]
-        df.to_csv('significant_events.csv', if_exists='append', index=False)
+        if exists('significant_events.csv'):
+            df.to_csv('significant_events.csv', mode='a', index=False, header=False)
+        else:
+            df.to_csv('significant_events.csv', index=False)
         '''
         for row in df.rows:
             date = row.date
@@ -120,7 +124,11 @@ def insertPosts(folder_path, csv_name):
         df = readDfFromPath(path+ '/' + file_name)
         df = adaptDf(path, df)
         df = df[['platform', 'bodyText', 'sentiment', 'date', 'country']]
-        df.to_csv(csv_name + '_filtered.csv', if_exists='append', index=False)
+        csv_path = csv_name + '_filtered.csv'
+        if exists(csv_path):
+            df.to_csv(csv_path, mode='a', index=False, header=False)
+        else:
+            df.to_csv(csv_path, index=False)
 
 sig_events_files = ['/DVA_Datasets/sig_ev_cleaned.csv']
 posts_folder_paths = [('/twitter/sentiments', 'twitter'), ('/CNN/sentiments', 'cnn'), ('/Facebook/facebook_posts/sentiments/sentiments/sentiments', 'facebook'), ('/New York Times', 'nyt'), ('/Reddit/tagged', 'reddit'), ('/The Guardian/sentiments', 'guardian')]
