@@ -5,13 +5,6 @@ import io
 from configparser import ConfigParser
 from datetime import datetime
 
-con = sqlite3.connect("dva_database")
-cur = con.cursor()
-cur = con.execute("DROP TABLE IF EXISTS posts")
-cur = con.execute("DROP TABLE IF EXISTS significant_events")
-cur = con.execute("CREATE VIRTUAL TABLE posts USING fts4(platform TEXT, bodyText TEXT, sentiment FLOAT, date DATETIME, country TEXT)")
-cur = con.execute("CREATE TABLE significant_events (date DATETIME, event TEXT)")
-
 config = ConfigParser()
 config.read('dropbox_token.ini')
 DROPBOX_TOKEN = config['token']['token']
@@ -60,6 +53,11 @@ def adaptDf(path, df):
 
     return df
 
+def randomKeep(df, prob):
+    keep = np.random.random((df.shape[0],))
+    df['keep'] = keep
+    df = df[df.keep < prob]
+    return df
 
 def adaptReddit(df):
     df['platform'] = "reddit"
@@ -67,6 +65,7 @@ def adaptReddit(df):
     df['sentiment'] = df['title-compound']
     df['date'] = df['created_utc']
     df['country'] = None
+    df = randomKeep(df, 0.075)
     return df
 
 def adaptNYT(df):
@@ -82,6 +81,7 @@ def adaptTwitter(df):
     df['country'] = None
     df['sentiment'] = df['compound']
     df['bodyText'] = df['text']
+    df = randomKeep(df, 0.5)
     return df
 
 #method to get the names of the files in a path
@@ -101,7 +101,7 @@ def insertSigEventsFiles():
         df['event'] = df['description']
         print(df.head())
         df = df[['date', 'event']]
-        df.to_sql('significant_events', con=con, if_exists='append', index=False)
+        df.to_csv('significant_events.csv', if_exists='append', index=False)
         '''
         for row in df.rows:
             date = row.date
@@ -112,7 +112,7 @@ def insertSigEventsFiles():
 
 
 #method to insert the posts of one of the paths to tagged files
-def insertPosts(folder_path):
+def insertPosts(folder_path, csv_name):
     path = '/DVA_Datasets' + folder_path
     files = getFileNames(path)
     for file_name in files:
@@ -120,18 +120,15 @@ def insertPosts(folder_path):
         df = readDfFromPath(path+ '/' + file_name)
         df = adaptDf(path, df)
         df = df[['platform', 'bodyText', 'sentiment', 'date', 'country']]
-        df.to_sql('posts', con=con, if_exists='append', index=False)
+        df.to_csv(csv_name + '_filtered.csv', if_exists='append', index=False)
 
-sig_events_files = ['/DVA_Datasets/significant_events.csv', '/DVA_Datasets/sig_ev_22.csv']
-posts_folder_paths = ['/twitter/sentiments', '/CNN/sentiments', '/Facebook/facebook_posts/sentiments/sentiments/sentiments', '/New York Times', '/Reddit/tagged', '/The Guardian/sentiments']
+sig_events_files = ['/DVA_Datasets/sig_ev_cleaned.csv']
+posts_folder_paths = [('/twitter/sentiments', 'twitter'), ('/CNN/sentiments', 'cnn'), ('/Facebook/facebook_posts/sentiments/sentiments/sentiments', 'facebook'), ('/New York Times', 'nyt'), ('/Reddit/tagged', 'reddit'), ('/The Guardian/sentiments', 'guardian')]
 
 print('INSERTING SIGNIFICANT EVENTS')
 insertSigEventsFiles()
 
 print("INSERTING POSTS")
 for path in posts_folder_paths:
-    print(path)
-    insertPosts(path)
-
-con.execute("CREATE INDEX posts_index ON posts (bodyText)")
-con.execute("CREATE INDEX events_index ON significant_events (event)")
+    print(path[0])
+    insertPosts(path[0], path[1])
