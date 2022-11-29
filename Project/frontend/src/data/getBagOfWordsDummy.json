@@ -1,0 +1,14 @@
+{
+  "success": true,
+  "bagOfWords": [
+    { "word": "trump", "count": 10, "meanSentiment": 0.435 },
+    { "word": "den", "count": 15, "meanSentiment": -0.5 },
+    { "word": "floods", "count": 6, "meanSentiment": -0.1 },
+    { "word": "happy", "count": 8, "meanSentiment": 0.76 },
+    { "word": "wedding", "count": 5, "meanSentiment": 0.935 },
+    { "word": "shooting", "count": 12, "meanSentiment": -0.4 },
+    { "word": "breaking", "count": 25, "meanSentiment": 0.21 },
+    { "word": "covid", "count": 35, "meanSentiment": -0.94 },
+    { "word": "state", "count": 20, "meanSentiment": 0 }
+  ]
+}

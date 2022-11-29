@@ -43,7 +43,7 @@ export const sentimentColor = (sentiment) => {
     return (value - start) / (end - start);
   };
 
-  const formatColor = (r, g, b) => `rgb(${r}, ${g}, ${b})`;
+  const formatColor = (r, g, b) => `rgba(${r}, ${g}, ${b})`;
 
   if (sentiment < mid_sentiment) {
     const pct = getPercentage(MIN_SENTIMENT, mid_sentiment, sentiment);

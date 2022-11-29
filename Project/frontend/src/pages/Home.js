@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Button, Container, Form } from "react-bootstrap";
-import { Timeline, ExampleSVG, Spacer } from "../components/index";
+import { Timeline, ExampleSVG, Spacer,BubbleChart,PolarArea } from "../components/index";
 
 const Home = () => {
   const searchRef = useRef();
@@ -25,6 +25,8 @@ const Home = () => {
         <Button className="comfortable">Analyze</Button>
       </div>
       <Timeline className="mt-5"/>
+      <BubbleChart className="mt-5"/>
+      <PolarArea className="mt-5"/>
     </Container>
   );
 };
