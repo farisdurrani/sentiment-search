@@ -6,9 +6,8 @@ import sqlite3
 from datetime import datetime
 from typing import Any, Callable
 
-import api
 import database
-import dummy
+import in_memory
 from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -67,17 +66,12 @@ def getEvents():
 
 
 # API routing
-USE_DUMMY = False
 
-if USE_DUMMY:
-    exported = dummy
-else:
-    exported = api
 
-app.route("/api/getPlatformFrequencies")(exported.get_platform_freq)
-app.route("/api/getBagOfWords")(exported.get_bag_of_words)
-app.route("/api/getSummary")(exported.get_summary)
-app.route("/api/getBodyText")(exported.get_body_text)
+app.route("/api/getPlatformFrequencies")(in_memory.get_platform_freq)
+app.route("/api/getBagOfWords")(in_memory.get_bag_of_words)
+app.route("/api/getSummary")(in_memory.get_summary)
+app.route("/api/getBodyText")(in_memory.get_body_text)
 
 app.route("/schema")(lambda: database.__doc__)
 
