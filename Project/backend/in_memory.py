@@ -26,11 +26,13 @@ else:
     dataframes = [pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()]
 
     for df in dataframes:
+        del df["country"]
+        df = df.dropna()
+
         df["date"] = (
             df["date"].astype("str").map(lambda s: parser.parse(s).date().isoformat())
         )
-        df["bodyText"] = df["bodyText"].str.lower()
-        del df["country"]
+        df["bodyText"] = df["bodyText"].astype("str").str.lower()
 
     _DF = pd.concat(dataframes)
 
