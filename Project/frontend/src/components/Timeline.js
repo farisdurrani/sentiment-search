@@ -8,6 +8,8 @@ const Timeline = (props) => {
   const searchTerm = ""; // searchRef.current?.value.toLowerCase();
 
   const svg1Ref = useRef();
+  const singleRenderRef = useRef();
+
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
   const ABSOLUTE_WIDTH = 960;
@@ -156,25 +158,25 @@ const Timeline = (props) => {
       .append("g")
       .attr("class", "event-card-group");
 
-    const Tooltip = d3.select("#sig-ev-tooltip-text").style("opacity", 1);
+    const tooltip = d3.select("#sig-ev-tooltip");
+    const tooltipText = d3.select("#sig-ev-tooltip-text");
 
-    Tooltip.html("blobbbbbbbbbbbbbbbbbbbb")
-      .style("left", 70 + "px")
-      .style("top", "px");
+    tooltipText.html("blobbbbbbbbbbbbbbbbbbbb");
 
     const mouseover = function (_) {
-      Tooltip.style("opacity", 1);
+      tooltip.style("opacity", 1);
       d3.select(this).style("stroke", "black").style("opacity", 1);
     };
     const mousemove = function (d) {
+      const [coordX, coordY] = [d.pageX, d.pageY];
       const description = d.target.__data__.description;
 
-      Tooltip.html(description)
-        .style("left", 70 + "px")
-        .style("top", "px");
+      tooltipText.html(description);
+      tooltip.style("left", coordX + "px");
+      tooltip.style("top", coordY + "px");
     };
     const mouseleave = function (_) {
-      Tooltip.style("opacity", 1);
+      tooltip.style("opacity", 0);
       d3.select(this).style("stroke", "none").style("opacity", 0.8);
     };
 
@@ -200,7 +202,6 @@ const Timeline = (props) => {
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
       .on("mouseleave", mouseleave)
-      .append("text");
   };
 
   const addMainVis2 = (plotGroup, dateScale, countScale) => {
@@ -236,6 +237,9 @@ const Timeline = (props) => {
   };
 
   useEffect(() => {
+    if (singleRenderRef.current) return;
+    singleRenderRef.current = true;
+    
     createAll();
   }, []);
 
