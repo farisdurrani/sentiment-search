@@ -8,11 +8,11 @@ from typing import Any, Callable
 
 import database
 import in_memory
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-load_dotenv()
+# load_dotenv()
 
 app = Flask(__name__)
 PORT = os.getenv("PORT")

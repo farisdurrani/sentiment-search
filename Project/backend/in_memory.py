@@ -29,7 +29,7 @@ else:
     _DF["bodyText"] = _DF["bodyText"].str.lower()
     _DF.dropna()
     _DF["postId"] = range(len(_DF))
-    pd.to_csv(cache_path, encoding="utf-8")
+    _DF.to_csv(cache_path, encoding="utf-8")
     print("preprocessing done")
 
 print(_DF)

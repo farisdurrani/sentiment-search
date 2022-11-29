@@ -4,9 +4,9 @@
   "description": "DVA Project",
   "scripts": {
     "installf": "cd frontend && npm install",
-    "installb": "cd backend && python -m venv venv && cd venv/Scripts && activate && cd ../.. && pip install -r requirements.txt",
+    "installb": "cd backend && python -m venv venv && venv/bin/pip install -r requirements.txt",
     "startf": "cd frontend && npm start",
-    "startb": "cd backend && cd venv/Scripts && activate && cd ../.. && uwsgi --socket 0.0.0.0:8000 --protocol=http -w app:app"
+    "startb": "cd backend && venv/bin/uwsgi --socket 0.0.0.0:8000 --protocol=http -w app:app"
   },
   "license": "MIT"
 }
