@@ -193,7 +193,7 @@ def get_bag_of_words():
     bag_of_words = []
     for kw in keywords:
         has_kw = df[df["bodyText"].str.contains(kw, na=False)]
-        mean_sentiment = np.mean(has_kw["sentiment"])
+        mean_sentiment = np.mean(has_kw["sentiment"]) if len(has_kw) else None
         count = len(has_kw)
         bag_of_words.append(
             {"word": kw, "count": count, "meanSentiment": mean_sentiment}
@@ -241,7 +241,7 @@ def get_platform_freq():
         for kw in keywords:
             plat_df = plat_df[plat_df["bodyText"].str.contains(kw, na=False)]
         count = len(plat_df)
-        mean_sentiment = np.mean(plat_df["sentiment"])
+        mean_sentiment = np.mean(plat_df["sentiment"]) if len(plat_df) else None
         platform_info.append(
             {"platform": platform, "count": count, "meanSentiment": mean_sentiment}
         )
