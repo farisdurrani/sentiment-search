@@ -3,6 +3,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import { Timeline, ExampleSVG, Spacer } from "../components/index";
 
 const Home = () => {
+  const searchRef = useRef();
   return (
     <Container id="home">
       <div className="text-center mt-5">
@@ -16,7 +17,8 @@ const Home = () => {
               className="main-search m-auto"
               type="text"
               placeholder="🔍"
-              value="Trump"
+              defaultValue="Trump"
+              ref={searchRef}
             />
           </Form.Group>
         </Form>

@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Button, Container } from "react-bootstrap";
-import { sentimentColor } from "../common";
+import { MAX_SENTIMENT, MIN_SENTIMENT, sentimentColor } from "../common";
 
 const Timeline = (props) => {
   const svg1Ref = useRef();
@@ -160,17 +160,23 @@ const Timeline = (props) => {
       .attr("x", (d) => dateScale(d.date))
       .attr("y", (d) => countScale(d.count));
 
-    // // Draw circles
-    // plotElements
-    //   .selectAll(".rects")
-    //   .data(dataset)
-    //   .enter()
-    //   .append("rect")
-    //   .attr("fill", (d) => sentimentColor(d.sentiment))
-    //   .attr("height", (d) => GRAPH_HEIGHT - countScale(d.count))
-    //   .attr("width", GRAPH_WIDTH / dataset.length)
-    //   .attr("x", (d) => dateScale(d.date))
-    //   .attr("y", (d) => countScale(d.count));
+    // Draw circles
+    plotElements
+      .selectAll(".sig-events-circles")
+      .data(sig_events_dataset)
+      .enter()
+      .append("circle")
+      .attr("fill", (d) => {
+        const datasetDateInfo = dataset.find((e) => e.date - d.date === 0);
+
+        if (datasetDateInfo == null)
+          return sentimentColor((MAX_SENTIMENT + MIN_SENTIMENT) / 2);
+
+        return sentimentColor(datasetDateInfo.sentiment);
+      })
+      .attr("cx", (d) => dateScale(d.date))
+      .attr("cy", (_) => GRAPH_HEIGHT * Math.random())
+      .attr("r", 10);
   };
 
   const createPlot = (svg, dateScale, countScale) => {
