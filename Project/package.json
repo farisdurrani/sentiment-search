@@ -7,7 +7,8 @@
     "installb-mac": "cd backend && python -m venv venv && venv/bin/pip install -r requirements.txt",
     "installb-win": "cd backend && python -m venv venv && cd venv/Scripts && activate && cd ../.. && pip install -r requirements.txt",
     "startf": "cd frontend && npm start",
-    "startb": "cd backend && venv/bin/python app.py"
+    "startb-mac": "cd backend && venv/bin/python app.py",
+    "startb-win": "cd backend && && cd venv/Scripts && activate && cd ../.. && python app.py"
   },
   "license": "MIT"
 }
