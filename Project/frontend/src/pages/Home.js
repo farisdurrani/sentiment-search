@@ -5,8 +5,7 @@ import { Timeline, ExampleSVG, Spacer } from "../components/index";
 const Home = () => {
   return (
     <Container id="home">
-      <Spacer height={40} />
-      <div className="text-center">
+      <div className="text-center mt-5">
         <Form>
           <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
             <Form.Label>
@@ -23,8 +22,7 @@ const Home = () => {
         </Form>
         <Button className="comfortable">Analyze</Button>
       </div>
-      <Timeline />
-      <ExampleSVG />
+      <Timeline className="mt-5"/>
     </Container>
   );
 };
