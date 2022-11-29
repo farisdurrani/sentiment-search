@@ -114,11 +114,14 @@ def get_summary():
         )
 
     rows = []
-    for (date, data) in converted.items():
+    for (time, data) in converted.items():
+        mean_sentiment = (
+            sum(d["sentiment"] for d in data) / len(data) if len(data) else None
+        )
         rows.append(
             {
-                "date": date,
-                "meanSentiment": sum(d["sentiment"] for d in data) / len(data),
+                "date": time,
+                "meanSentiment": mean_sentiment,
                 "count": len(data),
                 "posts": data,
             }
