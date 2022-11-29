@@ -1,5 +1,4 @@
 pandas
 numpy
 flask
-uwsgi
 flask-cors
