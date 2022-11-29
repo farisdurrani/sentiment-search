@@ -4,6 +4,9 @@ import { Button, Container } from "react-bootstrap";
 import { MAX_SENTIMENT, MIN_SENTIMENT, sentimentColor } from "../common";
 
 const Timeline = (props) => {
+  const { searchRef } = props;
+  const searchTerm = searchRef.current?.value.toLowerCase();
+
   const svg1Ref = useRef();
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
@@ -90,7 +93,10 @@ const Timeline = (props) => {
       sentiment: +e.meanSentiment,
       count: +e.count,
     }));
-    const sig_ev_dataset = raw_sig_events_dataset.map((e) => ({
+    const relevant_sig_ev = raw_sig_events_dataset.filter((e) =>
+      e.description.toLowerCase().includes(searchTerm)
+    );
+    const sig_ev_dataset = relevant_sig_ev.map((e) => ({
       date: new Date(e.date),
       description: e.description,
     }));
