@@ -4,7 +4,8 @@
   "description": "DVA Project",
   "scripts": {
     "installf": "cd frontend && npm install",
-    "installb": "cd backend && python -m venv venv && venv/bin/pip install -r requirements.txt",
+    "installb-mac": "cd backend && python -m venv venv && venv/bin/pip install -r requirements.txt",
+    "installb-win": "cd backend && python -m venv venv && cd venv/Scripts && activate && cd ../.. && pip install -r requirements.txt",
     "startf": "cd frontend && npm start",
     "startb": "cd backend && venv/bin/python app.py"
   },
