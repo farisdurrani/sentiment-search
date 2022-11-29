@@ -1,13 +1,18 @@
 from __future__ import annotations
 
-
+import re
 from collections import defaultdict
 from pathlib import Path
-
+from dataclasses import dataclass
+from typing import Dict, List
+from alive_progress import alive_it
 import numpy as np
 import pandas as pd
 from dateutil import parser
 from handler import *
+from transformers import BertTokenizerFast
+
+tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 
 _PLATFORMS = {
     "CNN": "cnn",
@@ -42,6 +47,20 @@ else:
     print("preprocessing done")
 
 print(_DF)
+
+
+@dataclass
+class CountTotal:
+    count: int = 0
+    total: float = 0
+
+    @property
+    def mean(self):
+        return self.count / self.total
+
+    def add(self, value: float):
+        self.count += 1
+        self.total += value
 
 
 def get_events():
@@ -191,16 +210,45 @@ def get_bag_of_words():
         df = pd.concat([df[df["platform"] == plat] for plat in platform])
 
     bag_of_words = []
-    for kw in keywords:
-        has_kw = df[df["bodyText"].str.contains(kw, na=False)]
-        mean_sentiment = np.mean(has_kw["sentiment"]) if len(has_kw) else None
-        count = len(has_kw)
-        bag_of_words.append(
-            {"word": kw, "count": count, "meanSentiment": mean_sentiment}
-        )
+
+    if keywords:
+        for kw in keywords:
+            has_kw = df[df["bodyText"].str.contains(kw, na=False)]
+            mean_sentiment = np.mean(has_kw["sentiment"]) if len(has_kw) else None
+            count = len(has_kw)
+            bag_of_words.append(
+                {"word": kw, "count": count, "meanSentiment": mean_sentiment}
+            )
+    else:
+        word_count: Dict[str, CountTotal] = defaultdict(CountTotal)
+
+        for (sentiment, entry) in alive_it(
+            zip(df["sentiment"], df["bodyText"]), total=len(df)
+        ):
+            entry = str(entry)
+
+            tokenized = tokenizer.tokenize(entry)
+
+            cleaned = [s.lstrip("##") for s in tokenized]
+            cleaned = set(s for s in cleaned if re.match("[A-Za-z]+", s))
+
+            for word in cleaned:
+                word_count[word].add(sentiment)
+
+        for (word, ct) in word_count.items():
+            bag_of_words.append(
+                {
+                    "word": word,
+                    "count": ct.count,
+                    "meanSentiment": ct.total,
+                }
+            )
 
     if order_by:
         bag_of_words.sort(key=lambda x: x[order_by], reverse=order_desc)
+
+    if per_word:
+        bag_of_words = bag_of_words[:per_word]
 
     return {"success": True, "bagOfWords": bag_of_words}
 
