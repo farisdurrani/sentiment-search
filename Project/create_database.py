@@ -1,6 +1,7 @@
 import sqlite3
 import pandas as pd
 import dropbox
+import numpy as np
 import io
 from configparser import ConfigParser
 from datetime import datetime
