@@ -20,13 +20,17 @@ cache_path = Path("all-platforms.csv")
 if cache_path.exists():
     _DF = pd.read_csv(cache_path)
 else:
-    _DF = pd.concat(
-        [pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()]
-    )
-    del _DF["country"]
+    dataframes = [pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()]
 
-    _DF["date"] = _DF["date"].map(lambda s: parser.parse(s).date().isoformat())
-    _DF["bodyText"] = _DF["bodyText"].str.lower()
+    for df in dataframes:
+        df["date"] = (
+            df["date"].astype("str").map(lambda s: parser.parse(s).date().isoformat())
+        )
+        df["bodyText"] = df["bodyText"].str.lower()
+        del df["country"]
+
+    _DF = pd.concat(dataframes)
+
     _DF.dropna()
     _DF["postId"] = range(len(_DF))
     _DF.to_csv(cache_path, encoding="utf-8")
@@ -37,7 +41,7 @@ print(_DF)
 
 def get_events():
     df = pd.read_csv("significant-events.csv")
-    return df.as_dict("records")
+    return df.to_dict("records")
 
 
 # route to get avergae sentiments and number of posts grouped by platform and date
@@ -47,8 +51,16 @@ def get_events():
 def get_sentiments(start_date, end_date, key_words):
     df = _DF.copy()
 
-    if key_words == "":
-        pass
+    if key_words:
+        df = df[df["bodyText"].str.contains(key_words, na=False)]
+
+    if start_date:
+        df = df[df["date"] >= parser.parse(start_date).date().isoformat()]
+
+    if end_date:
+        df = df[df["date"] <= parser.parse(end_date).date().isoformat()]
+
+    return df.to_dict("records")
 
 
 def get_summary():
