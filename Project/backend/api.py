@@ -38,20 +38,23 @@ def get_summary():
         retrieved = database.json_from_query(
             f"SELECT id, date, platform, sentiment FROM data WHERE {date_tags}"
         )
-        # Mapping: ID - [date, platform, sentiment]
-        data = {d[0]: [d[1], d[2], d[3]] for d in retrieved}
     else:
-        data = {}
+        retrieved = database.json_from_query(
+            f"SELECT id, date, platform, sentiment FROM data"
+        )
+
+    # Mapping: ID - [date, platform, sentiment]
+    data = {d[0]: [d[1], d[2], d[3]] for d in retrieved}
 
     # Query on the posts DB
     if kw_tag:
         retrieved = database.json_from_query(
             f"SELECT id, bodyText FROM posts WHERE {kw_tag}"
         )
-        # Mapping: ID - bodytext
-        text = {t[0]: t[1] for t in retrieved}
     else:
-        text = {}
+        retrieved = database.json_from_query("SELECT id, bodyText FROM posts")
+    # Mapping: ID - bodytext
+    text = {t[0]: t[1] for t in retrieved}
 
     # The ids we want
     if len(data) == 0 and len(text) != 0:
@@ -64,6 +67,7 @@ def get_summary():
         target_keys = set()
 
     # Mapping: ID - [date, platform, sentiment, bodytext]
+    # fixme:
     target_data = {k: [*data[k], text[k]] for k in target_keys}
     for value in target_data:
         value[0] = datetime.fromisoformat(value[0]).date().isoformat()
@@ -109,7 +113,9 @@ def get_body_text():
         post_ids = tuple(range(1, 11))
 
     # Query on the posts DB
-    posts_sql = f"SELECT bodyText FROM posts WHERE id IN {post_ids};"
+    posts_sql = (
+        f"SELECT bodyText FROM posts WHERE id IN ({','.join(map(str, post_ids))});"
+    )
     posts = database.json_from_query(posts_sql)
 
     # Query on the data DB
@@ -180,7 +186,7 @@ def get_bag_of_words():
 
         sentiment = np.array(
             database.json_from_query(
-                f"SELECT sentiment FROM data WHERE id IN {tuple(filtered_kw)}"
+                f"SELECT sentiment FROM data WHERE id IN ({','.join(map(str, filtered_kw))})"
             )
         ).squeeze()
 
