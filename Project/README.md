@@ -12,12 +12,13 @@ DVA Project for CS 6456 Spring 2022
 
 ## Run the following:
 
-| Action                                        | Command            |
-| --------------------------------------------- | ------------------ |
-| Install / Update Frontend Packages (one-time) | `npm run installf` |
-| Install / Update Backend Packages (one-time)  | `npm run installb` |
-| Running the Frontend                          | `npm run startf`   |
-| Running the Backend                           | `npm run startb`   |
+| Action                                                    | Command                |
+| ----------------------------------------------------------| ------------------     |
+| Install / Update Frontend Packages (one-time)             | `npm run installf`     |
+| Install / Update Backend Packages (one-time) (linux/mac)  | `npm run installb-mac` |
+| Install / Update Backend Packages (one-time) (windows)    | `npm run installb-win` |
+| Running the Frontend                                      | `npm run startf`       |
+| Running the Backend                                       | `npm run startb`       |
 
 # Authors
 
