@@ -420,7 +420,7 @@ def get_platform_freq():
             if better_token:
                 tokenization = _get_tokenization()
                 has_kw = {idx for idx in df["postId"] if kw in tokenization[idx]}
-                df = df[df["postId"].isin(has_kw)]
+                plat_df = plat_df[plat_df["postId"].isin(has_kw)]
             else:
                 plat_df = plat_df[plat_df["bodyText"].str.contains(kw, na=False)]
         count = len(plat_df)
