@@ -23,6 +23,18 @@ _PLATFORMS = {
     "The New York Times": "nyt",
 }
 
+
+def process_df(df):
+    if "country" in df:
+        del df["country"]
+    df.dropna(inplace=True)
+
+    df["date"].update(
+        df["date"].astype("str").map(lambda s: parser.parse(s).date().isoformat())
+    )
+    df["bodyText"].update(df["bodyText"].astype("str").str.lower())
+
+
 cache_path = Path("all-platforms.csv")
 
 if cache_path.exists():
@@ -31,21 +43,15 @@ else:
     dataframes = [pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()]
 
     for df in dataframes:
-        del df["country"]
-        df = df.dropna()
-
-        df["date"] = (
-            df["date"].astype("str").map(lambda s: parser.parse(s).date().isoformat())
-        )
-        df["bodyText"] = df["bodyText"].astype("str").str.lower()
+        process_df(df)
 
     _DF = pd.concat(dataframes)
 
-    _DF = _DF.dropna()
-    _DF["postId"] = range(len(_DF))
-    _DF.to_csv(cache_path, encoding="utf-8")
     print("preprocessing done")
 
+process_df(_DF)
+_DF["postId"] = range(len(_DF))
+_DF.to_csv(cache_path, encoding="utf-8")
 print(_DF)
 
 with open("stop_words.txt") as f:
@@ -130,28 +136,31 @@ def get_summary():
             df = df[df["bodyText"].str.contains(kw, na=False)]
 
     records = df.to_dict("records")
-    converted = defaultdict(list)
+    converted: Dict[str, Dict[str, CountTotal]] = defaultdict(
+        lambda: defaultdict(CountTotal)
+    )
 
     for record in records:
-        converted[record["date"]].append(
-            {
-                "sentiment": record["sentiment"],
-                "platform": record["platform"],
-                "postId": record["postId"],
-            }
-        )
+        converted[record["date"]][record["platform"]].add(record["sentiment"])
 
     rows = []
     for (time, data) in converted.items():
-        mean_sentiment = (
-            sum(d["sentiment"] for d in data) / len(data) if len(data) else None
-        )
+        count = sum(d.count for d in data.values())
+        mean_sentiment = sum(d.total for d in data.values()) / count
+
         rows.append(
             {
                 "date": time,
                 "meanSentiment": mean_sentiment,
-                "count": len(data),
-                "posts": data,
+                "count": count,
+                "posts": [
+                    {
+                        "platform": platform,
+                        "sentiment": sentiment.mean,
+                        "count": sentiment.count,
+                    }
+                    for (platform, sentiment) in data.items()
+                ],
             }
         )
     if order_by:
