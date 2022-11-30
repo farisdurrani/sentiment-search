@@ -3,7 +3,8 @@
 DVA Project for CS 6456 Spring 2022
 
 #DESCRIPTION
-Backend: The backend of our app is a python flask app (app.py with support from api.py) which
+##Backend 
+The backend of our app is a python flask app (app.py with support from api.py) which
 converts the csv files containing the data to a pandas dataframe which it uses to return the
 value queried by the front end as the user changes parameters like keywords and date ranges.
 The queries are as follows:
