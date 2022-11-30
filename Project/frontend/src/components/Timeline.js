@@ -85,7 +85,6 @@ const Timeline = (props) => {
   };
 
   function importData() {
-    if (singleRenderRef?.current) return;
     console.debug("Importing data...");
 
     const raw_dataset = require("../data/data.json")["rows"];
@@ -253,7 +252,7 @@ const Timeline = (props) => {
       .on("mouseleave", mouseleave);
   };
 
-  const addMainVis2 = (plotGroup, dateScale, countScale) => {
+  const addMainVis1 = (plotGroup, dateScale, countScale) => {
     const plotElements = plotGroup.append("g").attr("class", "plot-elements");
 
     drawBars(plotElements, dateScale, countScale);
@@ -262,7 +261,7 @@ const Timeline = (props) => {
   };
 
   const createPlot = (svg, dateScale, countScale) => {
-    addMainVis2(svg, dateScale, countScale);
+    addMainVis1(svg, dateScale, countScale);
     addGraphTitle(svg);
     addAxes(svg, dateScale, countScale);
   };
