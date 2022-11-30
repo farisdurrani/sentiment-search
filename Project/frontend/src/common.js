@@ -2,6 +2,7 @@ export const MIN_SENTIMENT = -1;
 export const MAX_SENTIMENT = 1;
 
 export const API_URL = "http://127.0.0.1:8000";
+export const DEFAULT_SEARCH_TERM = "Trump";
 
 /**
  * Given a sentiment value of [-1, 1], return the color corresponding to that sentiment percentage. A -1 sentiment equals pure red (#ff0000), +1 returns pure blue (#0000ff), anything in between returns something in between.
@@ -57,3 +58,10 @@ export const sentimentColor = (sentiment) => {
     return formatColor(r, g, b);
   }
 };
+
+/**
+ * Returns a random number between min (inclusive) and max (exclusive)
+ */
+export function getRandomArbitrary(min, max) {
+  return Math.random() * (max - min) + min;
+}

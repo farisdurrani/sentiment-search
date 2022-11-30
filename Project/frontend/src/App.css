@@ -97,3 +97,8 @@ Author:       See CODEOWNDERS
 #timeline .axis-label {
   font-weight: bold;
 }
+
+#timeline .sig-events-circles circle {
+  stroke: black;
+  z-index: 999;
+}

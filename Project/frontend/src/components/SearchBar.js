@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Button, Container, Form } from "react-bootstrap";
+import { DEFAULT_SEARCH_TERM } from "../common";
 
 const SearchBar = (props) => {
   const { searchRef } = props;
@@ -16,7 +17,7 @@ const SearchBar = (props) => {
             className="main-search m-auto"
             type="text"
             placeholder="🔍"
-            defaultValue="Trump"
+            defaultValue={DEFAULT_SEARCH_TERM}
             ref={searchRef}
           />
         </Form.Group>
