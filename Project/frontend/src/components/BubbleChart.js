@@ -54,6 +54,9 @@ class ApexChart extends React.Component {
             text: 'Word Treemap (Most Occurances)',
             align: 'center'
           },
+          fill: {
+            opacity: 0.8
+          },
           colors: colors,
           plotOptions: {
             treemap: {
