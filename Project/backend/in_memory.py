@@ -145,6 +145,7 @@ else:
 
     print("preprocessing done")
 
+process_df(_DF)
 _DF["postId"] = range(len(_DF))
 
 # Not saving the index because
