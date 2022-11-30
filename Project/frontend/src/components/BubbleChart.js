@@ -34,24 +34,7 @@ class ApexChart extends React.Component {
     }
 
       
-            async function fetchData() {
-              try {
-                console.log('fetch')
-                const result = await axios.get("http://127.0.0.1:8000/api/getBagOfWords?platform=facebook&limitAmountOfWords=10")
-                
-                const raw_dataset = result.data["bagOfWords"];
-                const dataset = raw_dataset.map((e) => ({
-                x: e.word,
-                y: +e.count,
-                z: getColor(+e.meanSentiment),
-                }));
-                console.log('data',dataset)
-                this.data=dataset;
-                return dataset;
-              } catch (error) {
-                console.error('ss',error);
-              }
-            }
+            
 
     
     //('hello',data);
@@ -63,7 +46,7 @@ class ApexChart extends React.Component {
         data: fetchData(),
         series: [
           {
-            data: this.data,
+            data: this.state.data,
           }
         ],
         options: {
@@ -101,6 +84,25 @@ class ApexChart extends React.Component {
       
       
       };
+
+      async function fetchData() {
+        try {
+          console.log('fetch')
+          const result = await axios.get("http://127.0.0.1:8000/api/getBagOfWords?platform=facebook&limitAmountOfWords=10")
+          
+          const raw_dataset = result.data["bagOfWords"];
+          const dataset = raw_dataset.map((e) => ({
+          x: e.word,
+          y: +e.count,
+          z: getColor(+e.meanSentiment),
+          }));
+          console.log('data',dataset)
+          this.state.data=dataset;
+          return dataset;
+        } catch (error) {
+          console.error('ss',error);
+        }
+      }
     }
 
   
