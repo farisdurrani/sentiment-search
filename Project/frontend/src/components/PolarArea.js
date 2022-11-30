@@ -24,7 +24,7 @@ class ApexChart extends React.Component {
             
             if(value<0)
             {
-                console.log('hi1');
+                //console.log('hi1');
                 for(var i=1;i<count;i++)
                 {
                     neg.push(value);
@@ -34,17 +34,17 @@ class ApexChart extends React.Component {
 
             else if(value>0)
             {
-                console.log('hi2');
+                //console.log('hi2');
                 for(var i=1;i<count;i++)
                 {
                     pos.push(value);
                 }
-                console.log(pos)
+                //console.log(pos)
             }
             
             else
             {
-                console.log('hi3');
+                //console.log('hi3');
                 for(var i=1;i<count;i++)
                 {
                     neu.push(value);
@@ -82,9 +82,9 @@ class ApexChart extends React.Component {
         const neg_c=sentimentColor(neg_v);
         const neu_c=sentimentColor(neu_v);
 
-        console.log(pos_n,neg_c,neu_c)
+        //console.log(pos_n,neg_c,neu_c)
 
-        console.log('colors',pos_c,neg_c,neu_c);
+        //console.log('colors',pos_c,neg_c,neu_c);
 
 
     
