@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 from datetime import datetime
 from typing import Any, Callable
 
@@ -32,17 +33,17 @@ def as_date(arg: str):
 
 @handle_null
 def as_bool(arg: str):
-    return bool(arg)
+    return bool(json.loads(arg))
 
 
 @handle_null
 def as_int(arg: str):
-    return int(arg)
+    return int(json.loads(arg))
 
 
 @handle_null
 def as_float(arg: str):
-    return float(arg)
+    return float(json.loads(arg))
 
 
 @handle_null
