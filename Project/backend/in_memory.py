@@ -344,7 +344,7 @@ def get_bag_of_words():
                 has_kw = {idx for idx in df["postId"] if kw in tokenization[idx]}
                 stmt = df[df["postId"].isin(has_kw)]["sentiment"]
                 mean_sentiment = np.mean(stmt) if len(stmt) else None
-                count = len(has_kw)
+                count = len(stmt)
             else:
                 has_kw = df[df["bodyText"].str.contains(kw, na=False)]
                 mean_sentiment = np.mean(has_kw["sentiment"]) if len(has_kw) else None
