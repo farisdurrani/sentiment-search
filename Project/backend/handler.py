@@ -6,16 +6,12 @@ from typing import Any, Callable
 from flask import request
 
 
-def process_if_not_none(function: Callable[[str | None], Any], argument: str | None):
-    if argument is None:
-        return None
-
-    return function(argument)
-
-
 def handle_null(function: Callable[[str], Any]):
-    def _func(argument: str | None):
-        return process_if_not_none(function, argument)
+    def _func(argument: str | None, default: Any = None):
+        if argument is None:
+            return default
+
+        return function(argument)
 
     return _func
 

@@ -94,8 +94,8 @@ def get_summary():
         "platform": as_list_of_str("platform"),
         "keywords": as_list_of_str("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "date"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     start_date = query["startDate"]
@@ -103,7 +103,7 @@ def get_summary():
     platform = query["platform"]
     keywords = query["keywords"]
     per_day = query["limitCountOfPostsPerDate"]
-    order_by = query.get("orderBy", "date")
+    order_by = query["orderBy"]
     order_desc = query["orderDescending"]
 
     df = _DF.copy()
@@ -154,12 +154,12 @@ def get_summary():
 def get_body_text():
     query = {
         "postId": as_list_of_int("postId"),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "date"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     post_ids = query["postId"]
-    order_by = query.get("orderBy", "date")
+    order_by = query["orderBy"]
     order_desc = query["orderDescending"]
 
     print(_DF["postId"], post_ids)
@@ -181,13 +181,13 @@ def get_bag_of_words():
         "keywords": as_list_of_str("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
         "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "count"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     post_ids = query["postId"]
-    order_by = query.get("orderBy", "count")
-    order_desc = query.get("orderDescending", True)
+    order_by = query["orderBy"]
+    order_desc = query["orderDescending"]
     start_date = query["startDate"]
     end_date = query["endDate"]
     platform = query["platform"]
@@ -263,13 +263,13 @@ def get_platform_freq():
         "keywords": as_list_of_str("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
         "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "count"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     post_ids = query["postId"]
-    order_by = query.get("orderBy", "count")
-    order_desc = query.get("orderDescending", True)
+    order_by = query["orderBy"]
+    order_desc = query["orderDescending"]
     start_date = query["startDate"]
     end_date = query["endDate"]
     keywords = query["keywords"]
