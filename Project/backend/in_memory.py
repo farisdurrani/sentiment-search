@@ -232,7 +232,9 @@ def get_bag_of_words():
             line = line[1:-1]
 
             cleaned = [s.lstrip("##") for s in line]
-            cleaned = set(s for s in cleaned if re.match("[A-Za-z]+", s))
+            cleaned = set(
+                s for s in cleaned if len(s) >= 3 and re.match("[A-Za-z]+", s)
+            )
 
             for word in cleaned:
                 word_count[word].add(sentiment)
