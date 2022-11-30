@@ -8,7 +8,9 @@ import {
   PolarArea,
   SearchBar,
   Radar,
+  FrequencyChart 
 } from "../components/index";
+
 
 const Home = () => {
   const searchRef = useRef();
