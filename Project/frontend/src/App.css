@@ -80,3 +80,16 @@ Author:       See CODEOWNDERS
   opacity: 0;
   max-width: min(25%, 200px);
 }
+
+#timeline #sig-ev-tooltip-circle {
+  border-radius: 100%;
+  background-color: red;
+  height: 20px;
+  width: 20px;
+}
+
+#timeline #sig-ev-tooltip-meta {
+  color: gray;
+  font-style: italic;
+  font-size: 0.75rem;
+}
