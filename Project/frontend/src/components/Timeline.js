@@ -226,11 +226,35 @@ const Timeline = (props) => {
   };
 
   const drawBars = (plotElements, dateScale, countScale) => {
+    const tooltip = d3.select("#sig-ev-tooltip");
+    const tooltipMeta = d3.select("#sig-ev-tooltip-meta");
+    const tooltipText = d3.select("#sig-ev-tooltip-text");
+    const tooltipCircle = d3.select("#sig-ev-tooltip-circle");
+
     const mouseover = function (d) {
+      tooltip.style("opacity", 1);
       d3.select(this).style("stroke", "black").style("opacity", 1);
+
+      const {
+        date: rawDate,
+        count,
+        sentiment: rawSentiment,
+      } = d.target.__data__;
+      const date = rawDate.toLocaleDateString("en-US");
+      const sentiment = Number.parseFloat(rawSentiment).toFixed(3);
+
+      tooltipMeta.html(`${date} | Sentiment: ${sentiment} | Count: ${count}`);
+      tooltipText.html("");
+      tooltipCircle.style("background-color", sentimentColor(sentiment));
     };
-    const mousemove = function (d) {};
+    const mousemove = function (d) {
+      const [coordX, coordY] = [d.pageX, d.pageY];
+
+      tooltip.style("left", coordX + "px");
+      tooltip.style("top", coordY + "px");
+    };
     const mouseleave = function (_) {
+      tooltip.style("opacity", 0);
       d3.select(this).style("stroke", "none").style("opacity", 0.8);
     };
 
