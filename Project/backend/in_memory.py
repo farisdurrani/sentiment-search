@@ -49,7 +49,12 @@ else:
 print(_DF)
 
 with open("stop_words.txt") as f:
-    _STOP_WORDS = {x for x in f.read().split()}
+    sw = {x for x in f.read().split()}
+    _STOP_WORDS = sw.copy()
+
+    for word in sw:
+        for subword in word.split("'"):
+            _STOP_WORDS.add(subword)
 
 
 @dataclass
