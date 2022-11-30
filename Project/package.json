@@ -7,8 +7,8 @@
     "installb-mac": "cd backend && python -m venv venv && venv/bin/pip install -r requirements.txt",
     "installb-win": "cd backend && python -m venv venv && cd venv/Scripts && activate && cd ../.. && pip install -r requirements.txt",
     "startf": "cd frontend && npm start",
-    "startb-mac": "cd backend && venv/bin/python app.py",
-    "startb-win": "cd backend && && cd venv/Scripts && activate && cd ../.. && gunicorn -w 4 app:app --reload"
+    "startb-mac": "cd backend && venv/bin/gunicorn -w 4 app:app --reload",
+    "startb-win": "cd backend && && cd venv/Scripts && activate && cd ../.. && venv/Script/gunicorn -w 4 app:app"
   },
   "license": "MIT"
 }
