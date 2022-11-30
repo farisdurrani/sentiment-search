@@ -244,7 +244,7 @@ def get_bag_of_words():
                 {
                     "word": word,
                     "count": ct.count,
-                    "meanSentiment": ct.total,
+                    "meanSentiment": ct.mean,
                 }
             )
 
