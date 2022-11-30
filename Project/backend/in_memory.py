@@ -12,6 +12,11 @@ from dateutil import parser
 from handler import *
 from transformers import BertTokenizerFast
 
+try:
+    from rich import print
+except ImportError:
+    pass
+
 tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 
 _PLATFORMS = {
@@ -111,6 +116,7 @@ def get_summary():
         "orderBy": as_str(request_get("orderBy"), "date"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
     }
+    print("Query received:", query)
 
     start_date = query["startDate"]
     end_date = query["endDate"]
@@ -175,6 +181,7 @@ def get_body_text():
         "orderBy": as_str(request_get("orderBy"), "date"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
     }
+    print("Query received:", query)
 
     post_ids = query["postId"]
     order_by = query["orderBy"]
@@ -202,6 +209,7 @@ def get_bag_of_words():
         "orderBy": as_str(request_get("orderBy"), "count"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
     }
+    print("Query received:", query)
 
     post_ids = query["postId"]
     order_by = query["orderBy"]
@@ -286,6 +294,7 @@ def get_platform_freq():
         "orderBy": as_str(request_get("orderBy"), "count"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
     }
+    print("Query received:", query)
 
     post_ids = query["postId"]
     order_by = query["orderBy"]
