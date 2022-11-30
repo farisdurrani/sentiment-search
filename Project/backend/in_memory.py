@@ -120,10 +120,9 @@ def process_df(df: pd.DataFrame):
         del df["country"]
     df.dropna(inplace=True)
 
-    df["date"].update(
-        df["date"].astype("str").map(lambda s: parser.parse(s).date().isoformat())
-    )
-    df["bodyText"].update(df["bodyText"].astype("str").str.lower())
+    df["date"] = df["date"].map(lambda s: parser.parse(str(s)).date().isoformat())
+
+    df["bodyText"] = df["bodyText"].astype("str").str.lower()
 
 
 # Optionally caching the global dataframe if the file is found.
@@ -132,7 +131,12 @@ cache_path = Path("all-platforms.csv")
 if cache_path.exists():
     _DF = pd.read_csv(cache_path)
 else:
-    dataframes = [pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()]
+    dataframes = []
+    for (name, short) in _PLATFORMS.items():
+        print("Processing:", name)
+        df = pd.read_csv(f"{name.lower()}_filtered.csv")
+        print(df)
+        dataframes.append(df)
 
     for df in dataframes:
         process_df(df)
@@ -141,7 +145,6 @@ else:
 
     print("preprocessing done")
 
-process_df(_DF)
 _DF["postId"] = range(len(_DF))
 
 # Not saving the index because
