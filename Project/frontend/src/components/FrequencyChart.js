@@ -82,7 +82,6 @@ const FrequencyChart = (props) => {
             return ds;
 
         }else{
-            console.log("problem")
             console.log(response.status);
         }
     }
@@ -93,21 +92,19 @@ const FrequencyChart = (props) => {
         // const xaB = d3.select(".x-axis")
         // xaB.call(d3.axisBottom(xScale)).attr("transform","translate("+SVG_PADDING.l+","+GRAPH_HEIGHT+")")
         console.log(dataset)
-        const rg = d3.select(".rectangles").attr("width",SVG_WIDTH).attr("height",SVG_HEIGHT).attr("transform","translate(60,0)");
+        const rg = d3.select(".rectangles").attr("width",GRAPH_WIDTH).attr("height",GRAPH_HEIGHT).attr("transform","translate(60,0)");
         // let dummy = [2,3,4];
+        console.log(yScale(508471))
         var colors = d3.scaleQuantize()
         .domain([-1,1])
         .range(["#4575b4","#74add1","#ffffbf","#f46d43","#d73027"]);
-        console.log(yScale(0))
         rg.selectAll("rect").data(dataset).enter().append("rect").attr("x",function(d){
             console.log(d.platform,xScale(d.platform))
             return xScale(d.platform) + ((xScale.bandwidth()-63)/2)
         }).attr("y",function(d){
-            return GRAPH_HEIGHT-yScale(d.count)
+            return yScale(d.count) + SVG_PADDING.t
         }).attr("width",63).attr("height",function(d){
-            console.log(d.platform)
-            console.log(yScale(d.count))
-            return yScale(d.count)
+            return GRAPH_HEIGHT-yScale(d.count) - SVG_PADDING.t
         }).attr("fill",function(d){
             return sentimentColor(d.meanSentiment)
         });
