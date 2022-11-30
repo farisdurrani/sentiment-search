@@ -4,10 +4,11 @@ import re
 from collections import defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List
+from typing import Dict, Sequence, List, Set
 
 import numpy as np
 import pandas as pd
+from alive_progress import alive_it
 from dateutil import parser
 from handler import *
 from transformers import BertTokenizerFast
@@ -17,7 +18,8 @@ try:
 except ImportError:
     pass
 
-tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
+_TOKENIZER = BertTokenizerFast.from_pretrained("bert-base-uncased")
+_TOKENIZED_SET: Sequence[Set[str]] | None = None
 
 _PLATFORMS = {
     "CNN": "cnn",
@@ -29,7 +31,49 @@ _PLATFORMS = {
 }
 
 
-def process_df(df):
+def _tokenization_and_save(df: pd.DataFrame, path: Path | None = None):
+    mapping: List[Set[str]] = [set() for _ in range(len(df))]
+    assert set(df["postId"]) == set(range(len(df)))
+    for (idx, body_text) in alive_it(zip(df["postId"], df["bodyText"]), total=len(df)):
+        tokenized = _TOKENIZER.tokenize(body_text)
+        tokenized = [token.lstrip("##") for token in tokenized]
+        tokenized = {
+            token
+            for token in tokenized
+            if token not in _STOP_WORDS
+            and len(token) >= 3
+            and re.match("[A-Za-z]+", token)
+        }
+        mapping[idx] = tokenized
+
+    if path:
+        with open(path, "w+") as f:
+            json.dump(obj=[list(tokens) for tokens in mapping], fp=f)
+
+    return mapping
+
+
+def _get_tokenization():
+    global _TOKENIZED_SET
+
+    if _TOKENIZED_SET is not None:
+        return _TOKENIZED_SET
+
+    tokenization_cache = Path("tokenization.json")
+    if tokenization_cache.exists():
+        with open(tokenization_cache) as f:
+            data: List[List[str]] = json.load(f)
+            data = [set(tokens) for tokens in data]
+            _TOKENIZED_SET = data
+
+        if set(_DF["postId"]) != set(range(len(data))):
+            _TOKENIZED_SET = _tokenization_and_save(_DF, tokenization_cache)
+    else:
+        _TOKENIZED_SET = _tokenization_and_save(_DF, tokenization_cache)
+    return _TOKENIZED_SET
+
+
+def process_df(df: pd.DataFrame):
     if "country" in df:
         del df["country"]
     df.dropna(inplace=True)
@@ -115,6 +159,7 @@ def get_summary():
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
         "orderBy": as_str(request_get("orderBy"), "date"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
+        "betterToken": as_bool(request_get("betterToken"), False),
     }
     print("Query received:", query)
 
@@ -125,6 +170,7 @@ def get_summary():
     per_day = query["limitCountOfPostsPerDate"]
     order_by = query["orderBy"]
     order_desc = query["orderDescending"]
+    better_token = query["betterToken"]
 
     df = _DF.copy()
 
@@ -139,7 +185,12 @@ def get_summary():
 
     if keywords:
         for kw in keywords:
-            df = df[df["bodyText"].str.contains(kw, na=False)]
+            if better_token:
+                tokenization = _get_tokenization()
+                has_kw = {idx for idx in df["postId"] if kw in tokenization[idx]}
+                df = df[df["postId"].isin(has_kw)]
+            else:
+                df = df[df["bodyText"].str.contains(kw, na=False)]
 
     records = df.to_dict("records")
     converted: Dict[str, Dict[str, CountTotal]] = defaultdict(
@@ -208,6 +259,7 @@ def get_bag_of_words():
         "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
         "orderBy": as_str(request_get("orderBy"), "count"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
+        "betterToken": as_bool(request_get("betterToken"), False),
     }
     print("Query received:", query)
 
@@ -218,6 +270,7 @@ def get_bag_of_words():
     end_date = query["endDate"]
     platform = query["platform"]
     keywords = query["keywords"]
+    better_token = query["betterToken"]
     per_day = query["limitCountOfPostsPerDate"]
     per_word = query["limitAmountOfWords"]
 
@@ -239,28 +292,25 @@ def get_bag_of_words():
 
     if keywords:
         for kw in keywords:
-            has_kw = df[df["bodyText"].str.contains(kw, na=False)]
-            mean_sentiment = np.mean(has_kw["sentiment"]) if len(has_kw) else None
-            count = len(has_kw)
+            if better_token:
+                tokenization = _get_tokenization()
+                has_kw = {idx for idx in df["postId"] if kw in tokenization[idx]}
+                stmt = df[df["postId"].isin(has_kw)]["sentiment"]
+                mean_sentiment = np.mean(stmt) if len(stmt) else None
+                count = len(has_kw)
+            else:
+                has_kw = df[df["bodyText"].str.contains(kw, na=False)]
+                mean_sentiment = np.mean(has_kw["sentiment"]) if len(has_kw) else None
+                count = len(has_kw)
             bag_of_words.append(
                 {"word": kw, "count": count, "meanSentiment": mean_sentiment}
             )
     else:
         word_count: Dict[str, CountTotal] = defaultdict(CountTotal)
 
-        tokenized = tokenizer(df["bodyText"].astype("str").to_list()).input_ids
-        assert len(tokenized) == len(df)
-
-        for (sentiment, entry) in zip(df["sentiment"], tokenized):
-            line = tokenizer.convert_ids_to_tokens(entry)
-            line = line[1:-1]
-
-            cleaned = [s.lstrip("##") for s in line]
-            cleaned = set(
-                s
-                for s in cleaned
-                if s not in _STOP_WORDS and len(s) >= 3 and re.match("[A-Za-z]+", s)
-            )
+        tokenization = _get_tokenization()
+        for (sentiment, post_id) in zip(df["sentiment"], df["postId"]):
+            cleaned = tokenization[post_id]
 
             for word in cleaned:
                 word_count[word].add(sentiment)
@@ -293,6 +343,7 @@ def get_platform_freq():
         "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
         "orderBy": as_str(request_get("orderBy"), "count"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
+        "betterToken": as_bool(request_get("betterToken"), False),
     }
     print("Query received:", query)
 
@@ -302,6 +353,7 @@ def get_platform_freq():
     start_date = query["startDate"]
     end_date = query["endDate"]
     keywords = query["keywords"]
+    better_token = query["betterToken"]
 
     if post_ids:
         df = _DF[_DF["postId"].isin(post_ids)]
@@ -318,7 +370,12 @@ def get_platform_freq():
     for platform in _PLATFORMS.keys():
         plat_df = df[df["platform"] == platform]
         for kw in keywords:
-            plat_df = plat_df[plat_df["bodyText"].str.contains(kw, na=False)]
+            if better_token:
+                tokenization = _get_tokenization()
+                has_kw = {idx for idx in df["postId"] if kw in tokenization[idx]}
+                df = df[df["postId"].isin(has_kw)]
+            else:
+                plat_df = plat_df[plat_df["bodyText"].str.contains(kw, na=False)]
         count = len(plat_df)
         mean_sentiment = np.mean(plat_df["sentiment"]) if len(plat_df) else None
         platform_info.append(
