@@ -37,33 +37,17 @@ const FrequencyChart = (props) => {
                     .attr("width",SVG_WIDTH)
                     .attr("height",SVG_HEIGHT)
                     .attr("transform","translate(" + ABSOLUTE_MARGIN.left +"," + ABSOLUTE_MARGIN.top+")");
-    svg.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 20).attr("id","cir1");
-    svg.append("circle").attr("cx", SVG_WIDTH).attr("cy", 0).attr("r", 20).attr("id","cir2");
-    svg.append("circle") .attr("cx", 0).attr("cy", SVG_HEIGHT).attr("r", 20).attr("id","cir3");
-        svg.append("circle")
-            .attr("cx", SVG_WIDTH)
-            .attr("cy", SVG_HEIGHT)
-            .attr("r", 20).attr("id","cir4");
-    const colorSc = d3.select(".color").attr("transform","translate(760,20)").attr("width",250).attr("height",20)
-    colorSc.append("rect").attr("x",0).attr("y",0)
-    .attr("width",20).attr("height",20).attr("fill","#4575b4")
-    colorSc.append("rect").attr("x",20).attr("y",0)
-    .attr("width",20).attr("height",20).attr("fill","#74add1")
+    // svg.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 20).attr("id","cir1");
+    // svg.append("circle").attr("cx", SVG_WIDTH).attr("cy", 0).attr("r", 20).attr("id","cir2");
+    // svg.append("circle") .attr("cx", 0).attr("cy", SVG_HEIGHT).attr("r", 20).attr("id","cir3");
+    //     svg.append("circle")
+    //         .attr("cx", SVG_WIDTH)
+    //         .attr("cy", SVG_HEIGHT)
+    //         .attr("r", 20).attr("id","cir4");
 
-    colorSc.append("rect").attr("x",40).attr("y",0)
-    .attr("width",20).attr("height",20).attr("fill","#ffffbf")
-    
-    colorSc.append("rect").attr("x",60).attr("y",0)
-    .attr("width",20).attr("height",20).attr("fill","#f46d43")
-
-    colorSc.append("rect").attr("x",80).attr("y",0)
-    .attr("width",20).attr("height",20).attr("fill","#d73027")
-    svg.append("text").attr("x",700).attr("y",30).text("meanSentiment").style("font", "7px times")
-    colorSc.append("text").attr("x",0).attr("y",35).text("-1")
-    colorSc.append("text").attr("x",80).attr("y",35).text("1")
     const createGraph = () => {
-        var yScale = d3.scaleLinear().domain([0,d3.max(dataset,function(d){return d.count
-        })]).range([0,YAXIS_DOMAIN]);
+        var yScale = d3.scaleLinear().domain([d3.max(dataset,function(d){return d.count
+        }),0]).range([0,YAXIS_DOMAIN]);
         var xScale = d3.scaleBand().domain(dataset.map((d)=> d.platform)).range([0,GRAPH_WIDTH]);
         const xaB = d3.select(xaxisRef.current)
         xaB.call(d3.axisBottom(xScale)).attr("transform","translate("+SVG_PADDING.l+","+GRAPH_HEIGHT+")")
@@ -83,11 +67,10 @@ const FrequencyChart = (props) => {
             method :"GET",
             url:"http://127.0.0.1:8000/api/getPlatformFrequencies"
         })
-        console.log("RESSS")
         console.log(response)
         if (response.status == 200){
             let res = response.data;
-            res = JSON.parse(res.replaceAll("NaN","null"))
+            console.log(typeof res)
             const {frequencies} = res;
             console.log(res)
             let ds = frequencies.map((d) => {

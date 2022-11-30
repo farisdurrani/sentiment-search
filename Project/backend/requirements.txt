@@ -5,3 +5,4 @@ flask-cors
 transformers
 alive-progress
 gunicorn
+rich
