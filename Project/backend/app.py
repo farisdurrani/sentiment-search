@@ -8,6 +8,7 @@ from typing import Any, Callable
 
 import database
 import in_memory
+
 # from dotenv import load_dotenv
 from flask import Flask, jsonify, request
 from flask_cors import CORS
@@ -24,8 +25,9 @@ CORS(app)
 
 
 @app.route("/")
+@app.route("/test/")
 def hello():
-    return "Hello, Backend World!"
+    return {"success": True, "message": "The backend is working"}
 
 
 # route to get avergae sentiments and number of posts grouped by platform and date
