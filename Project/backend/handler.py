@@ -22,7 +22,7 @@ def request_get(arg: str):
 
 @handle_null
 def as_str(arg: str):
-    return arg
+    return arg.lower()
 
 
 @handle_null
@@ -32,7 +32,7 @@ def as_date(arg: str):
 
 @handle_null
 def as_bool(arg: str):
-    return bool(int(arg))
+    return bool(arg)
 
 
 @handle_null
@@ -47,7 +47,7 @@ def as_float(arg: str):
 
 @handle_null
 def as_list_of_str(arg: str):
-    return request.args.getlist(arg)
+    return [s.lower() for s in request.args.getlist(arg)]
 
 
 @handle_null
