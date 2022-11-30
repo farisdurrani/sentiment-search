@@ -2,41 +2,38 @@
 
 DVA Project for CS 6456 Spring 2022
 
-#DESCRIPTION
+# DESCRIPTION
 
-##Backend 
+## Backend 
 The backend of our app is a python flask app (app.py with support from api.py) which
 converts the csv files containing the data to a pandas dataframe which it uses to return the
 value queried by the front end as the user changes parameters like keywords and date ranges.
 The queries are as follows:
 
-** / or /test : **
+- / or /test :
 Given no parameters, return a simple Hello World message to indicate the backend is alive
 
 
-** /api/getSummary : **
-
+- /api/getSummary :
 Given some filter parameters, give the summary of sentiment data.
 For each platform of each date, give its mean sentiment, as well as the mean sentiment of
 that date and the count of posts on that date.
 
-
-** /api/getBodyText : **
-
+- /api/getBodyText :
 Given a list of post IDs, return the full post data for each post
 
-** /api/getBagOfWords : **
+- /api/getBagOfWords :
 Given some filter parameters, return the number of occurrences across all
 posts of the most common words, along with the mean sentiment of all posts containing
 that word.
 
 
-** /api/getPlatformFrequencies : **
+- /api/getPlatformFrequencies :
 Given filter parameters, return the count and mean sentiment of posts on each platform
 
 
 
-#INSTALLATION
+# INSTALLATION
 ## Prerequisites/System Requirements:
 
 1. [NodeJS v18](https://nodejs.org/en/download/)
