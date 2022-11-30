@@ -3,7 +3,9 @@ import * as d3 from "d3";
 import axios from "axios";
 import { sentimentColor } from "../common";
 
-const FrequencyChart = () => {
+const FrequencyChart = (props) => {
+  const {className, hoveredFrequencies} = props;
+
   const svgRef = useRef();
   const xaxisRef = useRef();
   const yaxisRef = useRef();
@@ -117,28 +119,21 @@ const FrequencyChart = () => {
   };
 
   const getData = async () => {
+    let frequencies;
     if (USE_LOCAL_FILE) {
-      const frequencies = require("../data/freqData.json").frequencies;
-      const ds = frequencies.map((d) => ({
-        count: +d.count,
-        sentiment: +d.sentiment,
-        platform: d.platform,
-      }));
-      setData(ds);
-      return;
+      frequencies = require("../data/freqData.json").frequencies;
+    } else {
+      const response = await axios({
+        method: "GET",
+        url: "http://127.0.0.1:8000/api/getPlatformFrequencies",
+      });
+      if (response.status !== 200) {
+        console.log("Frequency chart API call failed");
+        return;
+      }
+      frequencies = response.data.frequencies;
     }
 
-    const response = await axios({
-      method: "GET",
-      url: "http://127.0.0.1:8000/api/getPlatformFrequencies",
-    });
-
-    if (response.status !== 200) {
-      console.log("Frequency chart API call failed");
-      return;
-    }
-
-    const frequencies = response.data.frequencies;
     const ds = frequencies.map((d) => ({
       count: +d.count,
       sentiment: +d.sentiment,
@@ -197,7 +192,7 @@ const FrequencyChart = () => {
   }, [dataset]);
 
   return (
-    <div>
+    <div className={`${className}`}>
       <svg ref={svgRef}>
         <g className="color"></g>
         <g className="x-axis" ref={xaxisRef}></g>

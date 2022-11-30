@@ -12,7 +12,7 @@ import {
 } from "../common";
 
 const Timeline = (props) => {
-  const { searchRef } = props;
+  const { className, searchRef, setHoveredFrequencies } = props;
   const searchTerm = (
     searchRef.current?.value || DEFAULT_SEARCH_TERM
   ).toLowerCase();
@@ -103,28 +103,29 @@ const Timeline = (props) => {
     const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
       "rows"
     ];
-    // console.debug(8, raw_sig_events_dataset, searchTerm);
     const relevant_sig_ev = raw_sig_events_dataset.filter((e) =>
       e.description.toLowerCase().includes(searchTerm)
     );
-    // console.debug(9, relevant_sig_ev);
 
     const clean_up_dataset = (raw_dataset) => {
       const clean_dataset = raw_dataset.map((e) => ({
         date: new Date(e.date),
         sentiment: +e.meanSentiment,
         count: +e.count,
+        posts: e.posts
       }));
 
-      // console.debug(10, relevant_sig_ev);
       const sig_ev_dataset = relevant_sig_ev.map((se) => {
         const this_date = new Date(se.date);
+        const datasetMatch = clean_dataset.find(
+          (d) => d.date - this_date === 0
+        );
         return {
           date: this_date,
           description: se.description,
-          sentiment: clean_dataset.find((d) => d.date - this_date === 0)
-            ?.sentiment,
-          count: 0,
+          sentiment: datasetMatch?.sentiment,
+          count: datasetMatch?.count,
+          posts: datasetMatch?.posts,
         };
       });
 
@@ -137,7 +138,6 @@ const Timeline = (props) => {
         sig_ev_dataset.findLastIndex((e) => e.date <= dateDomain[1]),
       ];
 
-      // console.debug(11, sig_ev_dataset);
       const shortened_se_dataset = sig_ev_dataset.slice(
         sig_ev_idx_range[0],
         sig_ev_idx_range[1] + 1
@@ -145,8 +145,6 @@ const Timeline = (props) => {
 
       setDataset(clean_dataset);
       setSig_events_dataset(shortened_se_dataset);
-
-      // console.debug(shortened_se_dataset);
     };
 
     if (USE_LOCAL_FILE) {
@@ -264,14 +262,11 @@ const Timeline = (props) => {
       .enter()
       .append("circle")
       .attr("fill", (d) => {
-        const datasetDateInfo = dataset.find((e) => e.date - d.date === 0);
-
-        if (datasetDateInfo == null)
+        const sentiment = d.sentiment;
+        if (sentiment == null) {
           return sentimentColor((MAX_SENTIMENT + MIN_SENTIMENT) / 2);
-
-        d.count = datasetDateInfo.count;
-
-        return sentimentColor(datasetDateInfo.sentiment);
+        }
+        return sentimentColor(sentiment);
       })
       .attr("cx", (d) => dateScale(d.date))
       .attr("cy", (d) => {
@@ -298,9 +293,12 @@ const Timeline = (props) => {
         date: rawDate,
         count,
         sentiment: rawSentiment,
+        posts: posts,
       } = d.target.__data__;
+      setHoveredFrequencies(posts);
+      console.debug(posts);
       const date = rawDate.toLocaleDateString("en-US");
-      const sentiment = Number.parseFloat(rawSentiment).toFixed(3);
+      const sentiment = rawSentiment.toFixed(3);
 
       tooltipMeta.html(`${date} | Sentiment: ${sentiment} | Count: ${count}`);
       tooltipText.html("");
@@ -365,10 +363,7 @@ const Timeline = (props) => {
   }, [dataset]);
 
   return (
-    <div
-      id="timeline"
-      className={`${props.className} d-flex justify-content-center`}
-    >
+    <div id="timeline" className={`${className} d-flex justify-content-center`}>
       <svg ref={svg1Ref}></svg>
       <div id="sig-ev-tooltip" className="tooltip">
         <div id="sig-ev-tooltip-circle" />
