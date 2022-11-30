@@ -1,0 +1,17 @@
+{
+    "success": true,
+    "bagOfWords": [
+      { "word": "trump"},
+      { "word": "elon" },
+      { "word": "disaster"},
+      { "word": "happy"},
+      { "word": "wedding"},
+      { "word": "shooting"},
+      { "word": "breaking"},
+      { "word": "covid"},
+      { "word": "love"},
+      { "word": "hate"},
+      { "word": "death"},
+      { "word": "victory"}
+    ]
+  }

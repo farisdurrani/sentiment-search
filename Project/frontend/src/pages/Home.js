@@ -7,6 +7,7 @@ import {
   BubbleChart,
   PolarArea,
   SearchBar,
+  Radar,
 } from "../components/index";
 
 const Home = () => {
@@ -17,6 +18,7 @@ const Home = () => {
       <Timeline className="mt-5" searchRef={searchRef} />
       <BubbleChart className="mt-5" />
       <PolarArea className="mt-5" />
+      <Radar className="mt-5" />
     </Container>
   );
 };
