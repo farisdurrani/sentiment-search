@@ -1,0 +1,35 @@
+{
+  "frequencies": [
+    {
+      "count": 516440,
+      "meanSentiment": 0.3617954381922393,
+      "platform": "The Guardian"
+    },
+    {
+      "count": 99640,
+      "meanSentiment": 0.09181248594941788,
+      "platform": "CNN"
+    },
+    {
+      "count": 20096,
+      "meanSentiment": 0.3101522143710191,
+      "platform": "facebook"
+    },
+    {
+      "count": 0,
+      "meanSentiment": null,
+      "platform": "Reddit"
+    },
+    {
+      "count": 0,
+      "meanSentiment": null,
+      "platform": "twitter"
+    },
+    {
+      "count": 0,
+      "meanSentiment": null,
+      "platform": "The New York Times"
+    }
+  ],
+  "success": true
+}
