@@ -8,116 +8,221 @@ import { sentimentColor } from "../common";
 
 
 
-class ApexChart extends React.Component {
-    constructor(props) {
+// class ApexChart extends React.Component {
+    
+  
+
+//     constructor(props) {
 
     
-    
+      
      
-    const colors=[]
+    
+//     //('hello',data);
+
+    
+//       super(props);
+
+      // this.state = {
+        
+      //   series: [
+      //     {
+      //       data: props.series,
+      //     }
+      //   ],
+      //   options: {
+      //     legend: {
+      //       show: false
+      //     },
+      //     chart: {
+      //       height: 350,
+      //       type: 'treemap'
+      //     },
+      //     title: {
+      //       text: 'Word Treemap (Most Occurances)',
+      //       align: 'center'
+      //     },
+      //     fill: {
+      //       opacity: 0.8
+      //     },
+      //     colors: props.colors,
+      //     plotOptions: {
+      //       treemap: {
+      //         distributed: true,
+      //         enableShades: false
+      //       }
+      //     },
+
+      //     markers: {
+      //       onClick: function(e) {
+
+      //         window.open('https://stackoverflow.com');
+      //         // do something on marker click
+      //       }
+      //   }
+          
+      //   },
+      
+      
+      // };
+
+//     }
+
+
+
+  
+
+//     render() {
+
+      
+
+      
+//       return (
+        
+
+//   <div id="chart">
+// <ReactApexChart options={this.state.options} series={this.state.series} type="treemap" height={350} />
+// </div>
+
+
+//       );
+//     }
+//   }
+
+// export default ApexChart;
+
+
+
+const Timeline = (props) => {
+  const [dataset, setDataset] = useState([]);
+  const [colors, setColor] = useState([]);
+  useMemo(() => importData(), []);
+
+  const color=[]
+  
     function getColor(value){
         //value from 0 to 1
         //console.log(value);
-        colors.push(sentimentColor(value));
+        color.push(sentimentColor(value));
         return sentimentColor(value);
     }
     
-    function importData(item) {
-        const raw_dataset = item["bagOfWords"];
+    
+   
+    useEffect(() => {
+      // console.log('hidd')
+      // if (dataset)  return (
+        
+
+      //   <div id="chart">
+      // hi {/* <ReactApexChart series={{data:[1,2,3]}} type="treemap" height={350} /> */}
+      // </div>
+      // )
+
+      // else
+       console.log(dataset);
+
+    //    return (
+        
+
+    //     <div id="chart">
+        
+    //  hi {/* <ReactApexChart series={[{data:[1,2,3]}]} type="treemap" height={350} />  */}
+    //   </div>
+    //   )
+  
+  
+    }, [dataset,colors]);
+function importData() {
+    axios.get( "http://127.0.0.1:8000/api/getBagOfWords?platform=facebook&limitAmountOfWords=10").then((response) => {
+      if (response.data.success) console.debug("Response 200 downloaded");
+      else {
+        console.debug("Backend call failed");
+        return;
+      }
+
+    
+        const raw_dataset = response.data["bagOfWords"];
         const dataset = raw_dataset.map((e) => ({
         x: e.word,
         y: +e.count,
         z: getColor(+e.meanSentiment),
         }));
-
-        return dataset;
-    }
-
-      
-            
+        setDataset(dataset);
+        setColor(color);
 
     
-    //('hello',data);
-
-    
-      super(props);
-
-      this.state = {
-        data: fetchData(),
-        series: [
-          {
-            data: this.state.data,
-          }
-        ],
-        options: {
-          legend: {
-            show: false
-          },
-          chart: {
-            height: 350,
-            type: 'treemap'
-          },
-          title: {
-            text: 'Word Treemap (Most Occurances)',
-            align: 'center'
-          },
-          fill: {
-            opacity: 0.8
-          },
-          colors: colors,
-          plotOptions: {
-            treemap: {
-              distributed: true,
-              enableShades: false
-            }
-          },
-
-          markers: {
-            onClick: function(e) {
-
-              window.open('https://stackoverflow.com');
-              // do something on marker click
-            }
-        }
-          
-        },
-      
-      
-      };
-
-      async function fetchData() {
-        try {
-          console.log('fetch')
-          const result = await axios.get("http://127.0.0.1:8000/api/getBagOfWords?platform=facebook&limitAmountOfWords=10")
-          
-          const raw_dataset = result.data["bagOfWords"];
-          const dataset = raw_dataset.map((e) => ({
-          x: e.word,
-          y: +e.count,
-          z: getColor(+e.meanSentiment),
-          }));
-          console.log('data',dataset)
-          this.state.data=dataset;
-          return dataset;
-        } catch (error) {
-          console.error('ss',error);
-        }
-      }
-    }
-
   
 
-    render() {
-      return (
+    
+    
+    
+    console.log('hi',colors);
+  }
+    )
+}
+
+
+var state= {
+        
+  series: [
+    {
+      data: dataset,
+    }
+  ],
+  options: {
+    legend: {
+      show: false
+    },
+    chart: {
+      height: 350,
+      type: 'treemap'
+    },
+    title: {
+      text: 'Word Treemap (Most Occurances)',
+      align: 'center'
+    },
+    fill: {
+      opacity: 0.8
+    },
+    colors:colors,
+    plotOptions: {
+      treemap: {
+        distributed: true,
+        enableShades: false
+      }
+    },
+
+    markers: {
+      onClick: function(e) {
+
+        window.open('https://stackoverflow.com');
+        // do something on marker click
+      }
+  }
+    
+  },
+
+
+};
+      
+
+
+    return (
         
 
-  <div id="chart">
-<ReactApexChart options={this.state.options} series={this.state.series} type="treemap" height={350} />
-</div>
+      <div id="chart">
+     
+     <ReactApexChart options={state.options} series={state.series} type="treemap" height={350} />
+    </div>
+    )
 
 
-      );
-    }
-  }
 
-export default ApexChart;
+
+}
+
+
+Timeline.propTypes = {};
+
+export default Timeline;
