@@ -105,7 +105,7 @@ Given some filter parameters, return the number of occurrences across all posts 
 - orderBy: DEFAULT count
 - orderDescending: DEFAULT true
 
-## Sameple Response:
+## Sample Response:
 </br>{</br>
   "success": true,</br>
   "bagOfWords": [</br>

@@ -8,7 +8,8 @@ DVA Project for CS 6456 Spring 2022
 The backend of our app is a python flask app (app.py with support from api.py) which
 converts the csv files containing the data to a pandas dataframe which it uses to return the
 value queried by the front end as the user changes parameters like keywords and date ranges.
-The queries are as follows:
+
+The queries are as follows (a more detailed description can be found in [BACKEND_API](./BACKEND_API.md)
 
 - / or /test :
 Given no parameters, return a simple Hello World message to indicate the backend is alive
