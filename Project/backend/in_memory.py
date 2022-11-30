@@ -51,7 +51,7 @@ else:
 
 process_df(_DF)
 _DF["postId"] = range(len(_DF))
-_DF.to_csv(cache_path, encoding="utf-8")
+_DF.to_csv(cache_path, encoding="utf-8", index=False)
 print(_DF)
 
 with open("stop_words.txt") as f:
