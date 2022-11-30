@@ -122,7 +122,8 @@ def get_summary():
     if end_date:
         df = df[df["date"] <= end_date.isoformat()]
 
-    df = pd.concat([df[df["platform"] == plat] for plat in platform])
+    if platform:
+        df = pd.concat([df[df["platform"] == plat] for plat in platform])
 
     if keywords:
         for kw in keywords:
