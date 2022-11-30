@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import * as d3 from "d3";
 import axios from "axios"
+import { sentimentColor } from "../common"; 
 
 const FrequencyChart = (props) => {
     const svgRef = useRef();
@@ -77,10 +78,12 @@ const FrequencyChart = (props) => {
 
 
     const getData = async() =>{
+        console.log("starting")
         const response = await axios({
             method :"GET",
             url:"http://127.0.0.1:8000/api/getPlatformFrequencies"
         })
+        console.log("RESSS")
         console.log(response)
         if (response.status == 200){
             let res = response.data;
@@ -96,6 +99,7 @@ const FrequencyChart = (props) => {
             return ds;
 
         }else{
+            console.log("problem")
             console.log(response.status);
         }
     }
@@ -122,7 +126,7 @@ const FrequencyChart = (props) => {
             console.log(yScale(d.count))
             return yScale(d.count)
         }).attr("fill",function(d){
-            return colors(d.meanSentiment)
+            return sentimentColor(d.meanSentiment)
         });
 
     }
@@ -146,6 +150,7 @@ const FrequencyChart = (props) => {
 
 
     useEffect(() => {
+        console.log("rendering")
         const setDate = async() => {
             await getData();
         }
