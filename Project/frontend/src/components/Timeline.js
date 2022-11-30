@@ -16,6 +16,8 @@ const Timeline = (props) => {
   const svg1Ref = useRef();
   const singleRenderRef = useRef();
 
+  const USE_LOCAL_FILE = false;
+
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
   const ABSOLUTE_WIDTH = 1200;
@@ -42,8 +44,6 @@ const Timeline = (props) => {
   const [dataset, setDataset] = useState();
   const [sig_events_dataset, setSig_events_dataset] = useState();
   useMemo(() => importData(), []);
-
-  console.debug(sig_events_dataset);
 
   const initializeSVG = (svgRef) => {
     // create base SVG
@@ -104,20 +104,7 @@ const Timeline = (props) => {
       e.description.toLowerCase().includes(searchTerm)
     );
 
-    const params = {
-      keywords: searchTerm,
-      orderDescending: "false",
-      startDate: "2014-12-31",
-      endDate: "2015-12-31",
-    };
-    axios.get(API_URL + "/api/getSummary", { params }).then((response) => {
-      if (response.data.success) console.debug("Response 200 downloaded");
-      else {
-        console.debug("Backend call failed");
-        return;
-      }
-
-      const raw_dataset = response.data["rows"];
+    const clean_up_dataset = (raw_dataset) => {
       const clean_dataset = raw_dataset.map((e) => ({
         date: new Date(e.date),
         sentiment: +e.meanSentiment,
@@ -150,6 +137,30 @@ const Timeline = (props) => {
 
       setDataset(clean_dataset);
       setSig_events_dataset(shortened_se_dataset);
+    };
+
+    if (USE_LOCAL_FILE) {
+      const raw_dataset = require("../data/data.json").rows;
+      clean_up_dataset(raw_dataset);
+      return;
+    }
+
+    const params = {
+      keywords: searchTerm,
+      orderDescending: "false",
+      startDate: "2015-12-31",
+      endDate: "2016-12-31",
+    };
+
+    axios.get(API_URL + "/api/getSummary", { params }).then((response) => {
+      if (response.data.success) console.debug("Response 200 downloaded");
+      else {
+        console.debug("Backend call failed");
+        return;
+      }
+
+      const raw_dataset = response.data["rows"];
+      clean_up_dataset(raw_dataset);
     });
   }
   const addAxes = (plotGroup, xScale, countScale) => {
@@ -192,7 +203,7 @@ const Timeline = (props) => {
       .attr("text-anchor", "middle")
       .attr("y", -10)
       .attr("class", "title")
-      .text(`Sentiments Over Time for ${searchTerm}`);
+      .text(`Sentiments Over Time for ${searchRef.current?.value}`);
   };
 
   const drawEventCards = (plotElements, dateScale) => {
