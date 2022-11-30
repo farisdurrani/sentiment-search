@@ -116,6 +116,8 @@ def process_df(df: pd.DataFrame):
     If 'country' column is present, it's removed.
     """
 
+    print("processing")
+
     if "country" in df:
         del df["country"]
     df.dropna(inplace=True)
@@ -132,14 +134,15 @@ if cache_path.exists():
     _DF = pd.read_csv(cache_path)
 else:
     dataframes = []
-    for (name, short) in _PLATFORMS.items():
+    for (name, short) in alive_it(_PLATFORMS.items()):
         print("Processing:", name)
-        df = pd.read_csv(f"{name.lower()}_filtered.csv")
-        print(df)
-        dataframes.append(df)
-
-    for df in dataframes:
-        process_df(df)
+        path = Path(f"{short.lower()}_filtered.csv")
+        if path.exists():
+            df = pd.read_csv(path)
+            dataframes.append(df)
+            # print(df)
+        else:
+            print(f"OH NO!! The file {path} is not found. IGNORED.")
 
     _DF = pd.concat(dataframes)
 
