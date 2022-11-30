@@ -48,6 +48,9 @@ else:
 
 print(_DF)
 
+with open("stop_words.txt") as f:
+    _STOP_WORDS = {x for x in f.read().split()}
+
 
 @dataclass
 class CountTotal:
@@ -233,7 +236,9 @@ def get_bag_of_words():
 
             cleaned = [s.lstrip("##") for s in line]
             cleaned = set(
-                s for s in cleaned if len(s) >= 3 and re.match("[A-Za-z]+", s)
+                s
+                for s in cleaned
+                if s not in _STOP_WORDS and len(s) >= 3 and re.match("[A-Za-z]+", s)
             )
 
             for word in cleaned:
