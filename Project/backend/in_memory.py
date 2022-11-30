@@ -32,6 +32,29 @@ _PLATFORMS = {
 
 
 def _tokenization_and_save(df: pd.DataFrame, path: Path | None = None):
+    """
+    Given the dataframe and path,
+    perform tokenization on the dataframe's bodyText column,
+    and save to path if it's given.
+    Returns the tokenized mapping.
+
+    Parameters
+    ----------
+    df:
+        The dataframe whose bodyText will be tokenized.
+        It must contain postId column that has continguous range
+        i.e. df.postId == range(0, len(df))
+
+    path:
+        The path to save if given.
+
+    Returns
+    -------
+    A list of set of strings.
+    Each entry of the list corresponds to the tokenization result of bodyText
+    whose postId matches the index in the list.
+    """
+
     mapping: List[Set[str]] = [set() for _ in range(len(df))]
     assert set(df["postId"]) == set(range(len(df)))
     for (idx, body_text) in alive_it(zip(df["postId"], df["bodyText"]), total=len(df)):
@@ -54,6 +77,14 @@ def _tokenization_and_save(df: pd.DataFrame, path: Path | None = None):
 
 
 def _get_tokenization():
+    """
+    Returns the global tokenization_set.
+
+    Creates and set the global tokenization set if not previously set.
+
+    Loads from 'tokenization.json' if one is available.
+    """
+
     global _TOKENIZED_SET
 
     if _TOKENIZED_SET is not None:
@@ -74,6 +105,17 @@ def _get_tokenization():
 
 
 def process_df(df: pd.DataFrame):
+    """
+    Process the dataframe in-place.
+
+    Paramters
+    ---------
+
+    df: The dataframe to process.
+    Must have 'date', 'bodyText' columns
+    If 'country' column is present, it's removed.
+    """
+
     if "country" in df:
         del df["country"]
     df.dropna(inplace=True)
@@ -84,6 +126,7 @@ def process_df(df: pd.DataFrame):
     df["bodyText"].update(df["bodyText"].astype("str").str.lower())
 
 
+# Optionally caching the global dataframe if the file is found.
 cache_path = Path("all-platforms.csv")
 
 if cache_path.exists():
@@ -100,9 +143,13 @@ else:
 
 process_df(_DF)
 _DF["postId"] = range(len(_DF))
+
+# Not saving the index because
+# repeatedly saving and loading creates more unnamed columns.
 _DF.to_csv(cache_path, encoding="utf-8", index=False)
 print(_DF)
 
+# Find the stop_words.txt in the current folder and remove those from search results.
 with open("stop_words.txt") as f:
     sw = {x for x in f.read().split()}
     _STOP_WORDS = sw.copy()
