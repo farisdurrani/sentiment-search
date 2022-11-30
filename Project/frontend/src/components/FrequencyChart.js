@@ -3,7 +3,7 @@ import * as d3 from "d3";
 import axios from "axios";
 import { sentimentColor } from "../common";
 
-const FrequencyChart = (props) => {
+const FrequencyChart = () => {
   const svgRef = useRef();
   const xaxisRef = useRef();
   const yaxisRef = useRef();
@@ -31,7 +31,7 @@ const FrequencyChart = (props) => {
   const YAXIS_DOMAIN = SVG_HEIGHT - 2 * SVG_PADDING.t;
   const GRAPH_WIDTH = SVG_WIDTH - SVG_PADDING.l - SVG_PADDING.r;
 
-  let svg = d3
+  const svg = d3
     .select(svgRef.current)
     .attr("id", "frequency_chart")
     .attr("width", SVG_WIDTH)
@@ -40,25 +40,37 @@ const FrequencyChart = (props) => {
       "transform",
       "translate(" + ABSOLUTE_MARGIN.left + "," + ABSOLUTE_MARGIN.top + ")"
     );
-  // svg.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 20).attr("id","cir1");
-  // svg.append("circle").attr("cx", SVG_WIDTH).attr("cy", 0).attr("r", 20).attr("id","cir2");
-  // svg.append("circle") .attr("cx", 0).attr("cy", SVG_HEIGHT).attr("r", 20).attr("id","cir3");
-  //     svg.append("circle")
-  //         .attr("cx", SVG_WIDTH)
-  //         .attr("cy", SVG_HEIGHT)
-  //         .attr("r", 20).attr("id","cir4");
+  svg
+    .append("circle")
+    .attr("cx", 0)
+    .attr("cy", 0)
+    .attr("r", 20)
+    .attr("id", "cir1");
+  svg
+    .append("circle")
+    .attr("cx", SVG_WIDTH)
+    .attr("cy", 0)
+    .attr("r", 20)
+    .attr("id", "cir2");
+  svg
+    .append("circle")
+    .attr("cx", 0)
+    .attr("cy", SVG_HEIGHT)
+    .attr("r", 20)
+    .attr("id", "cir3");
+  svg
+    .append("circle")
+    .attr("cx", SVG_WIDTH)
+    .attr("cy", SVG_HEIGHT)
+    .attr("r", 20)
+    .attr("id", "cir4");
 
   const createGraph = () => {
-    var yScale = d3
+    const yScale = d3
       .scaleLinear()
-      .domain([
-        d3.max(dataset, function (d) {
-          return d.count;
-        }),
-        0,
-      ])
+      .domain([d3.max(dataset, (d) => d.count), 0])
       .range([0, YAXIS_DOMAIN]);
-    var xScale = d3
+    const xScale = d3
       .scaleBand()
       .domain(dataset.map((d) => d.platform))
       .range([0, GRAPH_WIDTH]);
@@ -70,6 +82,16 @@ const FrequencyChart = (props) => {
         "transform",
         "translate(" + SVG_PADDING.l + "," + GRAPH_HEIGHT + ")"
       );
+    // Add the text label for X Axis
+    xaB
+      .append("text")
+      .attr("class", "axis-label")
+      .attr("x", GRAPH_WIDTH / 2)
+      .attr("y", SVG_PADDING.t)
+      .attr("text-anchor", "middle")
+      .attr("fill", "black")
+      .text("Date");
+
     const yaB = d3.select(yaxisRef.current);
     yaB
       .call(d3.axisLeft(yScale))
@@ -77,6 +99,17 @@ const FrequencyChart = (props) => {
         "transform",
         "translate(" + SVG_PADDING.l + "," + SVG_PADDING.t + ")"
       );
+
+    // Add the text label for Y axis
+    yaB
+      .append("text")
+      .attr("class", "axis-label")
+      .attr("x", 0)
+      .attr("y", 150)
+      .attr("fill", "black")
+      .attr("transform", `rotate(270 0 200)`)
+      .text("Count of Posts");
+
     return [xScale, yScale];
 
     // const bars = d3.select(".rectangles").attr("width",SVG_WIDTH).attr("height",SVG_HEIGHT);
@@ -106,10 +139,10 @@ const FrequencyChart = (props) => {
 
     const frequencies = response.data.frequencies;
     const ds = frequencies.map((d) => ({
-        count: +d.count,
-        meanSentiment: +d.meanSentiment,
-        platform: d.platform,
-      }));
+      count: +d.count,
+      meanSentiment: +d.meanSentiment,
+      platform: d.platform,
+    }));
     setData(ds);
     return ds;
   };
@@ -123,8 +156,7 @@ const FrequencyChart = (props) => {
       .attr("width", GRAPH_WIDTH)
       .attr("height", GRAPH_HEIGHT)
       .attr("transform", "translate(60,0)");
-    // let dummy = [2,3,4];
-    var colors = d3
+    const colors = d3
       .scaleQuantize()
       .domain([-1, 1])
       .range(["#4575b4", "#74add1", "#ffffbf", "#f46d43", "#d73027"]);
@@ -132,19 +164,11 @@ const FrequencyChart = (props) => {
       .data(dataset)
       .enter()
       .append("rect")
-      .attr("x", function (d) {
-        return xScale(d.platform) + (xScale.bandwidth() - 63) / 2;
-      })
-      .attr("y", function (d) {
-        return yScale(d.count) + SVG_PADDING.t;
-      })
+      .attr("x", (d) => xScale(d.platform) + (xScale.bandwidth() - 63) / 2)
+      .attr("y", (d) => yScale(d.count) + SVG_PADDING.t)
       .attr("width", 63)
-      .attr("height", function (d) {
-        return GRAPH_HEIGHT - yScale(d.count) - SVG_PADDING.t;
-      })
-      .attr("fill", function (d) {
-        return sentimentColor(d.meanSentiment);
-      });
+      .attr("height", (d) => GRAPH_HEIGHT - yScale(d.count) - SVG_PADDING.t)
+      .attr("fill", (d) => sentimentColor(d.meanSentiment));
   };
 
   const createAll = () => {
