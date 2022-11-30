@@ -56,7 +56,7 @@ class CountTotal:
 
     @property
     def mean(self):
-        return self.count / self.total
+        return self.total / self.count
 
     def add(self, value: float):
         self.count += 1
