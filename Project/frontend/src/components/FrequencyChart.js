@@ -73,7 +73,8 @@ const FrequencyChart = () => {
     const xScale = d3
       .scaleBand()
       .domain(dataset.map((d) => d.platform))
-      .range([0, GRAPH_WIDTH]);
+      .range([0, GRAPH_WIDTH])
+      .padding(0.6);
     createBars(xScale, yScale);
     const xaB = d3.select(xaxisRef.current);
     xaB
@@ -120,7 +121,7 @@ const FrequencyChart = () => {
       const frequencies = require("../data/freqData.json").frequencies;
       const ds = frequencies.map((d) => ({
         count: +d.count,
-        meanSentiment: +d.meanSentiment,
+        sentiment: +d.sentiment,
         platform: d.platform,
       }));
       setData(ds);
@@ -140,7 +141,7 @@ const FrequencyChart = () => {
     const frequencies = response.data.frequencies;
     const ds = frequencies.map((d) => ({
       count: +d.count,
-      meanSentiment: +d.meanSentiment,
+      sentiment: +d.sentiment,
       platform: d.platform,
     }));
     setData(ds);
@@ -164,11 +165,11 @@ const FrequencyChart = () => {
       .data(dataset)
       .enter()
       .append("rect")
-      .attr("x", (d) => xScale(d.platform) + (xScale.bandwidth() - 63) / 2)
+      .attr("x", (d) => xScale(d.platform))
       .attr("y", (d) => yScale(d.count) + SVG_PADDING.t)
-      .attr("width", 63)
+      .attr("width", xScale.bandwidth())
       .attr("height", (d) => GRAPH_HEIGHT - yScale(d.count) - SVG_PADDING.t)
-      .attr("fill", (d) => sentimentColor(d.meanSentiment));
+      .attr("fill", (d) => sentimentColor(d.sentiment));
   };
 
   const createAll = () => {
