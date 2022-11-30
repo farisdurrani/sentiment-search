@@ -93,3 +93,7 @@ Author:       See CODEOWNDERS
   font-style: italic;
   font-size: 0.75rem;
 }
+
+#timeline .axis-label {
+  font-weight: bold;
+}

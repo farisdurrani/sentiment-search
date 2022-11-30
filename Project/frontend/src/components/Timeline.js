@@ -85,6 +85,7 @@ const Timeline = (props) => {
   };
 
   function importData() {
+    if (singleRenderRef?.current) return;
     console.debug("Importing data...");
 
     const raw_dataset = require("../data/data.json")["rows"];
@@ -130,6 +131,7 @@ const Timeline = (props) => {
     // Add the text label for X Axis
     xAxisGroup
       .append("text")
+      .attr("class", "axis-label")
       .attr("x", GRAPH_WIDTH / 2)
       .attr("y", SVG_PADDING.t)
       .attr("text-anchor", "middle")
@@ -144,6 +146,7 @@ const Timeline = (props) => {
     // Add the text label for Y axis
     yAxisGroup
       .append("text")
+      .attr("class", "axis-label")
       .attr("x", 0)
       .attr("y", 150)
       .attr("fill", "black")
@@ -223,8 +226,14 @@ const Timeline = (props) => {
       .on("mouseleave", mouseleave);
   };
 
-  const addMainVis2 = (plotGroup, dateScale, countScale) => {
-    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
+  const drawBars = (plotElements, dateScale, countScale) => {
+    const mouseover = function (d) {
+      d3.select(this).style("stroke", "black").style("opacity", 1);
+    };
+    const mousemove = function (d) {};
+    const mouseleave = function (_) {
+      d3.select(this).style("stroke", "none").style("opacity", 0.8);
+    };
 
     // Draw bars
     plotElements
@@ -238,7 +247,16 @@ const Timeline = (props) => {
       .attr("height", (d) => GRAPH_HEIGHT - countScale(d.count))
       .attr("width", GRAPH_WIDTH / dataset.length)
       .attr("x", (d) => dateScale(d.date))
-      .attr("y", (d) => countScale(d.count));
+      .attr("y", (d) => countScale(d.count))
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
+  };
+
+  const addMainVis2 = (plotGroup, dateScale, countScale) => {
+    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
+
+    drawBars(plotElements, dateScale, countScale);
 
     drawEventCards(plotElements, dateScale);
   };
