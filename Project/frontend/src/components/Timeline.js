@@ -12,7 +12,7 @@ const Timeline = (props) => {
 
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
-  const ABSOLUTE_WIDTH = 960;
+  const ABSOLUTE_WIDTH = 1200;
   const ABSOLUTE_HEIGHT = 540 * NUMBER_OF_GRAPHS;
   const ABSOLUTE_MARGIN = {
     top: 10,
@@ -85,23 +85,30 @@ const Timeline = (props) => {
   };
 
   function importData() {
-    const raw_dataset = require("../data/data.json")["rows"];
-    const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
-      "rows"
-    ];
+    console.debug("Importing data...");
 
+    const raw_dataset = require("../data/data.json")["rows"];
     const dataset = raw_dataset.map((e) => ({
       date: new Date(e.date),
       sentiment: +e.meanSentiment,
       count: +e.count,
     }));
+
+    const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
+      "rows"
+    ];
     const relevant_sig_ev = raw_sig_events_dataset.filter((e) =>
       e.description.toLowerCase().includes(searchTerm)
     );
-    const sig_ev_dataset = relevant_sig_ev.map((e) => ({
-      date: new Date(e.date),
-      description: e.description,
-    }));
+    const sig_ev_dataset = relevant_sig_ev.map((se) => {
+      const this_date = new Date(se.date);
+      return {
+        date: this_date,
+        description: se.description,
+        sentiment: dataset.find((d) => d.date - this_date === 0)?.sentiment,
+      };
+    });
+
     const dateDomain = [dataset[0].date, dataset[dataset.length - 1].date];
     const sig_ev_idx_range = [
       sig_ev_dataset.findIndex((e) => e.date >= dateDomain[0]),
@@ -123,9 +130,11 @@ const Timeline = (props) => {
     // Add the text label for X Axis
     xAxisGroup
       .append("text")
+      .attr("class", "axis-label")
       .attr("x", GRAPH_WIDTH / 2)
-      .attr("y", GRAPH_HEIGHT + SVG_PADDING.t)
+      .attr("y", SVG_PADDING.t)
       .attr("text-anchor", "middle")
+      .attr("fill", "black")
       .text("Date");
 
     // Add the Y Axis
@@ -136,9 +145,11 @@ const Timeline = (props) => {
     // Add the text label for Y axis
     yAxisGroup
       .append("text")
+      .attr("class", "axis-label")
       .attr("x", 0)
-      .attr("y", GRAPH_HEIGHT / 2 - 40)
-      .attr("transform", `rotate(270 ${0} ${GRAPH_HEIGHT / 2})`)
+      .attr("y", 150)
+      .attr("fill", "black")
+      .attr("transform", `rotate(270 0 200)`)
       .text("Count of Posts");
   };
 
@@ -150,7 +161,7 @@ const Timeline = (props) => {
       .attr("text-anchor", "middle")
       .attr("y", -10)
       .attr("class", "title")
-      .text("Plot 1");
+      .text(`Sentiments Over Time for ${searchTerm}`);
   };
 
   const drawEventCards = (plotElements, dateScale) => {
@@ -159,19 +170,29 @@ const Timeline = (props) => {
       .attr("class", "event-card-group");
 
     const tooltip = d3.select("#sig-ev-tooltip");
+    const tooltipMeta = d3.select("#sig-ev-tooltip-meta");
     const tooltipText = d3.select("#sig-ev-tooltip-text");
+    const tooltipCircle = d3.select("#sig-ev-tooltip-circle");
 
-    tooltipText.html("blobbbbbbbbbbbbbbbbbbbb");
-
-    const mouseover = function (_) {
+    const mouseover = function (d) {
       tooltip.style("opacity", 1);
       d3.select(this).style("stroke", "black").style("opacity", 1);
+
+      const {
+        date: rawDate,
+        description,
+        sentiment: rawSentiment,
+      } = d.target.__data__;
+      const date = rawDate.toLocaleDateString("en-US");
+      const sentiment = Number.parseFloat(rawSentiment).toFixed(3);
+
+      tooltipMeta.html(`${date} | Sentiment: ${sentiment}`);
+      tooltipText.html(description);
+      tooltipCircle.style("background-color", sentimentColor(sentiment));
     };
     const mousemove = function (d) {
       const [coordX, coordY] = [d.pageX, d.pageY];
-      const description = d.target.__data__.description;
 
-      tooltipText.html(description);
       tooltip.style("left", coordX + "px");
       tooltip.style("top", coordY + "px");
     };
@@ -201,11 +222,41 @@ const Timeline = (props) => {
       .attr("r", 10)
       .on("mouseover", mouseover)
       .on("mousemove", mousemove)
-      .on("mouseleave", mouseleave)
+      .on("mouseleave", mouseleave);
   };
 
-  const addMainVis2 = (plotGroup, dateScale, countScale) => {
-    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
+  const drawBars = (plotElements, dateScale, countScale) => {
+    const tooltip = d3.select("#sig-ev-tooltip");
+    const tooltipMeta = d3.select("#sig-ev-tooltip-meta");
+    const tooltipText = d3.select("#sig-ev-tooltip-text");
+    const tooltipCircle = d3.select("#sig-ev-tooltip-circle");
+
+    const mouseover = function (d) {
+      tooltip.style("opacity", 1);
+      d3.select(this).style("stroke", "black").style("opacity", 1);
+
+      const {
+        date: rawDate,
+        count,
+        sentiment: rawSentiment,
+      } = d.target.__data__;
+      const date = rawDate.toLocaleDateString("en-US");
+      const sentiment = Number.parseFloat(rawSentiment).toFixed(3);
+
+      tooltipMeta.html(`${date} | Sentiment: ${sentiment} | Count: ${count}`);
+      tooltipText.html("");
+      tooltipCircle.style("background-color", sentimentColor(sentiment));
+    };
+    const mousemove = function (d) {
+      const [coordX, coordY] = [d.pageX, d.pageY];
+
+      tooltip.style("left", coordX + "px");
+      tooltip.style("top", coordY + "px");
+    };
+    const mouseleave = function (_) {
+      tooltip.style("opacity", 0);
+      d3.select(this).style("stroke", "none").style("opacity", 0.8);
+    };
 
     // Draw bars
     plotElements
@@ -219,13 +270,22 @@ const Timeline = (props) => {
       .attr("height", (d) => GRAPH_HEIGHT - countScale(d.count))
       .attr("width", GRAPH_WIDTH / dataset.length)
       .attr("x", (d) => dateScale(d.date))
-      .attr("y", (d) => countScale(d.count));
+      .attr("y", (d) => countScale(d.count))
+      .on("mouseover", mouseover)
+      .on("mousemove", mousemove)
+      .on("mouseleave", mouseleave);
+  };
+
+  const addMainVis1 = (plotGroup, dateScale, countScale) => {
+    const plotElements = plotGroup.append("g").attr("class", "plot-elements");
+
+    drawBars(plotElements, dateScale, countScale);
 
     drawEventCards(plotElements, dateScale);
   };
 
   const createPlot = (svg, dateScale, countScale) => {
-    addMainVis2(svg, dateScale, countScale);
+    addMainVis1(svg, dateScale, countScale);
     addGraphTitle(svg);
     addAxes(svg, dateScale, countScale);
   };
@@ -239,7 +299,7 @@ const Timeline = (props) => {
   useEffect(() => {
     if (singleRenderRef.current) return;
     singleRenderRef.current = true;
-    
+
     createAll();
   }, []);
 
@@ -250,6 +310,8 @@ const Timeline = (props) => {
     >
       <svg ref={svg1Ref}></svg>
       <div id="sig-ev-tooltip" className="tooltip">
+        <div id="sig-ev-tooltip-circle" />
+        <p id="sig-ev-tooltip-meta"></p>
         <p id="sig-ev-tooltip-text"></p>
       </div>
     </div>

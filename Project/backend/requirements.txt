@@ -4,3 +4,4 @@ flask
 flask-cors
 transformers
 alive-progress
+gunicorn

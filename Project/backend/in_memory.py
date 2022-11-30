@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import re
 from collections import defaultdict
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, List
-from alive_progress import alive_it
+
 import numpy as np
 import pandas as pd
 from dateutil import parser
@@ -23,6 +23,18 @@ _PLATFORMS = {
     "The New York Times": "nyt",
 }
 
+
+def process_df(df):
+    if "country" in df:
+        del df["country"]
+    df.dropna(inplace=True)
+
+    df["date"].update(
+        df["date"].astype("str").map(lambda s: parser.parse(s).date().isoformat())
+    )
+    df["bodyText"].update(df["bodyText"].astype("str").str.lower())
+
+
 cache_path = Path("all-platforms.csv")
 
 if cache_path.exists():
@@ -31,22 +43,24 @@ else:
     dataframes = [pd.read_csv(f"{p.lower()}_filtered.csv") for p in _PLATFORMS.values()]
 
     for df in dataframes:
-        del df["country"]
-        df = df.dropna()
-
-        df["date"] = (
-            df["date"].astype("str").map(lambda s: parser.parse(s).date().isoformat())
-        )
-        df["bodyText"] = df["bodyText"].astype("str").str.lower()
+        process_df(df)
 
     _DF = pd.concat(dataframes)
 
-    _DF = _DF.dropna()
-    _DF["postId"] = range(len(_DF))
-    _DF.to_csv(cache_path, encoding="utf-8")
     print("preprocessing done")
 
+process_df(_DF)
+_DF["postId"] = range(len(_DF))
+_DF.to_csv(cache_path, encoding="utf-8", index=False)
 print(_DF)
+
+with open("stop_words.txt") as f:
+    sw = {x for x in f.read().split()}
+    _STOP_WORDS = sw.copy()
+
+    for word in sw:
+        for subword in word.split("'"):
+            _STOP_WORDS.add(subword)
 
 
 @dataclass
@@ -56,7 +70,7 @@ class CountTotal:
 
     @property
     def mean(self):
-        return self.count / self.total
+        return self.total / self.count
 
     def add(self, value: float):
         self.count += 1
@@ -94,8 +108,8 @@ def get_summary():
         "platform": as_list_of_str("platform"),
         "keywords": as_list_of_str("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "date"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     start_date = query["startDate"]
@@ -103,7 +117,7 @@ def get_summary():
     platform = query["platform"]
     keywords = query["keywords"]
     per_day = query["limitCountOfPostsPerDate"]
-    order_by = query.get("orderBy", "date")
+    order_by = query["orderBy"]
     order_desc = query["orderDescending"]
 
     df = _DF.copy()
@@ -114,35 +128,39 @@ def get_summary():
     if end_date:
         df = df[df["date"] <= end_date.isoformat()]
 
-    df = pd.concat([df[df["platform"] == plat] for plat in platform])
+    if platform:
+        df = pd.concat([df[df["platform"] == plat] for plat in platform])
 
     if keywords:
         for kw in keywords:
             df = df[df["bodyText"].str.contains(kw, na=False)]
 
     records = df.to_dict("records")
-    converted = defaultdict(list)
+    converted: Dict[str, Dict[str, CountTotal]] = defaultdict(
+        lambda: defaultdict(CountTotal)
+    )
 
     for record in records:
-        converted[record["date"]].append(
-            {
-                "sentiment": record["sentiment"],
-                "platform": record["platform"],
-                "postId": record["postId"],
-            }
-        )
+        converted[record["date"]][record["platform"]].add(record["sentiment"])
 
     rows = []
     for (time, data) in converted.items():
-        mean_sentiment = (
-            sum(d["sentiment"] for d in data) / len(data) if len(data) else None
-        )
+        count = sum(d.count for d in data.values())
+        mean_sentiment = sum(d.total for d in data.values()) / count
+
         rows.append(
             {
                 "date": time,
                 "meanSentiment": mean_sentiment,
-                "count": len(data),
-                "posts": data,
+                "count": count,
+                "posts": [
+                    {
+                        "platform": platform,
+                        "sentiment": sentiment.mean,
+                        "count": sentiment.count,
+                    }
+                    for (platform, sentiment) in data.items()
+                ],
             }
         )
     if order_by:
@@ -154,12 +172,12 @@ def get_summary():
 def get_body_text():
     query = {
         "postId": as_list_of_int("postId"),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "date"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     post_ids = query["postId"]
-    order_by = query.get("orderBy", "date")
+    order_by = query["orderBy"]
     order_desc = query["orderDescending"]
 
     print(_DF["postId"], post_ids)
@@ -181,13 +199,13 @@ def get_bag_of_words():
         "keywords": as_list_of_str("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
         "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "count"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     post_ids = query["postId"]
-    order_by = query.get("orderBy", "count")
-    order_desc = query.get("orderDescending", True)
+    order_by = query["orderBy"]
+    order_desc = query["orderDescending"]
     start_date = query["startDate"]
     end_date = query["endDate"]
     platform = query["platform"]
@@ -225,14 +243,16 @@ def get_bag_of_words():
         tokenized = tokenizer(df["bodyText"].astype("str").to_list()).input_ids
         assert len(tokenized) == len(df)
 
-        for (sentiment, entry) in alive_it(
-            zip(df["sentiment"], tokenized), total=len(df)
-        ):
+        for (sentiment, entry) in zip(df["sentiment"], tokenized):
             line = tokenizer.convert_ids_to_tokens(entry)
             line = line[1:-1]
 
             cleaned = [s.lstrip("##") for s in line]
-            cleaned = set(s for s in cleaned if re.match("[A-Za-z]+", s))
+            cleaned = set(
+                s
+                for s in cleaned
+                if s not in _STOP_WORDS and len(s) >= 3 and re.match("[A-Za-z]+", s)
+            )
 
             for word in cleaned:
                 word_count[word].add(sentiment)
@@ -242,7 +262,7 @@ def get_bag_of_words():
                 {
                     "word": word,
                     "count": ct.count,
-                    "meanSentiment": ct.total,
+                    "meanSentiment": ct.mean,
                 }
             )
 
@@ -263,13 +283,13 @@ def get_platform_freq():
         "keywords": as_list_of_str("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
         "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
-        "orderBy": as_str(request_get("orderBy")),
-        "orderDescending": as_bool(request_get("orderDescending")),
+        "orderBy": as_str(request_get("orderBy"), "count"),
+        "orderDescending": as_bool(request_get("orderDescending"), True),
     }
 
     post_ids = query["postId"]
-    order_by = query.get("orderBy", "count")
-    order_desc = query.get("orderDescending", True)
+    order_by = query["orderBy"]
+    order_desc = query["orderDescending"]
     start_date = query["startDate"]
     end_date = query["endDate"]
     keywords = query["keywords"]

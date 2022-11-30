@@ -6,16 +6,12 @@ from typing import Any, Callable
 from flask import request
 
 
-def process_if_not_none(function: Callable[[str | None], Any], argument: str | None):
-    if argument is None:
-        return None
-
-    return function(argument)
-
-
 def handle_null(function: Callable[[str], Any]):
-    def _func(argument: str | None):
-        return process_if_not_none(function, argument)
+    def _func(argument: str | None, default: Any = None):
+        if argument is None:
+            return default
+
+        return function(argument)
 
     return _func
 
@@ -26,7 +22,7 @@ def request_get(arg: str):
 
 @handle_null
 def as_str(arg: str):
-    return arg
+    return arg.lower()
 
 
 @handle_null
@@ -36,7 +32,7 @@ def as_date(arg: str):
 
 @handle_null
 def as_bool(arg: str):
-    return bool(int(arg))
+    return bool(arg)
 
 
 @handle_null
@@ -51,7 +47,7 @@ def as_float(arg: str):
 
 @handle_null
 def as_list_of_str(arg: str):
-    return request.args.getlist(arg)
+    return [s.lower() for s in request.args.getlist(arg)]
 
 
 @handle_null
