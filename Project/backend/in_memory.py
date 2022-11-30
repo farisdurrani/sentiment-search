@@ -2,10 +2,10 @@ from __future__ import annotations
 
 import re
 from collections import defaultdict
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Dict, List
-from alive_progress import alive_it
+
 import numpy as np
 import pandas as pd
 from dateutil import parser
@@ -233,9 +233,7 @@ def get_bag_of_words():
         tokenized = tokenizer(df["bodyText"].astype("str").to_list()).input_ids
         assert len(tokenized) == len(df)
 
-        for (sentiment, entry) in alive_it(
-            zip(df["sentiment"], tokenized), total=len(df)
-        ):
+        for (sentiment, entry) in zip(df["sentiment"], tokenized):
             line = tokenizer.convert_ids_to_tokens(entry)
             line = line[1:-1]
 
