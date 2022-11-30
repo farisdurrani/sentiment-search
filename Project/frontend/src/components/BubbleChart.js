@@ -11,7 +11,9 @@ import { sentimentColor } from "../common";
 class ApexChart extends React.Component {
     constructor(props) {
 
-      
+    
+    
+     
     const colors=[]
     function getColor(value){
         //value from 0 to 1
@@ -36,31 +38,32 @@ class ApexChart extends React.Component {
               try {
                 console.log('fetch')
                 const result = await axios.get("http://127.0.0.1:8000/api/getBagOfWords?platform=facebook&limitAmountOfWords=10")
-                console.log(result)
-                const raw_dataset = result["bagOfWords"];
+                
+                const raw_dataset = result.data["bagOfWords"];
                 const dataset = raw_dataset.map((e) => ({
                 x: e.word,
                 y: +e.count,
                 z: getColor(+e.meanSentiment),
                 }));
-                
+                console.log('data',dataset)
+                this.data=dataset;
                 return dataset;
               } catch (error) {
                 console.error('ss',error);
               }
             }
 
-    var data=fetchData();
+    
     //('hello',data);
 
-    console.log(data);
+    
       super(props);
 
       this.state = {
-          
+        data: fetchData(),
         series: [
           {
-            data: data,
+            data: this.data,
           }
         ],
         options: {
