@@ -1,6 +1,8 @@
 export const MIN_SENTIMENT = -1;
 export const MAX_SENTIMENT = 1;
 
+export const API_URL = "http://127.0.0.1:8000";
+
 /**
  * Given a sentiment value of [-1, 1], return the color corresponding to that sentiment percentage. A -1 sentiment equals pure red (#ff0000), +1 returns pure blue (#0000ff), anything in between returns something in between.
  *

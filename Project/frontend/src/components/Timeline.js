@@ -1,11 +1,17 @@
 import * as d3 from "d3";
 import React, { useEffect, useState, useRef, useMemo } from "react";
 import { Button, Container } from "react-bootstrap";
-import { MAX_SENTIMENT, MIN_SENTIMENT, sentimentColor } from "../common";
+import axios from "axios";
+import {
+  MAX_SENTIMENT,
+  MIN_SENTIMENT,
+  sentimentColor,
+  API_URL,
+} from "../common";
 
 const Timeline = (props) => {
   const { searchRef } = props;
-  const searchTerm = ""; // searchRef.current?.value.toLowerCase();
+  const searchTerm = searchRef.current?.value.toLowerCase();
 
   const svg1Ref = useRef();
   const singleRenderRef = useRef();
@@ -33,7 +39,11 @@ const Timeline = (props) => {
   const GRAPH_HEIGHT = SVG_HEIGHT - SVG_PADDING.t - SVG_PADDING.b;
   const GRAPH_WIDTH = SVG_WIDTH - SVG_PADDING.l - SVG_PADDING.r;
 
-  const [dataset, sig_events_dataset] = useMemo(() => importData(), []);
+  const [dataset, setDataset] = useState();
+  const [sig_events_dataset, setSig_events_dataset] = useState();
+  useMemo(() => importData(), []);
+
+  console.debug(sig_events_dataset);
 
   const initializeSVG = (svgRef) => {
     // create base SVG
@@ -87,40 +97,61 @@ const Timeline = (props) => {
   function importData() {
     console.debug("Importing data...");
 
-    const raw_dataset = require("../data/data.json")["rows"];
-    const dataset = raw_dataset.map((e) => ({
-      date: new Date(e.date),
-      sentiment: +e.meanSentiment,
-      count: +e.count,
-    }));
-
     const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
       "rows"
     ];
     const relevant_sig_ev = raw_sig_events_dataset.filter((e) =>
       e.description.toLowerCase().includes(searchTerm)
     );
-    const sig_ev_dataset = relevant_sig_ev.map((se) => {
-      const this_date = new Date(se.date);
-      return {
-        date: this_date,
-        description: se.description,
-        sentiment: dataset.find((d) => d.date - this_date === 0)?.sentiment,
-      };
+
+    const params = {
+      keywords: searchTerm,
+      orderDescending: "false",
+      startDate: "2014-12-31",
+      endDate: "2015-12-31",
+    };
+    axios.get(API_URL + "/api/getSummary", { params }).then((response) => {
+      if (response.data.success) console.debug("Response 200 downloaded");
+      else {
+        console.debug("Backend call failed");
+        return;
+      }
+
+      const raw_dataset = response.data["rows"];
+      const clean_dataset = raw_dataset.map((e) => ({
+        date: new Date(e.date),
+        sentiment: +e.meanSentiment,
+        count: +e.count,
+      }));
+
+      const sig_ev_dataset = relevant_sig_ev.map((se) => {
+        const this_date = new Date(se.date);
+        return {
+          date: this_date,
+          description: se.description,
+          sentiment: clean_dataset.find((d) => d.date - this_date === 0)
+            ?.sentiment,
+        };
+      });
+
+      const dateDomain = [
+        clean_dataset[0].date,
+        clean_dataset[clean_dataset.length - 1].date,
+      ];
+      const sig_ev_idx_range = [
+        sig_ev_dataset.findIndex((e) => e.date >= dateDomain[0]),
+        sig_ev_dataset.findLastIndex((e) => e.date <= dateDomain[1]),
+      ];
+
+      const shortened_se_dataset = sig_ev_dataset.slice(
+        sig_ev_idx_range[0],
+        sig_ev_idx_range[1] + 1
+      );
+
+      setDataset(clean_dataset);
+      setSig_events_dataset(shortened_se_dataset);
     });
-
-    const dateDomain = [dataset[0].date, dataset[dataset.length - 1].date];
-    const sig_ev_idx_range = [
-      sig_ev_dataset.findIndex((e) => e.date >= dateDomain[0]),
-      sig_ev_dataset.findLastIndex((e) => e.date <= dateDomain[1]),
-    ];
-
-    return [
-      dataset,
-      sig_ev_dataset.slice(sig_ev_idx_range[0], sig_ev_idx_range[1] + 1),
-    ];
   }
-
   const addAxes = (plotGroup, xScale, countScale) => {
     // Add the X Axis
     const xAxisGroup = plotGroup.append("g").attr("class", "x-axis");
@@ -291,17 +322,26 @@ const Timeline = (props) => {
   };
 
   const createAll = () => {
+    console.debug("Creating graphs...");
     const svg1 = initializeSVG(svg1Ref);
     const [dateScale, countScale] = createScale();
     createPlot(svg1, dateScale, countScale);
   };
 
   useEffect(() => {
+    if (!dataset) return;
+
     if (singleRenderRef.current) return;
     singleRenderRef.current = true;
 
     createAll();
-  }, []);
+
+    console.debug("Create all done");
+  }, [dataset, searchTerm]);
+
+  useEffect(() => {
+    singleRenderRef.current = false;
+  }, [searchTerm]);
 
   return (
     <div
