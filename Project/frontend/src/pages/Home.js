@@ -1,6 +1,11 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Container } from "react-bootstrap";
-import { DEFAULT_SEARCH_TERM, DEF_END_DATE, DEF_START_DATE } from "../common";
+import {
+  ALL_PLATFORMS,
+  DEFAULT_SEARCH_TERM,
+  DEF_END_DATE,
+  DEF_START_DATE,
+} from "../common";
 import {
   Timeline,
   ExampleSVG,
@@ -10,7 +15,7 @@ import {
   SearchBar,
   Radar,
   FrequencyChart,
-  Legend
+  Legend,
 } from "../components/index";
 
 const Home = () => {
@@ -19,6 +24,7 @@ const Home = () => {
     searchTerm: DEFAULT_SEARCH_TERM,
     startDate: DEF_START_DATE,
     endDate: DEF_END_DATE,
+    selectedPlatform: ALL_PLATFORMS[0],
   });
   const [isLoading, setIsLoading] = useState(true);
 

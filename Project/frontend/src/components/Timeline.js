@@ -9,12 +9,12 @@ import {
   API_URL,
   getRandomArbitrary,
   convertDateToStandard,
+  ALL_PLATFORMS,
 } from "../common";
 
 const Timeline = (props) => {
   const { className, searchOptions, setHoveredFrequencies, setIsLoading } =
     props;
-  const { searchTerm, startDate, endDate } = searchOptions;
 
   const svg1Ref = useRef();
 
@@ -91,7 +91,8 @@ const Timeline = (props) => {
     const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
       "rows"
     ];
-    const lowerSearchTerm = searchTerm.toLowerCase()
+    const { searchTerm, startDate, endDate, selectedPlatform } = searchOptions;
+    const lowerSearchTerm = searchTerm.toLowerCase();
     const relevant_sig_ev = raw_sig_events_dataset.filter((e) =>
       e.description.toLowerCase().includes(lowerSearchTerm)
     );
@@ -150,6 +151,10 @@ const Timeline = (props) => {
       endDate: convertDateToStandard(endDate),
     };
 
+    if (selectedPlatform !== ALL_PLATFORMS[0]) {
+      params.platform = selectedPlatform;
+    }
+
     const response = await axios.get(API_URL + "/api/getSummary", { params });
     if (response.data.success) console.debug("Response 200 downloaded");
     else {
@@ -200,7 +205,7 @@ const Timeline = (props) => {
       .attr("text-anchor", "middle")
       .attr("y", -10)
       .attr("class", "title chart-title")
-      .text(`Sentiments Over Time for: ${searchTerm}`);
+      .text(`Sentiments Over Time for: ${searchOptions.searchTerm}`);
   };
 
   const drawEventCards = (plotElements, dateScale, countScale) => {

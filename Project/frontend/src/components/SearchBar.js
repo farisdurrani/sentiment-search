@@ -1,7 +1,12 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import { Button, Container, Form, Accordion, Col, Row } from "react-bootstrap";
-import { DEFAULT_SEARCH_TERM, DEF_END_DATE, DEF_START_DATE } from "../common";
+import {
+  DEFAULT_SEARCH_TERM,
+  DEF_END_DATE,
+  DEF_START_DATE,
+  ALL_PLATFORMS,
+} from "../common";
 import { toast } from "react-toastify";
 
 const SearchBar = (props) => {
@@ -10,6 +15,8 @@ const SearchBar = (props) => {
   const searchRef = useRef();
   const startDateRef = useRef();
   const endDateRef = useRef();
+
+  const [selectedPlatform, setSelectedPlatform] = useState(ALL_PLATFORMS[0]);
 
   const validateInputs = () => {
     const startDate = startDateRef.current.value;
@@ -45,27 +52,21 @@ const SearchBar = (props) => {
       searchTerm: searchRef.current.value,
       startDate: startDate,
       endDate: endDate,
+      selectedPlatform: selectedPlatform,
     });
   };
-
-  const ALL_PLATFORMS = [
-    "All",
-    "CNN",
-    "The Guardian",
-    "Facebook",
-    "Twitter",
-    "Reddit",
-    "The New York Times",
-  ];
 
   const PlatformSelection = (
     <>
       <Row>
         <Form.Label>Platform</Form.Label>
         <div className="row w-50 m-auto">
-          <Form.Select aria-label="Default select example">
+          <Form.Select
+            aria-label="Default select example"
+            onChange={(e) => setSelectedPlatform(e.target.value)}
+          >
             {ALL_PLATFORMS.map((e) => (
-              <option key={e} value={e} label={e}/>
+              <option key={e} value={e} label={e} />
             ))}
           </Form.Select>
         </div>
