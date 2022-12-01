@@ -161,3 +161,4 @@ cython_debug/
 /dva_database
 /*.csv
 /*.json
+/*.pem
