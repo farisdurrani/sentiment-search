@@ -85,6 +85,16 @@ Author:       See CODEOWNDERS
   max-width: 50%;
 }
 
+#search-bar .search-options {
+  max-width: 50%;
+  margin-inline: auto;
+}
+
+#search-bar .search-options-header button {
+  font-size: small;
+  color: gray;
+}
+
 /* -------------------------------------------------------------------------- */
 /*	Timeline
 /* -------------------------------------------------------------------------- */
@@ -124,3 +134,5 @@ Author:       See CODEOWNDERS
   background-color: var(--high-translucent);
   position: absolute;
 }
+
+

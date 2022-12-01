@@ -7,6 +7,9 @@ import {
   sentimentColor,
   API_URL,
   getRandomArbitrary,
+  convertDateToStandard,
+  DEF_START_DATE,
+  DEF_END_DATE,
 } from "../common";
 
 const Timeline = (props) => {
@@ -144,8 +147,8 @@ const Timeline = (props) => {
     const params = {
       keywords: lowerSearchTerm,
       orderDescending: "false",
-      startDate: "2015-12-31",
-      endDate: "2016-12-31",
+      startDate: convertDateToStandard(DEF_START_DATE),
+      endDate: convertDateToStandard(DEF_END_DATE),
     };
 
     axios.get(API_URL + "/api/getSummary", { params }).then((response) => {
