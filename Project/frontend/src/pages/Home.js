@@ -20,7 +20,7 @@ const Home = () => {
       <Timeline className="mt-5" searchRef={searchRef} />
       <BubbleChart className="mt-5" />
       {/* <PolarArea className="mt-5" /> */}
-      <Radar className="mt-5" />
+      {/* <Radar className="mt-5" /> */}
       {/* <FrequencyChart className="mt-5"/> */}
     </Container>
   );

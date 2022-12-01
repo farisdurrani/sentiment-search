@@ -139,7 +139,7 @@ console.log('ffff',props.dataset)
         
 
         <Container>
-<ReactApexChart options={state.options} series={state.series} type="polarArea" />
+<ReactApexChart options={state.options} series={state.series} type="pie" />
 
 
 
