@@ -11,8 +11,6 @@ const FrequencyChart = (props) => {
   const yaxisRef = useRef();
   const bars = useRef();
 
-  const USE_LOCAL_FILE = false;
-
   const NUMBER_OF_GRAPHS = 1;
   const ABSOLUTE_WIDTH = 960;
   const ABSOLUTE_HEIGHT = 540 * NUMBER_OF_GRAPHS;
@@ -27,12 +25,12 @@ const FrequencyChart = (props) => {
     ABSOLUTE_HEIGHT - ABSOLUTE_MARGIN.top - ABSOLUTE_MARGIN.bottom;
   const SVG_WIDTH =
     ABSOLUTE_WIDTH - ABSOLUTE_MARGIN.left - ABSOLUTE_MARGIN.right;
-  const SVG_PADDING = { t: 30, r: 120, b: 30, l: 60 };
+  const SVG_PADDING = { t: 60, r: 120, b: 30, l: 60 };
   const GRAPH_HEIGHT = SVG_HEIGHT - SVG_PADDING.t;
   const YAXIS_DOMAIN = SVG_HEIGHT - 2 * SVG_PADDING.t;
   const GRAPH_WIDTH = SVG_WIDTH - SVG_PADDING.l - SVG_PADDING.r;
 
-  const dataset = hoveredFrequencies.map((d) => ({
+  const dataset = hoveredFrequencies?.posts?.map((d) => ({
     count: +d.count,
     sentiment: +d.sentiment,
     platform: d.platform,
@@ -82,10 +80,13 @@ const FrequencyChart = (props) => {
         "transform",
         "translate(" + SVG_PADDING.l + "," + GRAPH_HEIGHT + ")"
       );
+
     // Add the text label for X Axis
+    d3.select("#xAB-5435").remove();
     xaB
       .append("text")
       .attr("class", "axis-label")
+      .attr("id", "xAB-5435")
       .attr("x", GRAPH_WIDTH / 2)
       .attr("y", SVG_PADDING.t)
       .attr("text-anchor", "middle")
@@ -101,9 +102,11 @@ const FrequencyChart = (props) => {
       );
 
     // Add the text label for Y axis
+    d3.select("#yAB-5435").remove();
     yaB
       .append("text")
       .attr("class", "axis-label")
+      .attr("id", "yAB-5435")
       .attr("x", 0)
       .attr("y", 150)
       .attr("fill", "black")
@@ -123,6 +126,24 @@ const FrequencyChart = (props) => {
       .padding(0.6);
     return [xScale, yScale];
   };
+
+  const createTitle = () => {
+    if (!hoveredFrequencies) return;
+
+    const { date, count, sentiment } = hoveredFrequencies;
+
+    const titleCircle = d3.select("#freq-chart-title-circle");
+    titleCircle.style("background-color", sentimentColor(sentiment));
+
+    const titleText = d3.select("#freq-chart-title-text");
+    titleText.html(
+      `${date.toLocaleDateString()} | Sentiment: ${sentiment.toPrecision(
+        3
+      )} | Count: ${count}`
+    );
+  };
+
+  createTitle();
 
   const createAll = () => {
     const [xScale, yScale] = createScales();
@@ -161,13 +182,22 @@ const FrequencyChart = (props) => {
   }, [dataset]);
 
   return (
-    <div className={`${className}`}>
+    <div
+      className={`d-flex justify-content-center ${className}`}
+      id="freq-chart"
+    >
       <svg ref={svgRef}>
-        <g className="color"></g>
         <g className="x-axis" ref={xaxisRef}></g>
         <g className="y-axis" ref={yaxisRef}></g>
         <g className="rectangles" ref={bars}></g>
       </svg>
+      <div id="freq-chart-title" className="pe-3 ps-3 pb-1">
+        <p className="chart-title m-auto">Sentiment Analysis of the Day</p>
+        <div className="freq-chart-subtitle d-flex flex-row align-items-center justify-content-center">
+          <div id="freq-chart-title-circle" className="sentiment-circle me-3" />
+          <p id="freq-chart-title-text" className="mb-0"></p>
+        </div>
+      </div>
     </div>
   );
 };

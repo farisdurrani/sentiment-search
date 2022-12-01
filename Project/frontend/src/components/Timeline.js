@@ -210,7 +210,7 @@ const Timeline = (props) => {
       .attr("x", GRAPH_WIDTH / 2)
       .attr("text-anchor", "middle")
       .attr("y", -10)
-      .attr("class", "title")
+      .attr("class", "title chart-title")
       .text(`Sentiments Over Time for: ${searchRef.current?.value}`);
   };
 
@@ -293,9 +293,8 @@ const Timeline = (props) => {
         date: rawDate,
         count,
         sentiment: rawSentiment,
-        posts: posts,
       } = d.target.__data__;
-      setHoveredFrequencies(posts);
+      setHoveredFrequencies(d.target.__data__);
       const date = rawDate.toLocaleDateString("en-US");
       const sentiment = rawSentiment.toFixed(3);
 
@@ -362,10 +361,10 @@ const Timeline = (props) => {
   }, [dataset]);
 
   return (
-    <div id="timeline" className={`${className} d-flex justify-content-center`}>
+    <div id="timeline" className={`d-flex justify-content-center ${className}`}>
       <svg ref={svg1Ref}></svg>
       <div id="sig-ev-tooltip" className="tooltip">
-        <div id="sig-ev-tooltip-circle" />
+        <div id="sig-ev-tooltip-circle" className="sentiment-circle"/>
         <p id="sig-ev-tooltip-meta"></p>
         <p id="sig-ev-tooltip-text"></p>
       </div>

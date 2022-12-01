@@ -49,6 +49,20 @@ Author:       See CODEOWNDERS
   font-weight: bold;
 }
 
+.sentiment-circle {
+  border-radius: 100%;
+  background-color: white;
+  height: 20px;
+  width: 20px;
+  border: solid white;
+}
+
+.chart-title {
+  font-size: larger;
+  font-weight: bold;
+  text-align: center;
+}
+
 /* -------------------------------------------------------------------------- */
 /*	App
 /* -------------------------------------------------------------------------- */
@@ -85,15 +99,9 @@ Author:       See CODEOWNDERS
   max-width: min(25%, 200px);
 }
 
-#timeline #sig-ev-tooltip-circle {
-  border-radius: 100%;
-  background-color: red;
-  height: 20px;
-  width: 20px;
-}
-
-#timeline #sig-ev-tooltip-meta {
-  color: gray;
+#timeline #sig-ev-tooltip-meta,
+#freq-chart #freq-chart-title-text {
+  color: darkcyan;
   font-style: italic;
   font-size: 0.75rem;
 }
@@ -101,4 +109,18 @@ Author:       See CODEOWNDERS
 #timeline .sig-events-circles circle {
   stroke: black;
   z-index: 999;
+}
+
+/* -------------------------------------------------------------------------- */
+/*	Frequency Chart
+/* -------------------------------------------------------------------------- */
+
+#freq-chart {
+  position: relative;
+}
+
+#freq-chart #freq-chart-title {
+  top: 10px;
+  background-color: var(--high-translucent);
+  position: absolute;
 }

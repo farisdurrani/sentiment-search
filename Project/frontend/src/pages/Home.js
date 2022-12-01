@@ -12,7 +12,7 @@ import {
 } from "../components/index";
 
 const Home = () => {
-  const [hoveredFrequencies, setHoveredFrequencies] = useState([]);
+  const [hoveredFrequencies, setHoveredFrequencies] = useState();
   const searchRef = useRef();
 
   return (
