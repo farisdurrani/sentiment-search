@@ -7,7 +7,7 @@ export const DEFAULT_SEARCH_TERM = "Trump";
 export const DEF_START_DATE = new Date("2015-01-01");
 export const DEF_END_DATE = new Date("2022-11-15");
 
-export const USE_LOCAL_FILE = false;
+export const USE_LOCAL_FILE = true;
 
 export const ALL_PLATFORMS = [
   "All",

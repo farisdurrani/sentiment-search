@@ -12,7 +12,7 @@ const FrequencyChart = (props) => {
   const bars = useRef();
 
   const NUMBER_OF_GRAPHS = 1;
-  const ABSOLUTE_WIDTH = 960;
+  const ABSOLUTE_WIDTH = Math.min(1200, window.innerWidth);
   const ABSOLUTE_HEIGHT = 540 * NUMBER_OF_GRAPHS;
   const ABSOLUTE_MARGIN = {
     top: 10,

@@ -63,6 +63,13 @@ Author:       See CODEOWNDERS
   text-align: center;
 }
 
+hr.sep {
+  color: gray;
+  width: 50%;
+  margin-inline: auto;
+  margin-block: 1rem;
+}
+
 /* -------------------------------------------------------------------------- */
 /*	App
 /* -------------------------------------------------------------------------- */
@@ -75,6 +82,10 @@ Author:       See CODEOWNDERS
 /* -------------------------------------------------------------------------- */
 /*	SearchBar
 /* -------------------------------------------------------------------------- */
+
+#search-bar {
+  margin-block: 7rem;
+}
 
 #search-bar .btn-primary.comfortable {
   padding-inline: 40px;
@@ -139,4 +150,20 @@ Author:       See CODEOWNDERS
   background-color: var(--high-translucent);
   position: absolute;
   display: none;
+}
+
+
+/* -------------------------------------------------------------------------- */
+/*	Description
+/* -------------------------------------------------------------------------- */
+
+.description .description-title {
+  text-align: center;
+  margin-inline: auto;
+}
+
+.description .description-text {
+  text-align: center;
+  margin-inline: auto;
+  color: gray;
 }

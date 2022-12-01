@@ -75,7 +75,7 @@ const SearchBar = (props) => {
   );
 
   return (
-    <div id="search-bar" className="text-center mt-5">
+    <div id="search-bar" className="text-center">
       <Form onSubmit={handleSubmit}>
         <Form.Label>
           <h1>Sentiment Search</h1>

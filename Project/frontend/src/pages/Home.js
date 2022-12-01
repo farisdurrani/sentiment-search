@@ -16,6 +16,7 @@ import {
   Radar,
   FrequencyChart,
   Legend,
+  Description,
 } from "../components/index";
 
 const Home = () => {
@@ -31,6 +32,11 @@ const Home = () => {
   return (
     <Container id="home">
       <SearchBar setSearchOptions={setSearchOptions} isLoading={isLoading} />
+      <hr className="sep" />
+      <Description
+        text="Welcome to Sentiment Search. Providing a visual analysis of the
+        Internet's sentiment for a keyword"
+      />
       <Legend />
       <Timeline
         className="mt-5"
@@ -38,7 +44,10 @@ const Home = () => {
         setHoveredFrequencies={setHoveredFrequencies}
         setIsLoading={setIsLoading}
       />
-      <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/>
+      <FrequencyChart
+        className="mt-5"
+        hoveredFrequencies={hoveredFrequencies}
+      />
       <Spacer height={100} />
       {/* <BubbleChart className="mt-5" /> */}
       {/* <PolarArea className="mt-5" />

@@ -20,7 +20,7 @@ const Timeline = (props) => {
 
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
-  const ABSOLUTE_WIDTH = 1200;
+  const ABSOLUTE_WIDTH = Math.min(1200, window.innerWidth);
   const ABSOLUTE_HEIGHT = 540 * NUMBER_OF_GRAPHS;
   const ABSOLUTE_MARGIN = {
     top: 10,
