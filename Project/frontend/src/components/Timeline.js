@@ -4,6 +4,7 @@ import axios from "axios";
 import {
   MAX_SENTIMENT,
   MIN_SENTIMENT,
+  USE_LOCAL_FILE,
   sentimentColor,
   API_URL,
   getRandomArbitrary,
@@ -16,8 +17,6 @@ const Timeline = (props) => {
   const { searchTerm, startDate, endDate } = searchOptions;
 
   const svg1Ref = useRef();
-
-  const USE_LOCAL_FILE = false;
 
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;

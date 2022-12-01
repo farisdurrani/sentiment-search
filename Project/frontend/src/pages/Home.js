@@ -32,7 +32,7 @@ const Home = () => {
       />
       <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/>
       <Spacer height={100} />
-      <BubbleChart className="mt-5" />
+      {/* <BubbleChart className="mt-5" /> */}
       {/* <PolarArea className="mt-5" />
       <Radar className="mt-5" /> */}
     </Container>
