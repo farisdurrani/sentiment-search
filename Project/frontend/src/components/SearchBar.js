@@ -55,7 +55,7 @@ const SearchBar = (props) => {
         <Button className="comfortable mb-3" type="submit" disabled={isLoading}>
           {isLoading ? "Analyzing..." : "Analyze"}
         </Button>
-        <Accordion defaultActiveKey="0" flush className="search-options">
+        <Accordion flush className="search-options">
           <Accordion.Item eventKey="0">
             <Accordion.Header className="search-options-header">
               Advanced search
