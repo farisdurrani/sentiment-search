@@ -8,8 +8,6 @@ import {
   API_URL,
   getRandomArbitrary,
   convertDateToStandard,
-  DEF_START_DATE,
-  DEF_END_DATE,
 } from "../common";
 
 const Timeline = (props) => {
@@ -17,10 +15,9 @@ const Timeline = (props) => {
     props;
   const { searchTerm, startDate, endDate } = searchOptions;
 
-  const lowerSearchTerm = searchTerm.toLowerCase();
   const svg1Ref = useRef();
 
-  const USE_LOCAL_FILE = true;
+  const USE_LOCAL_FILE = false;
 
   // define the dimensions and margins for the graph
   const NUMBER_OF_GRAPHS = 1;
@@ -95,6 +92,7 @@ const Timeline = (props) => {
     const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
       "rows"
     ];
+    const lowerSearchTerm = searchTerm.toLowerCase()
     const relevant_sig_ev = raw_sig_events_dataset.filter((e) =>
       e.description.toLowerCase().includes(lowerSearchTerm)
     );
@@ -362,7 +360,7 @@ const Timeline = (props) => {
     d3.selectAll("#timeline-main-plot").remove();
 
     importData();
-  }, [searchTerm]);
+  }, [searchOptions]);
 
   useEffect(() => {
     if (!dataset) return;
