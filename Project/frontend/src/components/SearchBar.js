@@ -32,10 +32,19 @@ const SearchBar = (props) => {
     e.preventDefault();
     if (!validateInputs()) return;
 
+    const [startDate, endDate] = [
+      startDateRef.current.value
+        ? new Date(startDateRef.current.value)
+        : DEF_START_DATE,
+      endDateRef.current.value
+        ? new Date(endDateRef.current.value)
+        : DEF_END_DATE,
+    ];
+
     setSearchOptions({
-      serachTerm: searchRef.current.value,
-      startDate: new Date(startDateRef.current.value) || DEF_START_DATE,
-      endDateTerm: new Date(endDateRef.current.value) || DEF_END_DATE,
+      searchTerm: searchRef.current.value,
+      startDate: startDate,
+      endDate: endDate,
     });
   };
 

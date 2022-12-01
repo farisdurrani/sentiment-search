@@ -21,18 +21,16 @@ const Home = () => {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  console.debug("Search options:", searchOptions);
-
   return (
     <Container id="home">
       <SearchBar setSearchOptions={setSearchOptions} isLoading={isLoading} />
-      {/* <Timeline
+      <Timeline
         className="mt-5"
         searchOptions={searchOptions}
         setHoveredFrequencies={setHoveredFrequencies}
         setIsLoading={setIsLoading}
       />
-      <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/> */}
+      <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/>
       <Spacer height={100} />
       <BubbleChart className="mt-5" />
       {/* <PolarArea className="mt-5" />

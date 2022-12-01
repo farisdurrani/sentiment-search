@@ -16,6 +16,8 @@ const Timeline = (props) => {
   const { className, searchOptions, setHoveredFrequencies, setIsLoading } =
     props;
   const { searchTerm, startDate, endDate } = searchOptions;
+
+  console.debug(searchOptions, searchTerm, startDate, endDate);
   const lowerSearchTerm = searchTerm.toLowerCase();
   const svg1Ref = useRef();
 
