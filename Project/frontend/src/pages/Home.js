@@ -10,6 +10,7 @@ import {
   SearchBar,
   Radar,
   FrequencyChart,
+  Legend
 } from "../components/index";
 
 const Home = () => {
@@ -24,6 +25,7 @@ const Home = () => {
   return (
     <Container id="home">
       <SearchBar setSearchOptions={setSearchOptions} isLoading={isLoading} />
+      <Legend />
       <Timeline
         className="mt-5"
         searchOptions={searchOptions}
