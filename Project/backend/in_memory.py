@@ -56,7 +56,7 @@ def _tokenization_and_save(df: pd.DataFrame, path: Path | None = None):
     whose postId matches the index in the list.
     """
 
-    print('processing tokenization')
+    print("processing tokenization")
     mapping: List[Set[str]] = [set() for _ in range(len(df))]
     assert set(df["postId"]) == set(range(len(df)))
     for (idx, body_text) in alive_it(zip(df["postId"], df["bodyText"]), total=len(df)):
@@ -317,6 +317,7 @@ def get_bag_of_words():
         "orderBy": as_str(request_get("orderBy"), "count"),
         "orderDescending": as_bool(request_get("orderDescending"), True),
         "betterToken": as_bool(request_get("betterToken"), False),
+        "sampleRate": as_float(request_get("sampleRate"), 1),
     }
     print("Query received:", query)
 
@@ -330,11 +331,15 @@ def get_bag_of_words():
     better_token = query["betterToken"]
     per_day = query["limitCountOfPostsPerDate"]
     per_word = query["limitAmountOfWords"]
+    sample_rate = query["sampleRate"]
 
     if post_ids:
         df = _DF[_DF["postId"].isin(post_ids)]
     else:
         df = _DF.copy()
+
+    if 0 <= sample_rate < 1:
+        df = df.iloc[np.random.random([len(df)]) < sample_rate]
 
     if start_date:
         df = df[df["date"] >= start_date.isoformat()]
