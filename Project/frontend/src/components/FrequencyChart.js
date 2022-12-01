@@ -91,7 +91,7 @@ const FrequencyChart = (props) => {
       .attr("y", SVG_PADDING.t)
       .attr("text-anchor", "middle")
       .attr("fill", "black")
-      .text("Date");
+      .text("Platform");
 
     const yaB = d3.select(yaxisRef.current);
     yaB

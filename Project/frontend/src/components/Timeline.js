@@ -17,7 +17,6 @@ const Timeline = (props) => {
     props;
   const { searchTerm, startDate, endDate } = searchOptions;
 
-  console.debug(searchOptions, searchTerm, startDate, endDate);
   const lowerSearchTerm = searchTerm.toLowerCase();
   const svg1Ref = useRef();
 
@@ -90,7 +89,7 @@ const Timeline = (props) => {
     return [dateScale, countScale];
   };
 
-  function importData() {
+  async function importData() {
     console.debug("Importing data...");
 
     const raw_sig_events_dataset = require("../data/sig_ev_cleaned.json")[
@@ -154,16 +153,15 @@ const Timeline = (props) => {
       endDate: convertDateToStandard(endDate),
     };
 
-    axios.get(API_URL + "/api/getSummary", { params }).then((response) => {
-      if (response.data.success) console.debug("Response 200 downloaded");
-      else {
-        console.debug("Backend call failed");
-        return;
-      }
+    const response = await axios.get(API_URL + "/api/getSummary", { params });
+    if (response.data.success) console.debug("Response 200 downloaded");
+    else {
+      console.debug("Backend call failed");
+      return;
+    }
 
-      const raw_dataset = response.data["rows"];
-      clean_up_dataset(raw_dataset);
-    });
+    const raw_dataset = response.data.rows;
+    clean_up_dataset(raw_dataset);
   }
   const addAxes = (plotGroup, xScale, countScale) => {
     // Add the X Axis
