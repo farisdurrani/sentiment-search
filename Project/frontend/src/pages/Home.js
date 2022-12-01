@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Container } from "react-bootstrap";
-import { DEFAULT_SEARCH_TERM } from "../common";
+import { DEFAULT_SEARCH_TERM, DEF_END_DATE, DEF_START_DATE } from "../common";
 import {
   Timeline,
   ExampleSVG,
@@ -14,20 +14,26 @@ import {
 
 const Home = () => {
   const [hoveredFrequencies, setHoveredFrequencies] = useState();
-  const [searchTerm, setSearchTerm] = useState(DEFAULT_SEARCH_TERM);
-  const [isLoading, setIsLoading] = useState(true);
+  const [searchOptions, setSearchOptions] = useState({
+    searchTerm: DEFAULT_SEARCH_TERM,
+    startDate: DEF_START_DATE,
+    endDate: DEF_END_DATE,
+  });
+  const [isLoading, setIsLoading] = useState(false);
+
+  console.debug("Search options:", searchOptions);
 
   return (
     <Container id="home">
-      <SearchBar setSearchTerm={setSearchTerm} isLoading={isLoading} />
-      <Timeline
+      <SearchBar setSearchOptions={setSearchOptions} isLoading={isLoading} />
+      {/* <Timeline
         className="mt-5"
-        searchTerm={searchTerm}
+        searchOptions={searchOptions}
         setHoveredFrequencies={setHoveredFrequencies}
         setIsLoading={setIsLoading}
       />
-      <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/>
-      <Spacer height={100}/>
+      <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/> */}
+      <Spacer height={100} />
       <BubbleChart className="mt-5" />
       {/* <PolarArea className="mt-5" />
       <Radar className="mt-5" /> */}
