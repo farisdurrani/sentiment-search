@@ -235,6 +235,8 @@ def get_summary():
         df = df[df["date"] <= end_date.isoformat()]
 
     if platform:
+        for p in platform:
+            assert p in [k[0] for k in _PLATFORMS], p
         df = pd.concat([df[df["platform"] == plat] for plat in platform])
 
     if keywords:
@@ -340,6 +342,8 @@ def get_bag_of_words():
         df = df[df["date"] <= end_date.isoformat()]
 
     if platform:
+        for p in platform:
+            assert p in [k[0] for k in _PLATFORMS], p
         df = pd.concat([df[df["platform"] == plat] for plat in platform])
 
     bag_of_words = []
