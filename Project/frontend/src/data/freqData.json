@@ -1,0 +1,20 @@
+{
+  "frequencies": [
+    {
+      "count": 516440,
+      "sentiment": 0.3617954381922393,
+      "platform": "The Guardian"
+    },
+    {
+      "count": 99640,
+      "sentiment": 0.09181248594941788,
+      "platform": "CNN"
+    },
+    {
+      "count": 20096,
+      "sentiment": 0.3101522143710191,
+      "platform": "facebook"
+    }
+  ],
+  "success": true
+}

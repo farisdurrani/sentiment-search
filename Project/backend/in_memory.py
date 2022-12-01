@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import re
-from collections import defaultdict
+from collections import OrderedDict, defaultdict
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, Sequence, List, Set
+from typing import Dict, List, Sequence, Set, Tuple
 
 import numpy as np
 import pandas as pd
@@ -18,17 +18,18 @@ try:
 except ImportError:
     pass
 
+_BATCH = 256
 _TOKENIZER = BertTokenizerFast.from_pretrained("bert-base-uncased")
 _TOKENIZED_SET: Sequence[Set[str]] | None = None
 
-_PLATFORMS = {
-    "CNN": "cnn",
-    "The Guardian": "guardian",
-    "facebook": "facebook",
-    "Reddit": "reddit",
-    "twitter": "twitter",
-    "The New York Times": "nyt",
-}
+_PLATFORMS: Sequence[Tuple[str, str]] = (
+    ("CNN", "cnn"),
+    ("The Guardian", "guardian"),
+    ("facebook", "facebook"),
+    ("Reddit", "reddit"),
+    ("twitter", "twitter"),
+    ("The New York Times", "nyt"),
+)
 
 
 def _tokenization_and_save(df: pd.DataFrame, path: Path | None = None):
@@ -116,6 +117,8 @@ def process_df(df: pd.DataFrame):
     If 'country' column is present, it's removed.
     """
 
+    print("processing")
+
     if "country" in df:
         del df["country"]
     df.dropna(inplace=True)
@@ -132,25 +135,25 @@ if cache_path.exists():
     _DF = pd.read_csv(cache_path)
 else:
     dataframes = []
-    for (name, short) in _PLATFORMS.items():
+    for (name, short) in alive_it(_PLATFORMS):
         print("Processing:", name)
-        df = pd.read_csv(f"{name.lower()}_filtered.csv")
-        print(df)
-        dataframes.append(df)
-
-    for df in dataframes:
-        process_df(df)
+        path = Path(f"{short.lower()}_filtered.csv")
+        if path.exists():
+            df = pd.read_csv(path)
+            dataframes.append(df)
+            # print(df)
+        else:
+            print(f"OH NO!! The file {path} is not found. IGNORED.")
 
     _DF = pd.concat(dataframes)
 
+    print("start processing dataframe")
+    process_df(_DF)
     print("preprocessing done")
+    _DF["postId"] = range(len(_DF))
+    _DF.to_csv(cache_path, encoding="utf-8", index=False)
 
-process_df(_DF)
-_DF["postId"] = range(len(_DF))
 
-# Not saving the index because
-# repeatedly saving and loading creates more unnamed columns.
-_DF.to_csv(cache_path, encoding="utf-8", index=False)
 print(_DF)
 
 # Find the stop_words.txt in the current folder and remove those from search results.
@@ -418,7 +421,7 @@ def get_platform_freq():
         df = df[df["date"] <= end_date.isoformat()]
 
     platform_info = []
-    for platform in _PLATFORMS.keys():
+    for platform in [k[0] for k in _PLATFORMS]:
         plat_df = df[df["platform"] == platform]
         for kw in keywords:
             if better_token:

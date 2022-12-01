@@ -8,20 +8,26 @@ import {
   PolarArea,
   SearchBar,
   Radar,
-  FrequencyChart 
+  FrequencyChart,
 } from "../components/index";
 
-
 const Home = () => {
+  const [hoveredFrequencies, setHoveredFrequencies] = useState([]);
   const searchRef = useRef();
+
   return (
     <Container id="home">
       <SearchBar searchRef={searchRef} />
-      <Timeline className="mt-5" searchRef={searchRef} />
+      <Timeline
+        className="mt-5"
+        searchRef={searchRef}
+        setHoveredFrequencies={setHoveredFrequencies}
+      />
+      <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/>
+      <Spacer height={100}/>
       <BubbleChart className="mt-5" />
-      <PolarArea className="mt-5" />
-      <Radar className="mt-5" />
-      {/* <FrequencyChart className="mt-5"/> */}
+      {/* <PolarArea className="mt-5" />
+      <Radar className="mt-5" /> */}
     </Container>
   );
 };

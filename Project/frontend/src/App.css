@@ -45,6 +45,10 @@ Author:       See CODEOWNDERS
   position: absolute;
 }
 
+.axis-label {
+  font-weight: bold;
+}
+
 /* -------------------------------------------------------------------------- */
 /*	App
 /* -------------------------------------------------------------------------- */
@@ -92,10 +96,6 @@ Author:       See CODEOWNDERS
   color: gray;
   font-style: italic;
   font-size: 0.75rem;
-}
-
-#timeline .axis-label {
-  font-weight: bold;
 }
 
 #timeline .sig-events-circles circle {
