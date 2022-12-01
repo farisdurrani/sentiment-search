@@ -12,10 +12,8 @@ import {
 } from "../common";
 
 const Timeline = (props) => {
-  const { className, searchRef, setHoveredFrequencies } = props;
-  const searchTerm = (
-    searchRef.current?.value || DEFAULT_SEARCH_TERM
-  ).toLowerCase();
+  const { className, searchTerm, setHoveredFrequencies } = props;
+  const lowerSearchTerm = searchTerm.toLowerCase();
 
   const svg1Ref = useRef();
 
@@ -104,7 +102,7 @@ const Timeline = (props) => {
       "rows"
     ];
     const relevant_sig_ev = raw_sig_events_dataset.filter((e) =>
-      e.description.toLowerCase().includes(searchTerm)
+      e.description.toLowerCase().includes(lowerSearchTerm)
     );
 
     const clean_up_dataset = (raw_dataset) => {
@@ -112,7 +110,7 @@ const Timeline = (props) => {
         date: new Date(e.date),
         sentiment: +e.meanSentiment,
         count: +e.count,
-        posts: e.posts
+        posts: e.posts,
       }));
 
       const sig_ev_dataset = relevant_sig_ev.map((se) => {
@@ -154,7 +152,7 @@ const Timeline = (props) => {
     }
 
     const params = {
-      keywords: searchTerm,
+      keywords: lowerSearchTerm,
       orderDescending: "false",
       startDate: "2015-12-31",
       endDate: "2016-12-31",
@@ -211,7 +209,7 @@ const Timeline = (props) => {
       .attr("text-anchor", "middle")
       .attr("y", -10)
       .attr("class", "title chart-title")
-      .text(`Sentiments Over Time for: ${searchRef.current?.value}`);
+      .text(`Sentiments Over Time for: ${searchTerm}`);
   };
 
   const drawEventCards = (plotElements, dateScale, countScale) => {
@@ -364,7 +362,7 @@ const Timeline = (props) => {
     <div id="timeline" className={`d-flex justify-content-center ${className}`}>
       <svg ref={svg1Ref}></svg>
       <div id="sig-ev-tooltip" className="tooltip">
-        <div id="sig-ev-tooltip-circle" className="sentiment-circle"/>
+        <div id="sig-ev-tooltip-circle" className="sentiment-circle" />
         <p id="sig-ev-tooltip-meta"></p>
         <p id="sig-ev-tooltip-text"></p>
       </div>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Container } from "react-bootstrap";
+import { DEFAULT_SEARCH_TERM } from "../common";
 import {
   Timeline,
   ExampleSVG,
@@ -13,14 +14,14 @@ import {
 
 const Home = () => {
   const [hoveredFrequencies, setHoveredFrequencies] = useState();
-  const searchRef = useRef();
+  const [searchTerm, setSearchTerm] = useState(DEFAULT_SEARCH_TERM);
 
   return (
     <Container id="home">
-      <SearchBar searchRef={searchRef} />
+      <SearchBar setSearchTerm={setSearchTerm} />
       <Timeline
         className="mt-5"
-        searchRef={searchRef}
+        searchTerm={searchTerm}
         setHoveredFrequencies={setHoveredFrequencies}
       />
       <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/>
