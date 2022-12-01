@@ -133,6 +133,7 @@ Author:       See CODEOWNDERS
   top: 10px;
   background-color: var(--high-translucent);
   position: absolute;
+  display: none;
 }
 
 

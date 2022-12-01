@@ -132,6 +132,7 @@ const FrequencyChart = (props) => {
 
     const { date, count, sentiment } = hoveredFrequencies;
 
+    d3.select("#freq-chart-title").style("display", "block");
     const titleCircle = d3.select("#freq-chart-title-circle");
     titleCircle.style("background-color", sentimentColor(sentiment));
 
