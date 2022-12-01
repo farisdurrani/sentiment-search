@@ -13,6 +13,7 @@ const Timeline = (props) => {
   const { className, searchTerm, setHoveredFrequencies } = props;
   const lowerSearchTerm = searchTerm.toLowerCase();
 
+  const [isLoading, setIsLoading] = useState(true);
   const svg1Ref = useRef();
 
   const USE_LOCAL_FILE = true;
@@ -43,10 +44,10 @@ const Timeline = (props) => {
   const [dataset, setDataset] = useState();
   const [sig_events_dataset, setSig_events_dataset] = useState();
 
-  const initializeSVG = (svgRef) => {
+  const initializeSVG = () => {
     // create base SVG
     const svg_base = d3
-      .select(svgRef.current)
+      .select(svg1Ref.current)
       .attr("width", SVG_WIDTH)
       .attr("height", SVG_HEIGHT)
       .attr(
@@ -54,12 +55,6 @@ const Timeline = (props) => {
         `translate(${ABSOLUTE_MARGIN.left}, ${ABSOLUTE_MARGIN.top})`
       )
       .attr("id", "timeline-base-svg");
-
-    // create main group <g> in main SVG
-    const svg = svg_base
-      .append("g")
-      .attr("id", "timeline-main-plot")
-      .attr("transform", `translate(${SVG_PADDING.l}, ${SVG_PADDING.t})`);
 
     // draw boundary circles
     svg_base.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 20);
@@ -74,8 +69,6 @@ const Timeline = (props) => {
       .attr("cx", SVG_WIDTH)
       .attr("cy", SVG_HEIGHT)
       .attr("r", 20);
-
-    return svg;
   };
 
   const createScale = () => {
@@ -334,7 +327,14 @@ const Timeline = (props) => {
     drawEventCards(plotElements, dateScale, countScale);
   };
 
-  const createPlot = (svg, dateScale, countScale) => {
+  const createPlot = (dateScale, countScale) => {
+    // create main group <g> in main SVG
+    const svg = d3
+      .select(svg1Ref.current)
+      .append("g")
+      .attr("id", "timeline-main-plot")
+      .attr("transform", `translate(${SVG_PADDING.l}, ${SVG_PADDING.t})`);
+
     addMainVis1(svg, dateScale, countScale);
     addGraphTitle(svg);
     addAxes(svg, dateScale, countScale);
@@ -342,21 +342,28 @@ const Timeline = (props) => {
 
   const createAll = () => {
     console.debug("Creating graphs...");
-    const svg1 = initializeSVG(svg1Ref);
     const [dateScale, countScale] = createScale();
-    createPlot(svg1, dateScale, countScale);
+    createPlot(dateScale, countScale);
   };
 
   useEffect(() => {
-    importData();
+    initializeSVG();
   }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
+    d3.select("#timeline-main-plot").remove();
+
+    importData();
+  }, [searchTerm]);
 
   useEffect(() => {
     if (!dataset) return;
 
     createAll();
 
-    console.debug("Create all done");
+    console.debug("Timeline successfully created");
+    setIsLoading(false);
   }, [dataset]);
 
   return (
