@@ -13,9 +13,10 @@ import {
 } from "../common";
 
 const Timeline = (props) => {
-  const { className, searchTerm, setHoveredFrequencies, setIsLoading } = props;
+  const { className, searchOptions, setHoveredFrequencies, setIsLoading } =
+    props;
+  const { searchTerm, startDate, endDate } = searchOptions;
   const lowerSearchTerm = searchTerm.toLowerCase();
-
   const svg1Ref = useRef();
 
   const USE_LOCAL_FILE = true;
@@ -147,8 +148,8 @@ const Timeline = (props) => {
     const params = {
       keywords: lowerSearchTerm,
       orderDescending: "false",
-      startDate: convertDateToStandard(DEF_START_DATE),
-      endDate: convertDateToStandard(DEF_END_DATE),
+      startDate: convertDateToStandard(startDate),
+      endDate: convertDateToStandard(endDate),
     };
 
     axios.get(API_URL + "/api/getSummary", { params }).then((response) => {

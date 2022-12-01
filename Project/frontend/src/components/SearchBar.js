@@ -2,13 +2,41 @@ import React, { useRef } from "react";
 import PropTypes from "prop-types";
 import { Button, Container, Form, Accordion, Col, Row } from "react-bootstrap";
 import { DEFAULT_SEARCH_TERM, DEF_END_DATE, DEF_START_DATE } from "../common";
+import { toast } from "react-toastify";
 
 const SearchBar = (props) => {
-  const { setSearchTerm, isLoading } = props;
+  const { setSearchOptions, isLoading } = props;
+
   const searchRef = useRef();
+  const startDateRef = useRef();
+  const endDateRef = useRef();
+
+  const validateInputs = () => {
+    const startDate = startDateRef.current.value;
+    const endDate = endDateRef.current.value;
+
+    const validateDate = (date) => {
+      if (date === "") return true;
+      return new Date(date).toString() !== "Invalid Date";
+    };
+
+    if (!(validateDate(startDate) && validateDate(endDate))) {
+      toast.error("Invalid date format", { autoClose: 1000 });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    setSearchTerm(searchRef.current.value);
+    if (!validateInputs()) return;
+
+    setSearchOptions({
+      serachTerm: searchRef.current.value,
+      startDate: new Date(startDateRef.current.value) || DEF_START_DATE,
+      endDateTerm: new Date(endDateRef.current.value) || DEF_END_DATE,
+    });
   };
 
   return (
@@ -27,7 +55,7 @@ const SearchBar = (props) => {
         <Button className="comfortable mb-3" type="submit" disabled={isLoading}>
           {isLoading ? "Analyzing..." : "Analyze"}
         </Button>
-        <Accordion defaultEventKey="0" flush className="search-options">
+        <Accordion defaultActiveKey="0" flush className="search-options">
           <Accordion.Item eventKey="0">
             <Accordion.Header className="search-options-header">
               Advanced search
@@ -39,6 +67,7 @@ const SearchBar = (props) => {
                   <Form.Control
                     type="text"
                     placeholder={DEF_START_DATE.toLocaleDateString()}
+                    ref={startDateRef}
                   />
                 </Row>
                 <Row className="w-25">
@@ -46,6 +75,7 @@ const SearchBar = (props) => {
                   <Form.Control
                     type="text"
                     placeholder={DEF_END_DATE.toLocaleDateString()}
+                    ref={endDateRef}
                   />
                 </Row>
               </Form.Group>
