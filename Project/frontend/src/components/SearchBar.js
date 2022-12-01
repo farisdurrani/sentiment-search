@@ -4,7 +4,7 @@ import { Button, Container, Form } from "react-bootstrap";
 import { DEFAULT_SEARCH_TERM } from "../common";
 
 const SearchBar = (props) => {
-  const { setSearchTerm } = props;
+  const { setSearchTerm, isLoading } = props;
   const searchRef = useRef();
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -26,8 +26,8 @@ const SearchBar = (props) => {
             ref={searchRef}
           />
         </Form.Group>
-        <Button className="comfortable" type="submit">
-          Analyze
+        <Button className="comfortable" type="submit" disabled={isLoading}>
+          {isLoading ? "Analyzing..." : "Analyze"}
         </Button>
       </Form>
     </div>

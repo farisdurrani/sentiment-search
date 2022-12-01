@@ -10,10 +10,9 @@ import {
 } from "../common";
 
 const Timeline = (props) => {
-  const { className, searchTerm, setHoveredFrequencies } = props;
+  const { className, searchTerm, setHoveredFrequencies, setIsLoading } = props;
   const lowerSearchTerm = searchTerm.toLowerCase();
 
-  const [isLoading, setIsLoading] = useState(true);
   const svg1Ref = useRef();
 
   const USE_LOCAL_FILE = true;

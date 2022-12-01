@@ -15,14 +15,16 @@ import {
 const Home = () => {
   const [hoveredFrequencies, setHoveredFrequencies] = useState();
   const [searchTerm, setSearchTerm] = useState(DEFAULT_SEARCH_TERM);
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
     <Container id="home">
-      <SearchBar setSearchTerm={setSearchTerm} />
+      <SearchBar setSearchTerm={setSearchTerm} isLoading={isLoading} />
       <Timeline
         className="mt-5"
         searchTerm={searchTerm}
         setHoveredFrequencies={setHoveredFrequencies}
+        setIsLoading={setIsLoading}
       />
       <FrequencyChart className="mt-5" hoveredFrequencies={hoveredFrequencies}/>
       <Spacer height={100}/>
