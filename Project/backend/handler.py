@@ -48,6 +48,11 @@ def as_float(arg: str):
 
 @handle_null
 def as_list_of_str(arg: str):
+    return [s for s in request.args.getlist(arg)]
+
+
+@handle_null
+def as_list_of_str_lower(arg: str):
     return [s.lower() for s in request.args.getlist(arg)]
 
 
