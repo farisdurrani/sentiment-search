@@ -122,33 +122,16 @@ const BubbleChart = (props) => {
     
    
     useEffect(() => {
-      // console.log('hidd')
-      // if (dataset)  return (
-        
-
-      //   <div id="chart">
-      // hi {/* <ReactApexChart series={{data:[1,2,3]}} type="treemap" height={350} /> */}
-      // </div>
-      // )
-
-      // else
+   
        console.log(dataset);
 
-    //    return (
-        
-
-    //     <div id="chart">
-        
-    //  hi {/* <ReactApexChart series={[{data:[1,2,3]}]} type="treemap" height={350} />  */}
-    //   </div>
-    //   )
+   
   
   
     }, [dataset,colors,value]);
 
     
-    // axios.get( "http://127.0.0.1:8000/api/getBagOfWords?platform=facebook&limitAmountOfWords=10").then((response) => {
-
+    
 function importData() {
   var params = {
     
@@ -270,32 +253,7 @@ const Input = styled(MuiInput)`
   };
 
     return (
-        
-
-//           <div id="chart">
-//            {/* <Box width={300}>
-//       <Slider
-//         size="small"
-//         defaultValue={70}
-//         aria-label="Small"
-//         valueLabelDisplay="auto"
-//       />
-//       <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" />
-//     </Box>
-//             <Slider
-//       size="small"
-//       defaultValue={70}
-//       aria-label="Small"
-//       valueLabelDisplay="auto"
-//     />
-//     <Slider defaultValue={50} aria-label="Default" valueLabelDisplay="auto" /> */}
-//     <Stack spacing={2} direction="row" sx={{ mb: 1 }} alignItems="center">
- 
- 
-
-// </Stack>
-//      {/* <ReactApexChart options={state.options} series={state.series} type="treemap" height={350} /> */}
-//     </div>
+      
 
 <Container>
 
