@@ -19,7 +19,7 @@ const Home = () => {
     startDate: DEF_START_DATE,
     endDate: DEF_END_DATE,
   });
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   return (
     <Container id="home">
