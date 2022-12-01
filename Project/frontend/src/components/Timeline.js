@@ -114,6 +114,7 @@ const Timeline = (props) => {
           sentiment: datasetMatch?.sentiment,
           count: datasetMatch?.count,
           posts: datasetMatch?.posts,
+          country: se.country,
         };
       });
 
@@ -221,12 +222,15 @@ const Timeline = (props) => {
         description,
         sentiment: rawSentiment,
         count,
+        country,
       } = d.target.__data__;
       const date = rawDate.toLocaleDateString("en-US");
-      const sentiment = Number.parseFloat(rawSentiment).toFixed(3);
+      const sentiment = rawSentiment.toFixed(3);
       const count_text = count ? ` | Count: ${count}` : "";
 
-      tooltipMeta.html(`${date} | Sentiment: ${sentiment}${count_text}`);
+      tooltipMeta.html(
+        `${date} | Sentiment: ${sentiment}${count_text} | Country: ${country}`
+      );
       tooltipText.html(description);
       tooltipCircle.style("background-color", sentimentColor(sentiment));
     };
@@ -352,7 +356,7 @@ const Timeline = (props) => {
 
   useEffect(() => {
     setIsLoading(true);
-    d3.select("#timeline-main-plot").remove();
+    d3.selectAll("#timeline-main-plot").remove();
 
     importData();
   }, [searchTerm]);
@@ -364,7 +368,7 @@ const Timeline = (props) => {
 
     console.debug("Timeline successfully created");
     setIsLoading(false);
-  }, [dataset]);
+  }, [dataset, sig_events_dataset]);
 
   return (
     <div id="timeline" className={`d-flex justify-content-center ${className}`}>

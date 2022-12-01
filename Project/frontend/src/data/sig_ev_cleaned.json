@@ -146,7 +146,7 @@
     },
     {
       "date": "2016-02-11",
-      "description": ": Detection of gravitational waves by LIGO confirme",
+      "description": "Detection of gravitational waves by LIGO confirme",
       "country": "usa",
       "topic": "science"
     },
@@ -164,13 +164,13 @@
     },
     {
       "date": "2016-05-09",
-      "description": ": Rodrigo Duterte becomes President of the Philippines, and initiates a controversial drug war.",
+      "description": "Rodrigo Duterte becomes President of the Philippines, and initiates a controversial drug war.",
       "country": "philippines",
       "topic": "politics"
     },
     {
       "date": "2016-06-01",
-      "description": ": The Gotthard Base Tunnel, the world's longest and deepest railway tunnel, is completed.",
+      "description": "The Gotthard Base Tunnel, the world's longest and deepest railway tunnel, is completed.",
       "country": "usa",
       "topic": "news"
     },
@@ -221,18 +221,6 @@
       "description": "The United Nations lifts sanctions from Iran in recognition of the dismantling of its nuclear program.",
       "country": "usa",
       "topic": "politics"
-    },
-    {
-      "date": "2016-11-08",
-      "description": "The United Nations lifts sanctions from Iran in recognition of the dismantling of its nuclear program.",
-      "country": "usa",
-      "topic": "politics"
-    },
-    {
-      "date": "2016-11-08",
-      "description": "ISIL claims responsibility for a series of bombings in Brussels, a massacre at Istanbul's Atat\u00fcrk Airport and car ramming attacks in Nice.",
-      "country": "turkey",
-      "topic": "terrorism"
     },
     {
       "date": "2016-11-08",

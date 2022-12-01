@@ -19,7 +19,6 @@ const SearchBar = (props) => {
             <h1>Sentiment Search</h1>
           </Form.Label>
           <Form.Control
-            disabled
             className="main-search m-auto"
             type="text"
             placeholder="🔍"
