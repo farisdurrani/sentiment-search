@@ -296,7 +296,6 @@ const Timeline = (props) => {
         posts: posts,
       } = d.target.__data__;
       setHoveredFrequencies(posts);
-      console.debug(posts);
       const date = rawDate.toLocaleDateString("en-US");
       const sentiment = rawSentiment.toFixed(3);
 
