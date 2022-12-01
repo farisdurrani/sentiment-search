@@ -208,7 +208,7 @@ def get_summary():
     query = {
         "startDate": as_date(request_get("startDate")),
         "endDate": as_date(request_get("endDate")),
-        "platform": as_list_of_str("platform"),
+        "platform": as_list_of_str_lower("platform"),
         "keywords": as_list_of_str_lower("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
         "orderBy": as_str(request_get("orderBy"), "date"),
@@ -236,8 +236,8 @@ def get_summary():
 
     if platform:
         for p in platform:
-            assert p in [k[0] for k in _PLATFORMS], p
-        df = pd.concat([df[df["platform"] == plat] for plat in platform])
+            assert p in [k[0].lower() for k in _PLATFORMS], p
+        df = pd.concat([df[df["platform"].str.lower() == plat] for plat in platform])
 
     if keywords:
         for kw in keywords:
@@ -309,7 +309,7 @@ def get_bag_of_words():
         "postId": as_list_of_int("postId"),
         "startDate": as_date(request_get("startDate")),
         "endDate": as_date(request_get("endDate")),
-        "platform": as_list_of_str("platform"),
+        "platform": as_list_of_str_lower("platform"),
         "keywords": as_list_of_str_lower("keywords"),
         "limitCountOfPostsPerDate": as_int(request_get("limitCountOfPostsPerDate")),
         "limitAmountOfWords": as_int(request_get("limitAmountOfWords")),
@@ -344,7 +344,7 @@ def get_bag_of_words():
     if platform:
         for p in platform:
             assert p in [k[0] for k in _PLATFORMS], p
-        df = pd.concat([df[df["platform"] == plat] for plat in platform])
+        df = pd.concat([df[df["platform"].str.lower() == plat] for plat in platform])
 
     bag_of_words = []
 
