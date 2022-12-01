@@ -56,6 +56,7 @@ def _tokenization_and_save(df: pd.DataFrame, path: Path | None = None):
     whose postId matches the index in the list.
     """
 
+    print('processing tokenization')
     mapping: List[Set[str]] = [set() for _ in range(len(df))]
     assert set(df["postId"]) == set(range(len(df)))
     for (idx, body_text) in alive_it(zip(df["postId"], df["bodyText"]), total=len(df)):
@@ -93,11 +94,11 @@ def _get_tokenization():
 
     tokenization_cache = Path("tokenization.json")
     if tokenization_cache.exists():
+        print("Loading", tokenization_cache)
         with open(tokenization_cache) as f:
             data: List[List[str]] = json.load(f)
-            data = [set(tokens) for tokens in data]
             _TOKENIZED_SET = data
-
+        print("tokenization loaded")
         if set(_DF["postId"]) != set(range(len(data))):
             _TOKENIZED_SET = _tokenization_and_save(_DF, tokenization_cache)
     else:
