@@ -1,13 +1,11 @@
 import * as d3 from "d3";
 import React, { useEffect, useState, useRef, useMemo } from "react";
-import { Button, Container } from "react-bootstrap";
 import axios from "axios";
 import {
   MAX_SENTIMENT,
   MIN_SENTIMENT,
   sentimentColor,
   API_URL,
-  DEFAULT_SEARCH_TERM,
   getRandomArbitrary,
 } from "../common";
 
@@ -44,7 +42,6 @@ const Timeline = (props) => {
 
   const [dataset, setDataset] = useState();
   const [sig_events_dataset, setSig_events_dataset] = useState();
-  useMemo(() => importData(), []);
 
   const initializeSVG = (svgRef) => {
     // create base SVG
@@ -56,12 +53,12 @@ const Timeline = (props) => {
         "transform",
         `translate(${ABSOLUTE_MARGIN.left}, ${ABSOLUTE_MARGIN.top})`
       )
-      .attr("id", "svg-1");
+      .attr("id", "timeline-base-svg");
 
     // create main group <g> in main SVG
     const svg = svg_base
       .append("g")
-      .attr("id", "plot-1")
+      .attr("id", "timeline-main-plot")
       .attr("transform", `translate(${SVG_PADDING.l}, ${SVG_PADDING.t})`);
 
     // draw boundary circles
@@ -349,6 +346,10 @@ const Timeline = (props) => {
     const [dateScale, countScale] = createScale();
     createPlot(svg1, dateScale, countScale);
   };
+
+  useEffect(() => {
+    importData();
+  }, []);
 
   useEffect(() => {
     if (!dataset) return;
