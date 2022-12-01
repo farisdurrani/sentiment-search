@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
   MAX_SENTIMENT,

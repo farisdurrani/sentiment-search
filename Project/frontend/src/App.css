@@ -95,6 +95,11 @@ Author:       See CODEOWNDERS
   color: gray;
 }
 
+#search-bar .search-options .form-label {
+  font-weight: bold;
+  font-size: medium;
+}
+
 /* -------------------------------------------------------------------------- */
 /*	Timeline
 /* -------------------------------------------------------------------------- */
@@ -135,5 +140,3 @@ Author:       See CODEOWNDERS
   position: absolute;
   display: none;
 }
-
-

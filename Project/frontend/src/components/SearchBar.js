@@ -48,6 +48,31 @@ const SearchBar = (props) => {
     });
   };
 
+  const ALL_PLATFORMS = [
+    "All",
+    "CNN",
+    "The Guardian",
+    "Facebook",
+    "Twitter",
+    "Reddit",
+    "The New York Times",
+  ];
+
+  const PlatformSelection = (
+    <>
+      <Row>
+        <Form.Label>Platform</Form.Label>
+        <div className="row w-50 m-auto">
+          <Form.Select aria-label="Default select example">
+            {ALL_PLATFORMS.map((e) => (
+              <option key={e} value={e} label={e}/>
+            ))}
+          </Form.Select>
+        </div>
+      </Row>
+    </>
+  );
+
   return (
     <div id="search-bar" className="text-center mt-5">
       <Form onSubmit={handleSubmit}>
@@ -64,29 +89,33 @@ const SearchBar = (props) => {
         <Button className="comfortable mb-3" type="submit" disabled={isLoading}>
           {isLoading ? "Analyzing..." : "Analyze"}
         </Button>
-        <Accordion flush className="search-options">
+        <Accordion defaultActiveKey="0" flush className="search-options">
           <Accordion.Item eventKey="0">
             <Accordion.Header className="search-options-header">
               Advanced search
             </Accordion.Header>
             <Accordion.Body>
-              <Form.Group className="d-flex flex-row justify-content-around">
-                <Row className="w-25">
-                  <Form.Label>Start date</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder={DEF_START_DATE.toLocaleDateString()}
-                    ref={startDateRef}
-                  />
+              <Form.Group>
+                <Row className="d-flex flex-row justify-content-around">
+                  <Row className="w-25">
+                    <Form.Label>Start date</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder={DEF_START_DATE.toLocaleDateString()}
+                      ref={startDateRef}
+                    />
+                  </Row>
+                  <Row className="w-25">
+                    <Form.Label>End date</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder={DEF_END_DATE.toLocaleDateString()}
+                      ref={endDateRef}
+                    />
+                  </Row>
                 </Row>
-                <Row className="w-25">
-                  <Form.Label>End date</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder={DEF_END_DATE.toLocaleDateString()}
-                    ref={endDateRef}
-                  />
-                </Row>
+
+                {PlatformSelection}
               </Form.Group>
             </Accordion.Body>
           </Accordion.Item>

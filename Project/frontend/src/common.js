@@ -7,7 +7,7 @@ export const DEFAULT_SEARCH_TERM = "Trump";
 export const DEF_START_DATE = new Date("2015-01-01");
 export const DEF_END_DATE = new Date("2022-11-15");
 
-export const USE_LOCAL_FILE = true; 
+export const USE_LOCAL_FILE = true;
 
 /**
  * Given a sentiment value of [-1, 1], return the color corresponding to that sentiment percentage. A -1 sentiment equals pure red (#ff0000), +1 returns pure blue (#0000ff), anything in between returns something in between.
@@ -71,13 +71,12 @@ export function getRandomArbitrary(min, max) {
   return Math.random() * (max - min) + min;
 }
 
-
 /**
  * Converts any date input to "YYYY-MM-DD"
  * @param {string} input_date
  * @returns
  */
- export const convertDateToStandard = (input_date) => {
+export const convertDateToStandard = (input_date) => {
   const date = new Date(input_date);
 
   if (date.toString() === "Invalid Date") return null;
