@@ -48,6 +48,7 @@ def adaptDf(path, df):
     elif "the guardian" in str(path).lower():
         df['platform'] = "The Guardian"
         df['country'] = None
+        df = randomKeep(df, 0.5)
         return df
     elif "twitter" in str(path).lower():
         df = adaptTwitter(df)
@@ -123,7 +124,6 @@ def insertPosts(folder_path, csv_name):
     for file_name in files:
         print(file_name)
         df = readDfFromPath(path+ '/' + file_name)
-        df = adaptDf(path, df)
         df = df[['platform', 'bodyText', 'sentiment', 'date', 'country']]
         csv_path = csv_name + '_filtered.csv'
         if exists(csv_path):
