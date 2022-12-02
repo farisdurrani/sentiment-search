@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Container } from "react-bootstrap";
+import { Container, Col, Row } from "react-bootstrap";
 import {
   ALL_PLATFORMS,
   DEFAULT_SEARCH_TERM,
@@ -33,11 +33,23 @@ const Home = () => {
     <Container id="home">
       <SearchBar setSearchOptions={setSearchOptions} isLoading={isLoading} />
       <hr className="sep" />
+
+      <Spacer height={20} />
       <Description
         text="Welcome to Sentiment Search. Providing a visual analysis of the
         Internet's sentiment for a keyword"
       />
-      <Legend />
+      <Spacer height={20} />
+
+      <div className="d-flex flex-row justify-content-between align-items-center mb-3 w-75 mx-auto">
+        <Legend />
+        <Description
+          text={`A media post's sentiment can be very <b>negative</b> (-1), all the way to being very <b>positive</b> (1).`}
+          className="w-25"
+          pStyle={{ textAlign: "right" }}
+        />
+      </div>
+
       <Timeline
         className="mt-5"
         searchOptions={searchOptions}
