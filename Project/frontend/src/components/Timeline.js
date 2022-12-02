@@ -11,6 +11,7 @@ import {
   convertDateToStandard,
   ALL_PLATFORMS,
 } from "../common";
+import { toast } from "react-toastify";
 
 const Timeline = (props) => {
   const { className, searchOptions, setHoveredFrequencies, setIsLoading } =
@@ -373,6 +374,8 @@ const Timeline = (props) => {
 
     console.debug("Timeline successfully created");
     setIsLoading(false);
+    toast.success("Sentiment analyzed. Scroll down for results")
+    
   }, [dataset, sig_events_dataset]);
 
   return (
