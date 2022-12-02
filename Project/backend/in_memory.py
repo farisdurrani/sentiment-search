@@ -349,7 +349,7 @@ def get_bag_of_words():
 
     if platform:
         for p in platform:
-            assert p in [k[0] for k in _PLATFORMS], p
+            assert p in [k[0].lower() for k in _PLATFORMS], p
         df = pd.concat([df[df["platform"].str.lower() == plat] for plat in platform])
 
     bag_of_words = []
