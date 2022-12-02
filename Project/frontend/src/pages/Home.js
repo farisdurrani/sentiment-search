@@ -74,6 +74,7 @@ const Home = () => {
         startDate={searchOptions.startDate}
         endDate={searchOptions.endDate}
       />
+      <Spacer height={100} />
     </Container>
   );
 };
