@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
-import PropTypes from "prop-types";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
-const Graph1 = (props) => {
+const Graph1 = () => {
   const svg1Ref = useRef();
 
   const createAll = () => {
@@ -32,7 +31,5 @@ const Graph1 = (props) => {
     </div>
   );
 };
-
-Graph1.propTypes = {};
 
 export default Graph1;

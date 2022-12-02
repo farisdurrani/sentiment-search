@@ -1,6 +1,6 @@
 import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
-import { Button, Container, Form, Accordion, Col, Row } from "react-bootstrap";
+import { Button, Form, Accordion, Row } from "react-bootstrap";
 import {
   DEFAULT_SEARCH_TERM,
   DEF_END_DATE,
@@ -112,6 +112,7 @@ const SearchBar = (props) => {
                       type="text"
                       placeholder={DEF_START_DATE.toLocaleDateString()}
                       ref={startDateRef}
+                      defaultValue={DEF_START_DATE.toLocaleDateString()}
                     />
                   </Row>
                   <Row className="w-25">
@@ -120,6 +121,7 @@ const SearchBar = (props) => {
                       type="text"
                       placeholder={DEF_END_DATE.toLocaleDateString()}
                       ref={endDateRef}
+                      defaultValue={DEF_END_DATE.toLocaleDateString()}
                     />
                   </Row>
                 </Row>
@@ -134,6 +136,9 @@ const SearchBar = (props) => {
   );
 };
 
-SearchBar.propTypes = {};
+SearchBar.propTypes = {
+  setSearchOptions: PropTypes.func.isRequired,
+  isLoading: PropTypes.bool.isRequired,
+};
 
 export default SearchBar;

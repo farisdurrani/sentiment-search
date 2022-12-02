@@ -12,6 +12,7 @@ import {
   ALL_PLATFORMS,
 } from "../common";
 import { toast } from "react-toastify";
+import PropTypes from "prop-types";
 
 const Timeline = (props) => {
   const { className, searchOptions, setHoveredFrequencies, setIsLoading } =
@@ -143,7 +144,7 @@ const Timeline = (props) => {
     }
 
     const response = await axios.get(API_URL + "/api/getSummary", { params });
-    if (response.data.success) console.debug("Response 200 downloaded");
+    if (response.data?.success) console.debug("Response 200 downloaded");
     else {
       console.debug("Backend call failed");
       return;
@@ -375,6 +376,16 @@ const Timeline = (props) => {
   );
 };
 
-Timeline.propTypes = {};
+Timeline.propTypes = {
+  className: PropTypes.string,
+  searchOptions: PropTypes.exact({
+    searchTerm: PropTypes.string,
+    startDate: PropTypes.instanceOf(Date),
+    endDate: PropTypes.instanceOf(Date),
+    selectedPlatform: PropTypes.string,
+  }).isRequired,
+  setHoveredFrequencies: PropTypes.func.isRequired,
+  setIsLoading: PropTypes.func.isRequired,
+};
 
 export default Timeline;

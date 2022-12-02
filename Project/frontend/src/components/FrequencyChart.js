@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef, useMemo } from "react";
+import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
-import axios from "axios";
 import { sentimentColor } from "../common";
+import PropTypes from "prop-types";
 
 const FrequencyChart = (props) => {
   const { className, hoveredFrequencies } = props;
@@ -176,6 +176,22 @@ const FrequencyChart = (props) => {
       </div>
     </div>
   );
+};
+
+FrequencyChart.propTypes = {
+  className: PropTypes.string,
+  hoveredFrequencies: PropTypes.shape({
+    count: PropTypes.number,
+    date: PropTypes.instanceOf(Date),
+    sentiment: PropTypes.number,
+    posts: PropTypes.arrayOf(
+      PropTypes.shape({
+        count: PropTypes.number,
+        platform: PropTypes.string,
+        sentiment: PropTypes.number,
+      })
+    ),
+  }),
 };
 
 export default FrequencyChart;

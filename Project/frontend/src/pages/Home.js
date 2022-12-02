@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
-import { Container, Col, Row } from "react-bootstrap";
+import React, { useState } from "react";
+import { Container } from "react-bootstrap";
 import {
   ALL_PLATFORMS,
   DEFAULT_SEARCH_TERM,
@@ -8,12 +8,9 @@ import {
 } from "../common";
 import {
   Timeline,
-  ExampleSVG,
   Spacer,
   BubbleChart,
-  PolarArea,
   SearchBar,
-  Radar,
   FrequencyChart,
   Legend,
   Description,
@@ -70,9 +67,11 @@ const Home = () => {
       />
 
       <Spacer height={100} />
-      <BubbleChart className="mt-5" startDate={searchOptions.startDate} endDate={searchOptions.endDate} />
-      {/* <PolarArea className="mt-5" />
-      <Radar className="mt-5" /> */}
+      <BubbleChart
+        className="mt-5"
+        startDate={searchOptions.startDate}
+        endDate={searchOptions.endDate}
+      />
     </Container>
   );
 };

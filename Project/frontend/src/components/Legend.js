@@ -2,7 +2,7 @@ import * as d3 from "d3";
 import React, { useRef, useMemo, useEffect } from "react";
 import { MAX_SENTIMENT, MIN_SENTIMENT, sentimentColor } from "../common";
 
-const Legend = (props) => {
+const Legend = () => {
   const svgRef = useRef();
   const SVG_WIDTH = 550;
   const SVG_HEIGHT = 90;
@@ -65,13 +65,13 @@ const Legend = (props) => {
       .text("Sentiment")
       .attr("text-anchor", "middle")
       .attr("font-size", "14px");
-      
-      // add sentiment min max values
-      legendcon
+
+    // add sentiment min max values
+    legendcon
       .append("text")
       .attr("x", 10)
       .attr("alignment-baseline", "middle")
-      .attr("y", BAR_Y_START + LEGEND_HEIGHT * 0.05 / 2)
+      .attr("y", BAR_Y_START + (LEGEND_HEIGHT * 0.05) / 2)
       .attr("fill", "white")
       .text(MIN_SENTIMENT);
     legendcon
@@ -79,7 +79,7 @@ const Legend = (props) => {
       .attr("x", LEGEND_WIDTH - 20)
       .attr("alignment-baseline", "middle")
       .attr("text-anchor", "middle")
-      .attr("y", BAR_Y_START + LEGEND_HEIGHT * 0.05 / 2)
+      .attr("y", BAR_Y_START + (LEGEND_HEIGHT * 0.05) / 2)
       .attr("fill", "white")
       .text(MAX_SENTIMENT);
   };
