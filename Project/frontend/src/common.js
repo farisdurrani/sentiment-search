@@ -9,6 +9,7 @@ export const DEF_END_DATE = new Date("2021-12-31");
 export const MIN_DATE = new Date("2015-01-01");
 export const MAX_DATE = new Date("2022-11-15");
 
+// set to true to use local file in Timeline and Frequency Chart, i.e., change to dev mode to reduce API calls
 export const USE_LOCAL_FILE = false;
 
 export const ALL_PLATFORMS = [
