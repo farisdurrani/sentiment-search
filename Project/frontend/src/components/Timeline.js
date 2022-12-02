@@ -48,7 +48,7 @@ const Timeline = (props) => {
 
   const initializeSVG = () => {
     // create base SVG
-    const svg_base = d3
+    d3
       .select(svg1Ref.current)
       .attr("width", SVG_WIDTH)
       .attr("height", SVG_HEIGHT)
