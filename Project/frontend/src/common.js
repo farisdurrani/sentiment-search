@@ -4,10 +4,10 @@ export const MAX_SENTIMENT = 1;
 export const API_URL = "http://127.0.0.1:8000";
 export const DEFAULT_SEARCH_TERM = "Trump";
 
-export const DEF_START_DATE = new Date("2015-01-01");
-export const DEF_END_DATE = new Date("2022-11-15");
-export const MIN_DATE = DEF_START_DATE;
-export const MAX_DATE = DEF_END_DATE;
+export const DEF_START_DATE = new Date("2019-01-01");
+export const DEF_END_DATE = new Date("2021-12-31");
+export const MIN_DATE = new Date("2015-01-01");
+export const MAX_DATE = new Date("2022-11-15");
 
 export const USE_LOCAL_FILE = false;
 
