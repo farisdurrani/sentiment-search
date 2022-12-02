@@ -31,24 +31,6 @@ const Legend = (props) => {
       .attr("width", SVG_WIDTH)
       .attr("height", SVG_HEIGHT);
 
-    // draw boundary circles
-    legendconBase.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 20);
-    legendconBase
-      .append("circle")
-      .attr("cx", SVG_WIDTH)
-      .attr("cy", 0)
-      .attr("r", 20);
-    legendconBase
-      .append("circle")
-      .attr("cx", 0)
-      .attr("cy", SVG_HEIGHT)
-      .attr("r", 20);
-    legendconBase
-      .append("circle")
-      .attr("cx", SVG_WIDTH)
-      .attr("cy", SVG_HEIGHT)
-      .attr("r", 20);
-
     return legendconBase;
   };
 

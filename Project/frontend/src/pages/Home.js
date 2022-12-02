@@ -34,7 +34,6 @@ const Home = () => {
       <SearchBar setSearchOptions={setSearchOptions} isLoading={isLoading} />
       <hr className="sep" />
 
-      <Spacer height={20} />
       <Description
         text="Welcome to Sentiment Search. Providing a visual analysis of the
         Internet's sentiment for a keyword"
@@ -50,16 +49,25 @@ const Home = () => {
         />
       </div>
 
+      <hr className="sep" />
+      <Description
+        text={`This graph shows the count of posts with the keywords you added over time. The colors reflect the average sentiment per day. <br/>
+        The circles denote significant events. Hover over to read.`}
+      />
       <Timeline
         className="mt-5"
         searchOptions={searchOptions}
         setHoveredFrequencies={setHoveredFrequencies}
         setIsLoading={setIsLoading}
       />
+
+      <hr className="sep" />
+      <Description text="As you hover above, this graph below shows the breakdowns of posts per platform, along with the average sentiment per platform." />
       <FrequencyChart
         className="mt-5"
         hoveredFrequencies={hoveredFrequencies}
       />
+
       <Spacer height={100} />
       <BubbleChart className="mt-5" startDate={searchOptions.startDate} endDate={searchOptions.endDate} />
       {/* <PolarArea className="mt-5" />
