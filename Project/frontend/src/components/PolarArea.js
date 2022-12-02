@@ -69,7 +69,7 @@ console.log('ffff',props.dataset)
             const dataset = raw_dataset.map((e) => ({
             x: e.word,
             y: +e.count,
-            z: getColor(+e.meanSentiment,+e.count),
+            z: getColor(e.meanSentiment,+e.count),
             }));
     
             return dataset;
@@ -108,12 +108,12 @@ console.log('ffff',props.dataset)
 
         
           stroke: {
-            colors: [pos_c,neg_c,neu_c]
+            colors: [pos_c,neg_c,'gray']
           },
-          colors: [pos_c,neg_c,neu_c],
+          colors: [pos_c,neg_c,'gray'],
           labels: ['Positive', 'Negative', 'Neutral'],
           fill: {
-            opacity: 0.95
+            opacity: 1
           },
 
           plotOptions: {

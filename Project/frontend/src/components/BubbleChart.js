@@ -150,7 +150,7 @@ console.log(platform)
     // orderDescending: "false",
     startDate: startDate,
     endDate:endDate,
-    sampleRate: 0.0001,
+    sampleRate: 1,
     limitAmountOfWords: value
   };
 
@@ -211,7 +211,7 @@ var state= {
       align: 'center'
     },
     fill: {
-      opacity: 0.9
+      opacity: 0.8
     },
     colors:colors,
     plotOptions: {
