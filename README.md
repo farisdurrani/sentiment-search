@@ -11,7 +11,7 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 1. [NodeJS v18](https://nodejs.org/en/download/)
 1. NPM v9: `npm install npm@latest -g`
 1. [Python 3.10](https://www.python.org/downloads/release/python-3108/)
-1. Download the `reduced_data` dataset from [Kaggle](https://www.kaggle.com/datasets/farisdurrani/sentimentsearch), unzipping it, and putting all the contents inside [/backend](./Project/backend) 
+1. Download the `reduced_data` dataset from [Kaggle](https://www.kaggle.com/datasets/farisdurrani/sentimentsearch), unzipping it, and putting all the files  inside [/backend](./Project/backend) 
 
 ## Start both the backend and frontend apps once inside [/Project](./Project):
 
