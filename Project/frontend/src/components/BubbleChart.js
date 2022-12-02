@@ -3,7 +3,7 @@ import { color } from "d3";
 import React, { useEffect, useState, useRef, useMemo, Component } from "react";
 import ReactApexChart from 'react-apexcharts'
 import axios from "axios"
-import { sentimentColor } from "../common";
+import { sentimentColor,convertDateToStandard } from "../common";
 import Stack from '@mui/material/Stack';
 import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
@@ -107,9 +107,12 @@ const BubbleChart = (props) => {
   const [rawdataset, setRawDataset] = useState([]);
   const [colors, setColor] = useState([]);
   const [value, setValue] = React.useState(10);
-  const [platform,setPlatform] = useState('All');
+  const [platform,setPlatform] = useState('All Platforms');
+  const [startDate,setStartDate] = useState(convertDateToStandard(props.startDate))
+  const [endDate,setEndDate] = useState(convertDateToStandard(props.endDate))
   useMemo(() => importData(), [value,platform]);
 
+  console.log(props.startDate)
   const color=[]
   
     function getColor(value){
@@ -128,24 +131,26 @@ const BubbleChart = (props) => {
    
   
   
-    }, [dataset,colors,value]);
+    }, [dataset,colors,value,startDate,endDate]);
 
     
     
 function importData() {
   var params = {
-    
-   
+    startDate: startDate,
+    endDate:endDate,
+    sampleRate: 1,
     limitAmountOfWords: value
   };
 console.log(platform)
-  if (platform!='All'){
+  if (platform!='All Platforms'){
      
     params = {
     platform:platform,
     // orderDescending: "false",
-    // startDate: "2015-12-31",
-    // endDate: "2016-12-31",
+    startDate: startDate,
+    endDate:endDate,
+    sampleRate: 0.0001,
     limitAmountOfWords: value
   };
 
@@ -168,6 +173,8 @@ console.log(platform)
         }));
         setDataset(dataset);
         setColor(color);
+        setStartDate(convertDateToStandard(props.startDate));
+        setEndDate(convertDateToStandard(props.endDate));
 
     
   
@@ -180,7 +187,7 @@ console.log(platform)
     )
 }
 
-
+console.log('c',sentimentColor(1),sentimentColor(0),sentimentColor(-1));
 var state= {
         
   series: [
@@ -196,20 +203,23 @@ var state= {
     chart: {
       height: 350,
       type: 'treemap',
-      foreColor: '#fff'
+      //foreColor: '#fff'
 
     },
     title: {
-      text: 'Word Treemap (Most Occurances)',
+
       align: 'center'
     },
     fill: {
-      opacity: 0.8
+      opacity: 0.9
     },
     colors:colors,
     plotOptions: {
       treemap: {
         distributed: true,
+        reverseNegativeShade: false,
+        shadeIntensity: 0.5,
+        useFillColorAsStroke: false,
         enableShades: false
       }
     },
@@ -255,16 +265,13 @@ const Input = styled(MuiInput)`
     return (
       
 
-<Container>
-
- <Box sx={{ width: 250 }}>
-      <Typography id="input-slider" gutterBottom>
-        Top Words
+<Container justify="center">
+ <Box alignItems="center" justify="center">
+      <Typography class="title chart-title" id="input-slider" gutterBottom>
+        Top {value} Words Between {startDate} and {endDate} on {platform}
       </Typography>
-      <Grid container spacing={2} alignItems="center">
-        <Grid item>
-       
-        </Grid>
+     
+      <Grid container spacing={2} alignItems="center" justify="center">
         <Grid item xs>
           <Slider
             value={typeof value === 'number' ? value : 0}
@@ -287,8 +294,12 @@ const Input = styled(MuiInput)`
             }}
           />
         </Grid>
-        <ButtonGroup variant="outlined" aria-label="outlined primary button group">
-        <Button onClick={() => {setPlatform('All')}}>All</Button>
+        </Grid>
+
+        <Box alignItems="center" justify="center" justifyContent="center">
+        <Grid alignItems="center" justify="center" justifyContent="center">
+        <ButtonGroup alignItems="center" justify="center" justifyContent="center" variant="outlined" aria-label="outlined primary button group">
+        <Button onClick={() => {setPlatform('All Platforms')}}>All</Button>
       <Button onClick={() => {setPlatform('Facebook')}}>Facebook</Button>
       <Button onClick={() => {setPlatform('Reddit')}}>Reddit</Button>
       <Button onClick={() => {setPlatform('twitter')}}>Twitter</Button>
@@ -296,13 +307,25 @@ const Input = styled(MuiInput)`
       <Button onClick={() => {setPlatform('CNN')}}>CNN</Button>
       <Button onClick={() => {setPlatform('The New York Times')}}>New York Times</Button>
     </ButtonGroup>
+
       </Grid>
-      Platform: {platform}
+      </Box>
+  
     </Box>
+   
+<Box>
 <ReactApexChart options={state.options} series={state.series} type="treemap" height={350} />
 {/* <FrequencyChart className="mt-5"/> */}
+</Box>
+
+<Box paddingTop={10}>
+  <Typography class="title chart-title" id="input-slider" gutterBottom>
+        Fraction of Sentiment Polarities Between {startDate} and {endDate} on {platform}
+      </Typography>
 <PolarArea platform={platform} dataset={rawdataset} />
+</Box>
 </Container>
+
 
     )
 

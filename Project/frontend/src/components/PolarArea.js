@@ -101,31 +101,37 @@ console.log('ffff',props.dataset)
         series: [pos_n,neg_n,neu_n],
         options: {
           chart: {
-            type: 'polarArea',
+            width: '8000%',
+            type: 'pie',
+            
           },
+
+        
           stroke: {
             colors: [pos_c,neg_c,neu_c]
           },
           colors: [pos_c,neg_c,neu_c],
           labels: ['Positive', 'Negative', 'Neutral'],
           fill: {
-            opacity: 0.8
+            opacity: 0.95
           },
-          title: {
-            text: 'Sentiment Polarity Distribution in Top Words | Platform: ' + props.platform,
-            align: 'center'
-          },
-          responsive: [{
-            breakpoint: 400,
-            options: {
-              chart: {
-                width: 50
-              },
-              legend: {
-                position: 'bottom'
+
+          plotOptions: {
+            pie: {
+              dataLabels: {
+                offset: -5
+                
               }
             }
-          }]
+          },
+          dataLabels: {
+            formatter(val, opts) {
+              const name = opts.w.globals.labels[opts.seriesIndex]
+              return [name, val.toFixed(1) + '%']
+            }
+          },
+          
+         
         },
       
       
