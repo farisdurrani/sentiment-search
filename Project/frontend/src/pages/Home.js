@@ -70,7 +70,7 @@ const Home = () => {
       />
 
       <Spacer height={100} />
-      {/* <BubbleChart className="mt-5" startDate={searchOptions.startDate} endDate={searchOptions.endDate} /> */}
+      <BubbleChart className="mt-5" startDate={searchOptions.startDate} endDate={searchOptions.endDate} />
       {/* <PolarArea className="mt-5" />
       <Radar className="mt-5" /> */}
     </Container>
