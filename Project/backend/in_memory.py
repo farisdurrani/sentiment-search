@@ -432,7 +432,7 @@ def get_platform_freq():
 
     platform_info = []
     for platform in [k[0] for k in _PLATFORMS]:
-        plat_df = df[df["platform"] == platform]
+        plat_df = df[df["platform"].str.lower() == platform.lower()]
         for kw in keywords:
             if better_token:
                 tokenization = _get_tokenization()
