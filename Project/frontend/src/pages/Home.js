@@ -66,7 +66,9 @@ const Home = () => {
         hoveredFrequencies={hoveredFrequencies}
       />
 
-      <Spacer height={100} />
+      <hr className="sep" />
+      <Description text="You can also view the average sentiment of posts containing these most popular words over the chosen time range." />
+      <Spacer height={50} />
       <BubbleChart
         className="mt-5"
         startDate={searchOptions.startDate}
