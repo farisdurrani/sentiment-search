@@ -36,7 +36,7 @@ const Home = () => {
 
       <Description
         text="Welcome to Sentiment Search. <br/> Providing a visual analysis of the
-        Internet's sentiment for any keywords."
+        Internet's sentiment from 2015-2022 for any keywords."
       />
       <Spacer height={20} />
 
@@ -53,7 +53,7 @@ const Home = () => {
       <hr className="sep" />
       <Description
         text={`This graph shows the count of posts with the keywords you added over time. The colors reflect the average sentiment per day. <br/>
-        The circles denote significant events. Hover over to read.`}
+        The circles denote significant events. <b>Hover</b> over to read.`}
       />
       <Timeline
         className="mt-5"
@@ -63,7 +63,7 @@ const Home = () => {
       />
 
       <hr className="sep" />
-      <Description text="As you hover above, this graph below shows the breakdowns of posts per platform, along with the average sentiment per platform." />
+      <Description text="As you <b>hover</b> above, this graph below shows the breakdowns of posts per platform, along with the average sentiment per platform." />
       <FrequencyChart
         className="mt-5"
         hoveredFrequencies={hoveredFrequencies}

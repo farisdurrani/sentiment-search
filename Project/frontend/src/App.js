@@ -17,7 +17,7 @@ function App() {
             <Route exact path="/" element={<Navigate to="/home" />} />
             <Route path="/home" element={<Home />} />
           </Routes>
-          <ToastContainer position="top-center" />
+          <ToastContainer position="top-center" autoClose={2500} />
         </div>
       </BrowserRouter>
     </div>

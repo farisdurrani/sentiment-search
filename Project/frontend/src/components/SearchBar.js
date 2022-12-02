@@ -6,6 +6,8 @@ import {
   DEF_END_DATE,
   DEF_START_DATE,
   ALL_PLATFORMS,
+  MIN_DATE,
+  MAX_DATE,
 } from "../common";
 import { toast } from "react-toastify";
 
@@ -30,6 +32,12 @@ const SearchBar = (props) => {
     if (!(validateDate(startDate) && validateDate(endDate))) {
       toast.error("Invalid date format", { autoClose: 1000 });
       return false;
+    }
+
+    if (new Date(startDate) < MIN_DATE || new Date(endDate) > MAX_DATE) {
+      toast.info("We only have data from Jan 2015 to Nov 2022", {
+        autoClose: 5000,
+      });
     }
 
     return true;
@@ -81,7 +89,7 @@ const SearchBar = (props) => {
           <h1>Sentiment Search</h1>
         </Form.Label>
         <Form.Control
-          className="main-search m-auto mb-3"
+          className="main-search m-auto mb-4"
           type="text"
           placeholder="🔍"
           defaultValue={DEFAULT_SEARCH_TERM}
