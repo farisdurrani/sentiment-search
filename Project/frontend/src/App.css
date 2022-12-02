@@ -67,7 +67,7 @@ hr.sep {
   color: gray;
   width: 50%;
   margin-inline: auto;
-  margin-block: 1.5rem;
+  margin-block: 3rem;
 }
 
 /* -------------------------------------------------------------------------- */
@@ -84,7 +84,7 @@ hr.sep {
 /* -------------------------------------------------------------------------- */
 
 #search-bar {
-  margin-block: 7rem;
+  margin-block: 10rem;
 }
 
 #search-bar .btn-primary.comfortable {

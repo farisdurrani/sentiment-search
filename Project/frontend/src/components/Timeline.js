@@ -56,20 +56,6 @@ const Timeline = (props) => {
         `translate(${ABSOLUTE_MARGIN.left}, ${ABSOLUTE_MARGIN.top})`
       )
       .attr("id", "timeline-base-svg");
-
-    // draw boundary circles
-    svg_base.append("circle").attr("cx", 0).attr("cy", 0).attr("r", 20);
-    svg_base.append("circle").attr("cx", SVG_WIDTH).attr("cy", 0).attr("r", 20);
-    svg_base
-      .append("circle")
-      .attr("cx", 0)
-      .attr("cy", SVG_HEIGHT)
-      .attr("r", 20);
-    svg_base
-      .append("circle")
-      .attr("cx", SVG_WIDTH)
-      .attr("cy", SVG_HEIGHT)
-      .attr("r", 20);
   };
 
   const createScale = () => {
@@ -374,8 +360,7 @@ const Timeline = (props) => {
 
     console.debug("Timeline successfully created");
     setIsLoading(false);
-    toast.success("Sentiment analyzed. Scroll down for results")
-    
+    toast.success("Sentiment analyzed. Scroll down for results");
   }, [dataset, sig_events_dataset]);
 
   return (

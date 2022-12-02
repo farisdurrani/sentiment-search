@@ -37,8 +37,7 @@ const FrequencyChart = (props) => {
   }));
 
   const initSVG = () => {
-    const svg = d3
-      .select(svgRef.current)
+    d3.select(svgRef.current)
       .attr("id", "frequency_chart")
       .attr("width", SVG_WIDTH)
       .attr("height", SVG_HEIGHT)
@@ -46,30 +45,6 @@ const FrequencyChart = (props) => {
         "transform",
         "translate(" + ABSOLUTE_MARGIN.left + "," + ABSOLUTE_MARGIN.top + ")"
       );
-    svg
-      .append("circle")
-      .attr("cx", 0)
-      .attr("cy", 0)
-      .attr("r", 20)
-      .attr("id", "cir1");
-    svg
-      .append("circle")
-      .attr("cx", SVG_WIDTH)
-      .attr("cy", 0)
-      .attr("r", 20)
-      .attr("id", "cir2");
-    svg
-      .append("circle")
-      .attr("cx", 0)
-      .attr("cy", SVG_HEIGHT)
-      .attr("r", 20)
-      .attr("id", "cir3");
-    svg
-      .append("circle")
-      .attr("cx", SVG_WIDTH)
-      .attr("cy", SVG_HEIGHT)
-      .attr("r", 20)
-      .attr("id", "cir4");
   };
 
   const createAxes = (xScale, yScale) => {

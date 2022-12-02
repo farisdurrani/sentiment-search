@@ -35,15 +35,16 @@ const Home = () => {
       <hr className="sep" />
 
       <Description
-        text="Welcome to Sentiment Search. Providing a visual analysis of the
-        Internet's sentiment for a keyword"
+        text="Welcome to Sentiment Search. <br/> Providing a visual analysis of the
+        Internet's sentiment for any keywords."
       />
       <Spacer height={20} />
 
       <div className="d-flex flex-row justify-content-between align-items-center mb-3 w-75 mx-auto">
         <Legend />
         <Description
-          text={`A media post's sentiment can be very <b>negative</b> (-1), all the way to being very <b>positive</b> (1).`}
+          text={`A media post's sentiment can be very <b>negative</b> (-1), all the way to being very <b>positive</b> (1).<br/>
+          The better the feeling of reading a post, the bluer the color.`}
           className="w-25"
           pStyle={{ textAlign: "right" }}
         />
@@ -69,7 +70,7 @@ const Home = () => {
       />
 
       <Spacer height={100} />
-      <BubbleChart className="mt-5" startDate={searchOptions.startDate} endDate={searchOptions.endDate} />
+      {/* <BubbleChart className="mt-5" startDate={searchOptions.startDate} endDate={searchOptions.endDate} /> */}
       {/* <PolarArea className="mt-5" />
       <Radar className="mt-5" /> */}
     </Container>

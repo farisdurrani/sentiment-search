@@ -28,7 +28,7 @@ const SearchBar = (props) => {
     };
 
     if (!(validateDate(startDate) && validateDate(endDate))) {
-      toast.error("Invalid date format");
+      toast.error("Invalid date format", { autoClose: 1000 });
       return false;
     }
 
