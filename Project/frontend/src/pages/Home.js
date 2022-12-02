@@ -33,7 +33,7 @@ const Home = () => {
 
       <Description
         text="Welcome to Sentiment Search. <br/> Providing a visual analysis of the
-        Internet's sentiment from 2015-2022 for any keywords."
+        Internet's sentiment from 2015 to 2022 for any keywords."
       />
       <Spacer height={20} />
 
