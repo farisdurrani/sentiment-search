@@ -4,7 +4,7 @@ Theme Name:   DVA Project
 Version:      1.0
 License:      MIT
 License URI:  https://opensource.org/licenses/MIT
-Author:       See CODEOWNDERS
+Author:       Faris Durrani, Nemath Ahmed, Shuyan Lin
 */
 
 /* -------------------------------------------------------------------------- */
@@ -152,7 +152,6 @@ hr.sep {
   display: none;
 }
 
-
 /* -------------------------------------------------------------------------- */
 /*	Description
 /* -------------------------------------------------------------------------- */
@@ -165,5 +164,25 @@ hr.sep {
 .description .description-text {
   text-align: center;
   margin-inline: auto;
+  color: gray;
+}
+
+/* -------------------------------------------------------------------------- */
+/*	Footer
+/* -------------------------------------------------------------------------- */
+
+#footer .footer-element {
+  position: static;
+  background-color: var(--primary);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding-block: 1rem;
+}
+
+#footer p,
+#footer a {
+  margin: 0;
+  font-size: small;
   color: gray;
 }
