@@ -2,7 +2,7 @@
 
 Visualizing the sentiment of the Internet across multiple media platforms.
 
-> **GitHub repo**: https://github.com/farisdurrani/DVA_Project <br/> **Implemented**: Fall 2022
+> **GitHub repo**: https://github.com/farisdurrani/sentiment-search <br/> **Implemented**: Fall 2022
 
 # How to Run
 
@@ -11,6 +11,7 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 1. [NodeJS v18](https://nodejs.org/en/download/)
 1. NPM v9: `npm install npm@latest -g`
 1. [Python 3.10](https://www.python.org/downloads/release/python-3108/)
+1. Download the `reduced_data` dataset from [Kaggle](https://www.kaggle.com/datasets/farisdurrani/sentimentsearch), unzipping it, and putting all the contents inside [/backend](./Project/backend) 
 
 ## Start both the backend and frontend apps once inside [/Project](./Project):
 
