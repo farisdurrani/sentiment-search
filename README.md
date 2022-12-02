@@ -2,7 +2,7 @@
 
 Visualizing the sentiment of the Internet across multiple media platforms.
 
-> **GitHub repo**: https://github.com/farisdurrani/DVA_Project <br/> > **Implemented**: Fall 2022
+> **GitHub repo**: https://github.com/farisdurrani/DVA_Project <br/> **Implemented**: Fall 2022
 
 # How to Run
 
@@ -12,9 +12,9 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 1. NPM v9: `npm install npm@latest -g`
 1. [Python 3.10](https://www.python.org/downloads/release/python-3108/)
 
-## Start both the backend and frontend apps once inside [/Project](/Project):
-> **Note** the different backend commands for Mac/Linux and Windows
+## Start both the backend and frontend apps once inside [/Project](./Project):
 
+> **Note** the different backend commands for Mac/Linux and Windows
 
 | Action                                                   | Command                |
 | -------------------------------------------------------- | ---------------------- |
@@ -27,17 +27,16 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 
 # Description and Architecture
 
-Using D3.js and other visualization libraries, we compared the changing sentiments over time on over 2.3 million posts from multiple media platforms ranging from January 2015 to November 2022.
-
-
+Using D3.js and Apexcharts, we compared the changing sentiments over time on over 2.3 million posts from multiple media platforms ranging from January 2015 to November 2022.
 
 ## Data Collection
 
-We collected over 2.3 million posts, amounting to 190 GB before being processed down to 1.8 GB, from **Facebook, Reddit, The New York Times, The Guardian, CNN, and Twitter** ranging from January 2015 to November 2022 including by using the platforms' API and web scraping. 
+We collected over 2.3 million posts, amounting to 190 GB before being processed down to 1.8 GB, from **Facebook, Reddit, The New York Times, The Guardian, CNN, and Twitter** ranging from January 2015 to November 2022 including by using the platforms' API and web scraping.
 
 Some of those data collection scripts are located in [/Data Collection](./Data%20Collection), while the scripts for collecting posts from CNN and The Guardian are located in:
+
 1. [The Guardian News Article Collector](https://github.com/farisdurrani/TheGuardianArticlesCollector) by @farisdurrani
-1. [CNN Web Scraper](https://github.com/farisdurrani/CNNWebScraper) by @farisdurrani 
+1. [CNN Web Scraper](https://github.com/farisdurrani/CNNWebScraper) by @farisdurrani
 
 The sentiments were calculated using [vaderSentiment~=3.3.2](https://pypi.org/project/vaderSentiment/), run by the script [make_sentiment.py](./Data%20Collection/make_sentiment.py).
 
@@ -72,12 +71,12 @@ The queries are as follows (a more detailed description can be found in [BACKEND
 
 # Authors
 
-1. Faris Durrani @farisdurrani
-1. Justin Zandstra @justinzandstra
-1. Lakshmisree Iyengar @lakshmisree-iitk
-1. Nemath Ahmed @nemathahmed
-1. RenChu Wang @rentruewang
-1. Shuyan Lin @shuyanl915
+1. Faris Durrani [@farisdurrani](https://github.com/farisdurrani)
+1. Justin Zandstra [@justinzandstra](https://github.com/justinzandstra)
+1. Lakshmisree Iyengar [@lakshmisree-iitk](https://github.com/lakshmisree-iitk)
+1. Nemath Ahmed [@nemathahmed](https://github.com/nemathahmed)
+1. RenChu Wang [@rentruewang](https://github.com/rentruewang)
+1. Shuyan Lin [@shuyanl915](https://github.com/shuyanl915)
 
 # License
 
