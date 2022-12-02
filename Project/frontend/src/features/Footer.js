@@ -8,7 +8,7 @@ const Footer = () => {
           Copyright © {new Date().getFullYear()} Faris Durrani, Justin Zandstra,
           Lakshmisree Iyengar, Nemath Ahmed, RenChu Wang, Shuyan Lin
           <br />
-          <a href="https://github.com/farisdurrani/DVA_Project">GitHub</a>
+          <a href="https://github.com/farisdurrani/sentiment-search">GitHub</a>
         </p>
       </div>
     </div>
