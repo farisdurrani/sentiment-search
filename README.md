@@ -45,6 +45,8 @@ The sentiments were calculated using [vaderSentiment~=3.3.2](https://pypi.org/pr
 
 Implemented in [/frontend](./Project/frontend/), the frontend is created on React.JS, and the visualizations by D3.js and Apexcharts.
 
+![](./.github/demo.mp4)
+
 ## Backend
 
 Implemented in [/backend](./Project/backend/), the backend of our app is a **Python** Flask app (`app.py` with support from `api.py`) which converts the csv files containing the data to a pandas dataframe which it uses to return the value queried by the front end as the user changes parameters like keywords and date ranges.
