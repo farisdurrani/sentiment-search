@@ -1,8 +1,9 @@
-pandas
-numpy
-flask
-flask-cors
-transformers
-alive-progress
-gunicorn
-rich
+alive_progress==2.4.1
+Faker==15.3.4
+Flask==2.2.2
+flask_cors==3.0.10
+numpy==1.23.5
+pandas==1.5.2
+python_dateutil==2.8.2
+rich==12.6.0
+transformers==4.25.1
