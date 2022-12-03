@@ -45,7 +45,7 @@ The sentiments were calculated using [vaderSentiment~=3.3.2](https://pypi.org/pr
 
 ## Frontend
 
-Implemented in [/frontend](./Project/frontend/), the frontend is created on React.JS, and the visualizations by D3.js and Apexcharts.
+Implemented in [/frontend](./Project/frontend/), the frontend is created on **React.JS**, and the visualizations by D3.js and Apexcharts.
 
 ### Demo video:
 
@@ -87,7 +87,7 @@ The last pie chart derives from the bubble chart above to show the percentage of
 
 ## Backend
 
-Implemented in [/backend](./Project/backend/), the backend of our app is a **Python** Flask app (`app.py` with support from `api.py`) which converts the csv files containing the data to a pandas dataframe which it uses to return the value queried by the front end as the user changes parameters like keywords and date ranges.
+Implemented in [/backend](./Project/backend/), the backend of our app is a **Python** Flask app (`app.py` with support from `api.py`, live at `localhost:8000` by default) that converts the csv files containing the data to a pandas dataframe which it uses to return the value queried by the front end as the user changes parameters like keywords and date ranges.
 
 The queries are as follows (a more detailed description can be found in [BACKEND_API](./.github/BACKEND_API.md):
 
