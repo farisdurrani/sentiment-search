@@ -45,7 +45,9 @@ The sentiments were calculated using [vaderSentiment~=3.3.2](https://pypi.org/pr
 
 Implemented in [/frontend](./Project/frontend/), the frontend is created on React.JS, and the visualizations by D3.js and Apexcharts.
 
-![](./.github/demo.mp4)
+
+https://user-images.githubusercontent.com/40067313/205411066-8f68f98e-1cb8-4cb1-bde3-85a4c2e68fcb.mp4
+
 
 ## Backend
 
