@@ -11,7 +11,7 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 1. [NodeJS v18](https://nodejs.org/en/download/)
 1. NPM v9: `npm install npm@latest -g`
 1. [Python 3.10](https://www.python.org/downloads/release/python-3108/)
-1. Download the `reduced_data` dataset from [Kaggle](https://www.kaggle.com/datasets/farisdurrani/sentimentsearch), unzipping it, and putting all the files  inside [/backend](./Project/backend) 
+1. Download the `reduced_data` dataset from [Kaggle](https://www.kaggle.com/datasets/farisdurrani/sentimentsearch), unzipping it, and putting all the files inside [/backend](./Project/backend)
 
 ## Start both the backend and frontend apps once inside [/Project](./Project):
 
@@ -45,9 +45,43 @@ The sentiments were calculated using [vaderSentiment~=3.3.2](https://pypi.org/pr
 
 Implemented in [/frontend](./Project/frontend/), the frontend is created on React.JS, and the visualizations by D3.js and Apexcharts.
 
+### Demo video:
 
 https://user-images.githubusercontent.com/40067313/205411066-8f68f98e-1cb8-4cb1-bde3-85a4c2e68fcb.mp4
 
+### Search bar
+
+![](./.github/screenshots/search_bar.png)
+The page (`localhost:3000` by default) opens with a comfortable search bar where you can type in any search terms to find out the sentiment of those keywords, along with optional options like start and end dates as well as the media platform.
+
+### Sentiment Legend
+
+![](./.github/screenshots/sentiment_legend.png)
+A simple legend shows up underneath, denoting that bars and areas colored red have negative sentiment posts, i.e., posts that are unpleasant, depressing, or harmful. Positive sentiments are blue.
+
+### Timeline
+
+![](./.github/screenshots/timeline.png)
+The main graph is the Timeline, which shows the count of posts per day over time, and the color of the bars denoting the sentiments. The user can hover over each bar to find out the sentiment and count of posts of that date.
+
+We also show several "significant events" (of our own choosing from Wikipedia) that contain those keywords in circles. These circles have the same height and color as the bar on that date. This allows the user to correlate certain significant change in sentiment with a significant event.
+
+In this example, 1/12/2021 has a great deal of fairly negative posts which correlates with President Trump's second impeachment.
+
+### Frequency Chart
+
+![](./.github/screenshots/freq.png)
+As the user hovers over the Timeline above, this frequency chart also updates to show the breakdown of posts on that date.
+
+### Bag of Words
+
+![](./.github/screenshots/bubble_chart.png)
+We also provide a bubble chart to show the most frequent words in the time period as well as the mean sentiment of the posts containing those words.
+
+### Fraction of Sentiment Polarities
+
+![](./.github/screenshots/pie.png)
+The last pie chart derives from the bubble chart above to show the percentage of words that are positve negative (sentiment < 1), neutral (0), and (sentiment > 1).
 
 ## Backend
 
