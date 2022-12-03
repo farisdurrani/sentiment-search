@@ -8,7 +8,7 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 
 ## Prerequisites:
 
-1. At least 16 GB RAM (recommended 32 GB)
+1. At least 16 GB RAM (recommended 24 GB)
 1. [NodeJS v18](https://nodejs.org/en/download/)
 1. NPM v9: `npm install npm@latest -g`
 1. [Python 3.10](https://www.python.org/downloads/release/python-3108/)
