@@ -110,6 +110,9 @@ The queries are as follows (a more detailed description can be found in [BACKEND
 - `/api/getPlatformFrequencies`:
   Given filter parameters, return the count and mean sentiment of posts on each platform
 
+# Next Steps
+Our project could be improved in the future by making it update in real time as people post to the sites that we have analyzed. Another limitation to achieving this is the speed at which we wanted the tool to update. Our method of collecting the bag of words for the bubble chart is inefficient compared to perhaps using a vectorized approach.
+
 # Authors
 
 1. Faris Durrani [@farisdurrani](https://github.com/farisdurrani)

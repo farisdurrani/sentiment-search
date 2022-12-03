@@ -4,7 +4,7 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 
 > **GitHub repo**: https://github.com/farisdurrani/sentiment-search <br/> **Implemented**: Fall 2022
 
-# How to Run
+# INSTALLATION & EXECUTION
 
 ## Prerequisites:
 
@@ -28,7 +28,7 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 
 > **Note** it may take a minute for the app to show the graphs for the first time
 
-# Description and Architecture
+# DESCRIPTION & ARCHITECTURE
 
 Using D3.js and Apexcharts, we compared the changing sentiments over time on over 2.3 million posts from multiple media platforms ranging from January 2015 to November 2022.
 
@@ -48,6 +48,8 @@ The sentiments were calculated using [vaderSentiment~=3.3.2](https://pypi.org/pr
 Implemented in [/frontend](./Project/frontend/), the frontend is created on **React.JS**, and the visualizations by D3.js and Apexcharts.
 
 ### Demo video:
+
+https://youtu.be/GgrfiH9w2js
 
 https://user-images.githubusercontent.com/40067313/205411066-8f68f98e-1cb8-4cb1-bde3-85a4c2e68fcb.mp4
 
@@ -103,6 +105,9 @@ The queries are as follows (a more detailed description can be found in [BACKEND
 
 - `/api/getPlatformFrequencies`:
   Given filter parameters, return the count and mean sentiment of posts on each platform
+
+# Next Steps
+Our project could be improved in the future by making it update in real time as people post to the sites that we have analyzed. Another limitation to achieving this is the speed at which we wanted the tool to update. Our method of collecting the bag of words for the bubble chart is inefficient compared to perhaps using a vectorized approach.
 
 # Authors
 
