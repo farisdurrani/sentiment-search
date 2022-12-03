@@ -26,6 +26,8 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 | Running the Backend (linux/mac)                          | `npm run startb-mac`   |
 | Running the Backend (windows)                            | `npm run startb-win`   |
 
+> **Note** it may take a minute for the app to show the graphs for the first time
+
 # Description and Architecture
 
 Using D3.js and Apexcharts, we compared the changing sentiments over time on over 2.3 million posts from multiple media platforms ranging from January 2015 to November 2022.
