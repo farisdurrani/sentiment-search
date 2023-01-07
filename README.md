@@ -32,6 +32,11 @@ Visualizing the sentiment of the Internet across multiple media platforms.
 
 Using D3.js and Apexcharts, we compared the changing sentiments over time on over 2.3 million posts from multiple media platforms ranging from January 2015 to November 2022.
 
+## Research deliverables
+1. [Project report](http://hdl.handle.net/1853/69993)
+1. [Poster](https://github.com/farisdurrani/sentiment-search/files/10367401/Sentiment.Search.Poster.pdf)
+1. [Poster presentation](https://youtu.be/mjTZ9EvRKx4)
+
 ## Data Collection
 
 We collected over 2.3 million posts, amounting to 190 GB before being processed down to 1.8 GB, from **Facebook, Reddit, The New York Times, The Guardian, CNN, and Twitter** ranging from January 2015 to November 2022 including by using the platforms' API and web scraping.
@@ -50,11 +55,6 @@ Implemented in [/frontend](./Project/frontend/), the frontend is created on **Re
 ### Demo video:
 
 https://user-images.githubusercontent.com/40067313/205411066-8f68f98e-1cb8-4cb1-bde3-85a4c2e68fcb.mp4
-
-### Research deliverables
-1. [Project report](http://hdl.handle.net/1853/69993)
-1. [Poster](https://github.com/farisdurrani/sentiment-search/files/10367401/Sentiment.Search.Poster.pdf)
-1. [Poster presentation](https://youtu.be/mjTZ9EvRKx4)
 
 ### Search bar
 
