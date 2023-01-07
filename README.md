@@ -51,7 +51,10 @@ Implemented in [/frontend](./Project/frontend/), the frontend is created on **Re
 
 https://user-images.githubusercontent.com/40067313/205411066-8f68f98e-1cb8-4cb1-bde3-85a4c2e68fcb.mp4
 
-[Poster presentation](https://youtu.be/mjTZ9EvRKx4)
+### Research deliverables
+1. [Project report](http://hdl.handle.net/1853/69993)
+1. [Poster](https://github.com/farisdurrani/sentiment-search/files/10367401/Sentiment.Search.Poster.pdf)
+1. [Poster presentation](https://youtu.be/mjTZ9EvRKx4)
 
 ### Search bar
 
