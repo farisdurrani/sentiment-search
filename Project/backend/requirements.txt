@@ -6,4 +6,4 @@ numpy==1.23.5
 pandas==1.5.2
 python_dateutil==2.8.2
 rich==12.6.0
-transformers==4.25.1
+transformers==4.30.0
